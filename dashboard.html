@@ -16,15 +16,23 @@
 }
 html{font-size:13px}
 body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-font-smoothing:antialiased}
-.vsim{background:var(--paper);border-bottom:1px solid var(--rule2);padding:7px 14px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:sticky;top:0;z-index:300;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+/* vsim is now a fixed bottom bar — see .vsim below */
+.vsim{background:var(--paper);border-top:1px solid var(--rule2);padding:8px 16px;display:flex;align-items:center;gap:8px;flex-wrap:wrap;position:fixed;bottom:0;left:0;right:0;z-index:400;box-shadow:0 -2px 8px rgba(0,0,0,.07)}
 .vsim-lbl{font-size:10px;color:var(--ink3);font-weight:600;text-transform:uppercase;letter-spacing:.08em}
 .vbtn{padding:3px 11px;font-size:11px;border:1px solid var(--rule2);border-radius:3px;cursor:pointer;background:var(--paper);color:var(--ink2);font-family:var(--sans);transition:all .12s}
 .vbtn:hover{background:var(--paper3)}.vbtn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
 .vinfo{font-size:11px;color:var(--ink4);margin-left:2px}
+/* On real mobile/tablet screens: hide the simulator bar (JS also does this,
+   but the @media query is a robust CSS-level backstop) */
+@media (max-width:1024px) and (pointer:coarse) {
+  .vsim{display:none !important}
+  .fi{padding-bottom:0 !important}
+}
+/* fw must NOT have overflow:hidden — it breaks position:sticky on sidebar and topbar */
 .fw{transition:max-width .24s;margin:0 auto}
-.fi{width:100%;min-width:300px;background:var(--paper2)}
+.fi{width:100%;min-width:300px;background:var(--paper2);padding-bottom:44px}
 .dash-shell{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh}
-.sidebar{background:var(--navy3);display:flex;flex-direction:column;position:sticky;top:43px;height:calc(100vh - 43px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
+.sidebar{background:var(--navy3);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
 .sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
 .sb-brand{padding:16px 14px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;flex-shrink:0}
 .sb-ball{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);display:grid;place-items:center;flex-shrink:0}
@@ -47,13 +55,32 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .sbn-badge.amber{background:var(--amber-mid)}
 .sb-bottom{padding:10px 14px;border-top:1px solid rgba(255,255,255,.06);flex-shrink:0}
 .sb-bl{font-size:11.5px;color:rgba(255,255,255,.4);cursor:pointer;display:block;padding:4px 0;transition:color .1s}.sb-bl:hover{color:rgba(255,255,255,.8)}
-.ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:6px;background:transparent;border:none;margin-right:4px}
-.ham span{display:block;width:18px;height:2px;background:rgba(255,255,255,.8);border-radius:1px;transition:all .18s}
+.ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:7px 6px;background:transparent;border:none;margin-right:2px;flex-shrink:0}
+.ham span{display:block;width:19px;height:2px;background:var(--ink2);border-radius:1px;transition:all .2s}
+.is-tablet .ham span,.is-mobile .ham span{background:var(--ink2)}
 .ham.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
-.ham.open span:nth-child(2){opacity:0}.ham.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
-.mob-nav{display:none;flex-direction:column;background:var(--navy3);border-bottom:1px solid rgba(255,255,255,.08)}.mob-nav.open{display:flex}
+.ham.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+/* Mobile/tablet nav — fixed overlay, always reachable regardless of scroll */
+.mob-nav{
+  display:flex;flex-direction:column;
+  background:var(--navy3);
+  position:fixed;top:0;left:0;right:0;bottom:0;
+  z-index:200;
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+  transform:translateY(-100%);
+  transition:transform .25s cubic-bezier(.4,0,.2,1);
+  box-shadow:0 8px 32px rgba(0,0,0,.4);
+  pointer-events:none;
+}
+.mob-nav.open{transform:translateY(0);pointer-events:auto}
+/* Tablet: panel (not full-screen), slides down from top */
+.is-tablet .mob-nav{bottom:auto;max-height:82vh;border-radius:0 0 12px 12px}
+/* Dim backdrop when nav is open */
+.mob-nav-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:199;-webkit-tap-highlight-color:transparent}
+.mob-nav-backdrop.open{display:block}
 .main{display:flex;flex-direction:column;background:var(--paper2);min-width:0}
-.topbar{background:var(--paper);border-bottom:1px solid var(--rule);padding:0 18px;height:50px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:sticky;top:43px;z-index:100}
+.topbar{background:var(--paper);border-bottom:1px solid var(--rule);padding:0 18px;height:50px;display:flex;align-items:center;gap:10px;flex-shrink:0;position:sticky;top:0;z-index:100}
 .topbar-title{font-size:15px;font-weight:600;color:var(--ink);letter-spacing:-.01em}
 .topbar-right{display:flex;gap:7px;align-items:center;margin-left:auto}
 .tb-search{display:flex;align-items:center;border:1px solid var(--rule2);background:var(--paper3);border-radius:5px;overflow:hidden;width:200px}
@@ -168,7 +195,7 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .disc-right{display:flex;flex-direction:column;align-items:flex-end;gap:4px;flex-shrink:0}
 .disc-count{font-size:15px;font-weight:600;color:var(--ink);line-height:1}.disc-count-lbl{font-size:10px;color:var(--ink4)}
 .set-layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px;align-items:start}
-.set-nav{background:var(--paper);border:1px solid var(--rule);border-radius:8px;overflow:hidden;position:sticky;top:106px}
+.set-nav{background:var(--paper);border:1px solid var(--rule);border-radius:8px;overflow:hidden;position:sticky;top:62px}
 .set-nav-head{padding:10px 14px;font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3);border-bottom:1px solid var(--rule);background:var(--paper3)}
 .sn{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:12.5px;color:var(--ink2);cursor:pointer;border-left:2.5px solid transparent;transition:background .1s,color .1s}
 .sn:hover{background:var(--paper3);color:var(--ink)}.sn.on{background:var(--blue-bg);color:var(--blue2);border-left-color:var(--blue-mid);font-weight:500}
@@ -229,21 +256,42 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .plan-price span{font-size:12px;font-weight:400;color:var(--ink3)}
 .plan-desc{font-size:12px;color:var(--ink3);margin:6px 0 10px;line-height:1.5}
 .feature-tag{font-size:11.5px;color:var(--green);display:inline-flex;align-items:center;gap:3px}
-/* Responsive */
-.is-tablet .dash-shell{grid-template-columns:1fr}.is-tablet .sidebar{display:none;position:static;height:auto}
-.is-tablet .ham{display:flex}.is-tablet .topbar{top:0}.is-tablet .metric-row{grid-template-columns:repeat(2,1fr)}
-.is-tablet .two-col{grid-template-columns:1fr}.is-tablet .three-col{grid-template-columns:repeat(2,1fr)}
-.is-tablet .set-layout{grid-template-columns:1fr}.is-tablet .set-nav{display:none;position:static}
-.is-tablet .mob-set-select{display:block}.is-tablet .form-grid{grid-template-columns:1fr}
-.is-tablet .pipeline-row{grid-template-columns:repeat(2,1fr)}.is-tablet .content{padding:14px}
-.is-mobile .dash-shell{grid-template-columns:1fr}.is-mobile .sidebar{display:none;position:static;height:auto}
-.is-mobile .ham{display:flex}.is-mobile .topbar{top:0;height:46px;padding:0 12px}
-.is-mobile .metric-row{grid-template-columns:repeat(2,1fr);gap:8px}.is-mobile .two-col,.is-mobile .three-col{grid-template-columns:1fr}
-.is-mobile .pipeline-row{grid-template-columns:1fr}.is-mobile .set-layout{grid-template-columns:1fr}
-.is-mobile .set-nav{display:none;position:static}.is-mobile .mob-set-select{display:block}
-.is-mobile .form-grid{grid-template-columns:1fr}.is-mobile .content{padding:10px}
-.is-mobile .plan-card{flex-direction:column}.is-mobile .int-card{flex-direction:column}
-.is-mobile .mcard-value{font-size:18px}.is-mobile .tb-search{display:none}
+/* ── RESPONSIVE — TABLET ── */
+.is-tablet .dash-shell{grid-template-columns:1fr}
+.is-tablet .sidebar{display:none;position:static;height:auto}
+.is-tablet .ham{display:flex !important}
+.is-tablet .metric-row{grid-template-columns:repeat(2,1fr)}
+.is-tablet .two-col{grid-template-columns:1fr}
+.is-tablet .three-col{grid-template-columns:repeat(2,1fr)}
+.is-tablet .set-layout{grid-template-columns:1fr}
+.is-tablet .set-nav{display:none;position:static}
+.is-tablet .mob-set-select{display:block}
+.is-tablet .form-grid{grid-template-columns:1fr}
+.is-tablet .pipeline-row{grid-template-columns:repeat(2,1fr)}
+.is-tablet .content{padding:14px}
+/* ── RESPONSIVE — MOBILE ── */
+.is-mobile .dash-shell{grid-template-columns:1fr}
+.is-mobile .sidebar{display:none;position:static;height:auto}
+.is-mobile .ham{display:flex !important}
+.is-mobile .topbar{height:48px;padding:0 14px}
+.is-mobile .topbar-title{font-size:14px}
+.is-mobile .metric-row{grid-template-columns:repeat(2,1fr);gap:8px}
+.is-mobile .mcard{padding:10px 12px}
+.is-mobile .mcard-value{font-size:18px}
+.is-mobile .two-col,.is-mobile .three-col{grid-template-columns:1fr}
+.is-mobile .pipeline-row{grid-template-columns:1fr}
+.is-mobile .set-layout{grid-template-columns:1fr}
+.is-mobile .set-nav{display:none;position:static}
+.is-mobile .mob-set-select{display:block}
+.is-mobile .form-grid{grid-template-columns:1fr}
+.is-mobile .content{padding:12px}
+.is-mobile .plan-card{flex-direction:column}
+.is-mobile .int-card{flex-direction:column}
+.is-mobile .tb-search{display:none}
+.is-mobile .page-head{flex-wrap:wrap;gap:6px}
+.is-mobile .uf-strip{gap:4px}
+.is-mobile .uf{font-size:11px;padding:3px 8px}
+.is-mobile .card-head{gap:6px}
 </style>
 <div>
 <div class="vsim">
@@ -292,7 +340,7 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 
 <!-- MAIN -->
 <div class="main">
-  <header class="topbar">
+  <header class="topbar" style="z-index:210">
     <button class="ham" id="ham"><span></span><span></span><span></span></button>
     <span class="topbar-title" id="topbar-title">Overview</span>
     <div class="topbar-right">
@@ -301,17 +349,60 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
       <button class="tb-btn primary" id="topbar-action" onclick="handleTopAction()">+ New article</button>
     </div>
   </header>
-  <div class="mob-nav" id="mob-nav">
-    <div class="sbn" data-pg="overview" style="padding:10px 16px;font-size:13.5px">Overview</div>
-    <div class="sbn" data-pg="analytics" style="padding:10px 16px;font-size:13.5px">Analytics</div>
-    <div class="sbn" data-pg="pipeline" style="padding:10px 16px;font-size:13.5px">Content pipeline</div>
-    <div class="sbn" data-pg="moderation" style="padding:10px 16px;font-size:13.5px">Moderation</div>
-    <div class="sbn" data-pg="resources" style="padding:10px 16px;font-size:13.5px">Resource library</div>
-    <div class="sbn" data-pg="users" style="padding:10px 16px;font-size:13.5px">Users &amp; roles</div>
-    <div class="sbn" data-pg="discussions" style="padding:10px 16px;font-size:13.5px">Discussions</div>
-    <div class="sbn" data-pg="finance" style="padding:10px 16px;font-size:13.5px">Finance &amp; donations</div>
-    <div class="sbn" data-pg="settings" style="padding:10px 16px;font-size:13.5px">Settings</div>
-  </div>
+  <div class="mob-nav-backdrop" id="mob-nav-backdrop" onclick="closeMobNav()"></div>
+  <nav class="mob-nav" id="mob-nav">
+    <!-- sticky header inside nav so brand/close is always visible -->
+    <div style="display:flex;align-items:center;justify-content:space-between;padding:14px 16px 10px;border-bottom:1px solid rgba(255,255,255,.1);position:sticky;top:0;background:var(--navy3);z-index:1;flex-shrink:0">
+      <div style="display:flex;align-items:center;gap:9px">
+        <div class="sb-ball"><div class="sb-hex"></div></div>
+        <div><div class="sb-name">Hivemind</div><div class="sb-sub">Organization dashboard</div></div>
+      </div>
+      <button onclick="closeMobNav()" style="background:rgba(255,255,255,.1);border:none;border-radius:6px;width:32px;height:32px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:#fff;font-size:18px;line-height:1">×</button>
+    </div>
+    <div style="padding:8px 14px 4px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Overview</div>
+    <div class="sbn" data-pg="overview" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>
+      Overview
+    </div>
+    <div class="sbn" data-pg="analytics" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><polyline points="1,13 5,8 8,11 12,5 15,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Analytics
+    </div>
+    <div style="padding:8px 14px 4px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Content</div>
+    <div class="sbn" data-pg="pipeline" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="3" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="7" width="14" height="3" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="12" width="14" height="3" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>
+      Content pipeline
+    </div>
+    <div class="sbn" data-pg="moderation" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4" x2="8" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.5" r=".8" fill="currentColor"/></svg>
+      Moderation <span class="sbn-badge" style="position:static;margin-left:6px" id="mob-mod-badge">12</span>
+    </div>
+    <div class="sbn" data-pg="resources" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="5" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="5" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Resource library
+    </div>
+    <div style="padding:8px 14px 4px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Community</div>
+    <div class="sbn" data-pg="users" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M1 14c0-3 2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M12 10c1.5 0 3 1 3 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+      Users &amp; roles
+    </div>
+    <div class="sbn" data-pg="discussions" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><path d="M2 3h10a1 1 0 011 1v6a1 1 0 01-1 1H6l-3 2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+      Discussions <span class="sbn-badge amber" style="position:static;margin-left:6px">38</span>
+    </div>
+    <div style="padding:8px 14px 4px;font-size:9px;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.3)">Operations</div>
+    <div class="sbn" data-pg="finance" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/><line x1="1" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.4"/><line x1="4" y1="11.5" x2="7" y2="11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Finance &amp; donations
+    </div>
+    <div class="sbn" data-pg="settings" style="padding:11px 16px;font-size:14px;min-height:44px">
+      <svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+      Settings
+    </div>
+    <div style="padding:10px 16px;border-top:1px solid rgba(255,255,255,.08);margin-top:4px;display:flex;gap:16px">
+      <span style="font-size:12px;color:rgba(255,255,255,.4);cursor:pointer" onclick="closeMobNav()">✕ Close menu</span>
+    </div>
+  </nav>
   <div class="content">
 <!-- PAGE: OVERVIEW -->
 <div id="pg-overview" class="pg on">
@@ -577,28 +668,208 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 
 <!-- PAGE: RESOURCES -->
 <div id="pg-resources" class="pg">
+  <!-- Toolbar -->
   <div class="page-head">
     <span class="page-head-title">Resource library</span>
-    <div class="tb-search" style="width:200px"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input placeholder="Search resources…" id="res-search" oninput="filterResources()"/></div>
-    <select class="tb-btn" style="padding:5px 10px" id="res-subject" onchange="filterResources()"><option value="">All subjects</option><option>Physics</option><option>Biology</option><option>Chemistry</option><option>Mathematics</option></select>
-    <select class="tb-btn" style="padding:5px 10px" id="res-type" onchange="filterResources()"><option value="">All types</option><option>Primary</option><option>Further</option><option>Supplemental</option><option>Disputed</option></select>
+    <div class="tb-search" style="width:220px">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+      <input placeholder="Search by title, author, ISBN…" id="res-search" oninput="filterResources()"/>
+    </div>
+    <select class="tb-btn" style="padding:5px 10px" id="res-subject" onchange="filterResources()">
+      <option value="">All subjects</option>
+      <option>Physics</option><option>Biology</option><option>Chemistry</option>
+      <option>Mathematics</option><option>Neuroscience</option><option>Computer Science</option>
+      <option>History &amp; Philosophy of Science</option>
+    </select>
+    <select class="tb-btn" style="padding:5px 10px" id="res-type" onchange="filterResources()">
+      <option value="">All types</option>
+      <option>Primary</option><option>Further</option><option>Supplemental</option><option>Disputed</option>
+    </select>
+    <select class="tb-btn" style="padding:5px 10px" id="res-role" onchange="filterResources()">
+      <option value="">All audiences</option>
+      <option>Undergraduate</option><option>Graduate</option><option>Researcher</option>
+      <option>Educator</option><option>Practitioner</option><option>General public</option>
+    </select>
+    <button class="tb-btn" onclick="showToast('Batch import dialog — coming soon')">Import batch</button>
     <button class="tb-btn primary" onclick="openModal('modal-add-resource')">+ Add resource</button>
   </div>
+
+  <!-- Stats row -->
+  <div class="metric-row" style="margin-bottom:14px">
+    <div class="mcard" style="cursor:default">
+      <div class="mcard-label">Total resources</div>
+      <div class="mcard-value">92,400</div>
+      <div class="mcard-delta delta-up">↑ +840 this month</div>
+    </div>
+    <div class="mcard" style="cursor:default">
+      <div class="mcard-label">Active disputes</div>
+      <div class="mcard-value">24</div>
+      <div class="mcard-delta delta-dn">↓ 8 resolved this week</div>
+    </div>
+    <div class="mcard" style="cursor:default">
+      <div class="mcard-label">Pending review</div>
+      <div class="mcard-value">17</div>
+      <div class="mcard-delta delta-neutral">Awaiting editor approval</div>
+    </div>
+    <div class="mcard" style="cursor:default">
+      <div class="mcard-label">Resource trees</div>
+      <div class="mcard-value">1,284</div>
+      <div class="mcard-delta delta-up">↑ Across 340 articles</div>
+    </div>
+  </div>
+
+  <!-- Personnel / audience type tabs -->
+  <div style="margin-bottom:14px">
+    <div style="font-size:10.5px;font-weight:600;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:8px">View by audience &amp; personnel type</div>
+    <div class="uf-strip" id="res-audience-strip">
+      <button class="uf on" onclick="setResAudience(this,'')">All resources</button>
+      <button class="uf" onclick="setResAudience(this,'Undergraduate')">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" style="margin-right:3px;vertical-align:middle"><path d="M8 2l7 4-7 4-7-4 7-4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M3 8v4c0 1.1 2.2 2 5 2s5-.9 5-2V8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Undergraduate students
+      </button>
+      <button class="uf" onclick="setResAudience(this,'Graduate')">Graduate &amp; PhD</button>
+      <button class="uf" onclick="setResAudience(this,'Researcher')">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none" style="margin-right:3px;vertical-align:middle"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+        Researchers
+      </button>
+      <button class="uf" onclick="setResAudience(this,'Educator')">Educators &amp; faculty</button>
+      <button class="uf" onclick="setResAudience(this,'Practitioner')">Practitioners</button>
+      <button class="uf" onclick="setResAudience(this,'General public')">General public</button>
+    </div>
+  </div>
+
+  <!-- Team type quick-access panels -->
+  <div class="three-col" style="margin-bottom:14px" id="res-team-panels">
+    <div class="card" style="cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--blue-mid)'" onmouseleave="this.style.borderColor=''" onclick="setResAudience(document.querySelector('.uf[onclick*=Researcher]'),'Researcher')">
+      <div class="card-head" style="background:linear-gradient(135deg,#eff6ff,#fff)">
+        <div>
+          <div class="card-title" style="display:flex;align-items:center;gap:7px">
+            <span style="font-size:18px">🔬</span> Research teams
+          </div>
+          <div class="card-desc">Primary sources, preprints, review articles, lab manuals</div>
+        </div>
+        <span class="badge badge-blue">12,840 resources</span>
+      </div>
+      <div class="card-body" style="padding:10px 16px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="badge badge-blue">Primary sources</span>
+          <span class="badge badge-blue">Peer-reviewed</span>
+          <span class="badge badge-gray">Preprints</span>
+          <span class="badge badge-gray">Datasets</span>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--green-mid)'" onmouseleave="this.style.borderColor=''" onclick="setResAudience(document.querySelector('.uf[onclick*=Educator]'),'Educator')">
+      <div class="card-head" style="background:linear-gradient(135deg,#f0fdf4,#fff)">
+        <div>
+          <div class="card-title" style="display:flex;align-items:center;gap:7px">
+            <span style="font-size:18px">🎓</span> Teaching &amp; curriculum teams
+          </div>
+          <div class="card-desc">Textbooks, syllabi resources, problem sets, lecture notes</div>
+        </div>
+        <span class="badge badge-green">28,210 resources</span>
+      </div>
+      <div class="card-body" style="padding:10px 16px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="badge badge-green">Textbooks</span>
+          <span class="badge badge-green">Further reading</span>
+          <span class="badge badge-gray">Open access</span>
+          <span class="badge badge-amber">Syllabi</span>
+        </div>
+      </div>
+    </div>
+    <div class="card" style="cursor:pointer;transition:border-color .15s" onmouseenter="this.style.borderColor='var(--amber-mid)'" onmouseleave="this.style.borderColor=''" onclick="setResAudience(document.querySelector('.uf[onclick*=Practitioner]'),'Practitioner')">
+      <div class="card-head" style="background:linear-gradient(135deg,#fffbeb,#fff)">
+        <div>
+          <div class="card-title" style="display:flex;align-items:center;gap:7px">
+            <span style="font-size:18px">⚗️</span> Practitioner &amp; applied teams
+          </div>
+          <div class="card-desc">Handbooks, technical standards, industry reports, case studies</div>
+        </div>
+        <span class="badge badge-amber">9,420 resources</span>
+      </div>
+      <div class="card-body" style="padding:10px 16px">
+        <div style="display:flex;gap:6px;flex-wrap:wrap">
+          <span class="badge badge-amber">Handbooks</span>
+          <span class="badge badge-amber">Standards</span>
+          <span class="badge badge-gray">Case studies</span>
+          <span class="badge badge-gray">Reports</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main table -->
   <div class="card">
-    <div class="card-head"><div><div class="card-title">Resource library</div><div class="card-desc" id="res-count">92,400 total resources</div></div><a class="card-link" onclick="showToast('CSV exported','','green')">Export CSV</a></div>
+    <div class="card-head">
+      <div>
+        <div class="card-title">All resources</div>
+        <div class="card-desc" id="res-count">92,400 total resources</div>
+      </div>
+      <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
+        <button class="tb-btn" onclick="showToast('Bulk classification tool — coming soon')">Bulk classify</button>
+        <button class="tb-btn" onclick="showToast('Dispute review queue opened','','amber')">
+          <span style="color:var(--amber)">⚠</span> 24 disputes
+        </button>
+        <a class="card-link" onclick="showToast('CSV exported','','green')">Export CSV</a>
+      </div>
+    </div>
     <div class="card-body no-pad">
-      <table class="dash-table"><thead><tr><th>Title</th><th>Author</th><th>Subject</th><th>Type</th><th class="num">In trees</th><th class="num">Disputes</th><th></th></tr></thead>
-      <tbody id="res-tbody">
-        <tr data-subject="Physics" data-type="Primary"><td><a onclick="openModal('modal-resource-detail')">The Principles of Quantum Mechanics</a></td><td style="color:var(--ink3)">Dirac, P.A.M.</td><td>Physics</td><td><span class="badge badge-blue">Primary</span></td><td class="num">14</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Physics" data-type="Further"><td><a onclick="openModal('modal-resource-detail')">Introduction to Quantum Mechanics</a></td><td style="color:var(--ink3)">Griffiths, D.J.</td><td>Physics</td><td><span class="badge badge-green">Further</span></td><td class="num">18</td><td class="num" style="color:var(--red);font-weight:600">3</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Physics" data-type="Disputed"><td><a onclick="openModal('modal-resource-detail')">Quantum Theory</a></td><td style="color:var(--ink3)">Bohm, D.</td><td>Physics</td><td><span class="badge badge-amber">Disputed</span></td><td class="num">6</td><td class="num" style="color:var(--red);font-weight:600">5</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Physics" data-type="Supplemental"><td><a onclick="openModal('modal-resource-detail')">The Road to Reality</a></td><td style="color:var(--ink3)">Penrose, R.</td><td>Physics</td><td><span class="badge badge-gray">Supplemental</span></td><td class="num">9</td><td class="num">1</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Physics" data-type="Further"><td><a onclick="openModal('modal-resource-detail')">Modern Quantum Mechanics</a></td><td style="color:var(--ink3)">Sakurai, J.J.</td><td>Physics</td><td><span class="badge badge-green">Further</span></td><td class="num">11</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Biology" data-type="Primary"><td><a onclick="openModal('modal-resource-detail')">Molecular Biology of the Cell</a></td><td style="color:var(--ink3)">Alberts et al.</td><td>Biology</td><td><span class="badge badge-blue">Primary</span></td><td class="num">22</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Biology" data-type="Further"><td><a onclick="openModal('modal-resource-detail')">The Selfish Gene</a></td><td style="color:var(--ink3)">Dawkins, R.</td><td>Biology</td><td><span class="badge badge-green">Further</span></td><td class="num">7</td><td class="num" style="color:var(--red);font-weight:600">2</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Chemistry" data-type="Primary"><td><a onclick="openModal('modal-resource-detail')">Organic Chemistry</a></td><td style="color:var(--ink3)">Clayden et al.</td><td>Chemistry</td><td><span class="badge badge-blue">Primary</span></td><td class="num">16</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-        <tr data-subject="Mathematics" data-type="Primary"><td><a onclick="openModal('modal-resource-detail')">Principles of Mathematical Analysis</a></td><td style="color:var(--ink3)">Rudin, W.</td><td>Mathematics</td><td><span class="badge badge-blue">Primary</span></td><td class="num">19</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
-      </tbody></table>
+      <table class="dash-table" id="res-table">
+        <thead>
+          <tr>
+            <th style="width:28px"><input type="checkbox" onclick="toggleAllRes(this)" title="Select all"/></th>
+            <th>Title</th><th>Author(s)</th><th>Subject</th>
+            <th>Type</th><th>Audience</th>
+            <th class="num">Trees</th><th class="num">Disputes</th><th></th>
+          </tr>
+        </thead>
+        <tbody id="res-tbody">
+          <!-- ── PHYSICS ── -->
+          <tr data-subject="Physics" data-type="Primary" data-role="Graduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Principles of Quantum Mechanics</a></td><td style="color:var(--ink3)">Dirac, P.A.M.</td><td>Physics</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Graduate</span></td><td class="num">14</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Physics" data-type="Further" data-role="Undergraduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Introduction to Quantum Mechanics</a></td><td style="color:var(--ink3)">Griffiths, D.J.</td><td>Physics</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Undergraduate</span></td><td class="num">18</td><td class="num" style="color:var(--red);font-weight:600">3</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Physics" data-type="Disputed" data-role="Graduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Quantum Theory</a></td><td style="color:var(--ink3)">Bohm, D.</td><td>Physics</td><td><span class="badge badge-amber">Disputed</span></td><td><span class="badge badge-gray">Graduate</span></td><td class="num">6</td><td class="num" style="color:var(--red);font-weight:600">5</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Physics" data-type="Supplemental" data-role="General public"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Road to Reality</a></td><td style="color:var(--ink3)">Penrose, R.</td><td>Physics</td><td><span class="badge badge-gray">Supplemental</span></td><td><span class="badge badge-gray">General public</span></td><td class="num">9</td><td class="num">1</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Physics" data-type="Further" data-role="Graduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Modern Quantum Mechanics</a></td><td style="color:var(--ink3)">Sakurai, J.J.</td><td>Physics</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Graduate</span></td><td class="num">11</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Physics" data-type="Primary" data-role="Researcher"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Classical Electrodynamics</a></td><td style="color:var(--ink3)">Jackson, J.D.</td><td>Physics</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Researcher</span></td><td class="num">8</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Physics" data-type="Further" data-role="Educator"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Feynman Lectures on Physics</a></td><td style="color:var(--ink3)">Feynman, R.P. et al.</td><td>Physics</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Educator</span></td><td class="num">31</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Physics" data-type="Supplemental" data-role="General public"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">A Brief History of Time</a></td><td style="color:var(--ink3)">Hawking, S.</td><td>Physics</td><td><span class="badge badge-gray">Supplemental</span></td><td><span class="badge badge-gray">General public</span></td><td class="num">4</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <!-- ── BIOLOGY ── -->
+          <tr data-subject="Biology" data-type="Primary" data-role="Undergraduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Molecular Biology of the Cell</a></td><td style="color:var(--ink3)">Alberts et al.</td><td>Biology</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Undergraduate</span></td><td class="num">22</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Biology" data-type="Further" data-role="General public"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Selfish Gene</a></td><td style="color:var(--ink3)">Dawkins, R.</td><td>Biology</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">General public</span></td><td class="num">7</td><td class="num" style="color:var(--red);font-weight:600">2</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Biology" data-type="Primary" data-role="Researcher"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Bioinformatics Algorithms</a></td><td style="color:var(--ink3)">Compeau, P. &amp; Pevzner, P.</td><td>Biology</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Researcher</span></td><td class="num">10</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Biology" data-type="Supplemental" data-role="Practitioner"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">CRISPR-Cas9 Protocol Handbook</a></td><td style="color:var(--ink3)">Addgene</td><td>Biology</td><td><span class="badge badge-gray">Supplemental</span></td><td><span class="badge badge-gray">Practitioner</span></td><td class="num">5</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Biology" data-type="Further" data-role="Educator"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Campbell Biology</a></td><td style="color:var(--ink3)">Urry et al.</td><td>Biology</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Educator</span></td><td class="num">17</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <!-- ── CHEMISTRY ── -->
+          <tr data-subject="Chemistry" data-type="Primary" data-role="Undergraduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Organic Chemistry</a></td><td style="color:var(--ink3)">Clayden et al.</td><td>Chemistry</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Undergraduate</span></td><td class="num">16</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Chemistry" data-type="Primary" data-role="Graduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Physical Chemistry</a></td><td style="color:var(--ink3)">Atkins, P. &amp; de Paula, J.</td><td>Chemistry</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Graduate</span></td><td class="num">12</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Chemistry" data-type="Supplemental" data-role="Practitioner"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">NIST Chemistry WebBook</a></td><td style="color:var(--ink3)">NIST</td><td>Chemistry</td><td><span class="badge badge-gray">Supplemental</span></td><td><span class="badge badge-gray">Practitioner</span></td><td class="num">24</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <!-- ── MATHEMATICS ── -->
+          <tr data-subject="Mathematics" data-type="Primary" data-role="Graduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Principles of Mathematical Analysis</a></td><td style="color:var(--ink3)">Rudin, W.</td><td>Mathematics</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Graduate</span></td><td class="num">19</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Mathematics" data-type="Further" data-role="Undergraduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Linear Algebra Done Right</a></td><td style="color:var(--ink3)">Axler, S.</td><td>Mathematics</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Undergraduate</span></td><td class="num">14</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Mathematics" data-type="Primary" data-role="Researcher"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Abstract Algebra</a></td><td style="color:var(--ink3)">Dummit, D. &amp; Foote, R.</td><td>Mathematics</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Researcher</span></td><td class="num">9</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Mathematics" data-type="Supplemental" data-role="Educator"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Art of Problem Solving</a></td><td style="color:var(--ink3)">Rusczyk, R. et al.</td><td>Mathematics</td><td><span class="badge badge-gray">Supplemental</span></td><td><span class="badge badge-gray">Educator</span></td><td class="num">6</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <!-- ── NEUROSCIENCE ── -->
+          <tr data-subject="Neuroscience" data-type="Primary" data-role="Graduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Principles of Neural Science</a></td><td style="color:var(--ink3)">Kandel, E. et al.</td><td>Neuroscience</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Graduate</span></td><td class="num">18</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Neuroscience" data-type="Further" data-role="Practitioner"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Brain from Inside Out</a></td><td style="color:var(--ink3)">Buzsáki, G.</td><td>Neuroscience</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Practitioner</span></td><td class="num">4</td><td class="num">1</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Neuroscience" data-type="Supplemental" data-role="General public"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Tell-Tale Brain</a></td><td style="color:var(--ink3)">Ramachandran, V.S.</td><td>Neuroscience</td><td><span class="badge badge-gray">Supplemental</span></td><td><span class="badge badge-gray">General public</span></td><td class="num">3</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <!-- ── COMPUTER SCIENCE ── -->
+          <tr data-subject="Computer Science" data-type="Primary" data-role="Undergraduate"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Introduction to Algorithms (CLRS)</a></td><td style="color:var(--ink3)">Cormen et al.</td><td>Computer Science</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Undergraduate</span></td><td class="num">26</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Computer Science" data-type="Further" data-role="Practitioner"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Pragmatic Programmer</a></td><td style="color:var(--ink3)">Hunt, A. &amp; Thomas, D.</td><td>Computer Science</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Practitioner</span></td><td class="num">8</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="Computer Science" data-type="Primary" data-role="Researcher"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">Deep Learning</a></td><td style="color:var(--ink3)">Goodfellow, I. et al.</td><td>Computer Science</td><td><span class="badge badge-blue">Primary</span></td><td><span class="badge badge-gray">Researcher</span></td><td class="num">15</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <!-- ── HISTORY & PHILOSOPHY ── -->
+          <tr data-subject="History &amp; Philosophy of Science" data-type="Further" data-role="Educator"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Structure of Scientific Revolutions</a></td><td style="color:var(--ink3)">Kuhn, T.S.</td><td>History &amp; Philosophy</td><td><span class="badge badge-green">Further</span></td><td><span class="badge badge-gray">Educator</span></td><td class="num">11</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+          <tr data-subject="History &amp; Philosophy of Science" data-type="Supplemental" data-role="General public"><td><input type="checkbox"/></td><td><a onclick="openModal('modal-resource-detail')">The Demon-Haunted World</a></td><td style="color:var(--ink3)">Sagan, C.</td><td>History &amp; Philosophy</td><td><span class="badge badge-gray">Supplemental</span></td><td><span class="badge badge-gray">General public</span></td><td class="num">7</td><td class="num">0</td><td><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-add-resource')">Edit</button></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <!-- Bulk action bar (appears when rows selected) -->
+    <div id="res-bulk-bar" style="display:none;padding:10px 16px;background:var(--blue-bg);border-top:1px solid var(--blue-lt);display:none;align-items:center;gap:10px">
+      <span style="font-size:12px;font-weight:500;color:var(--blue2)" id="res-selected-count">0 selected</span>
+      <button class="tb-btn" style="font-size:11px;padding:3px 10px" onclick="showToast('Classification updated','','green')">Reclassify</button>
+      <button class="tb-btn" style="font-size:11px;padding:3px 10px" onclick="showToast('Audience tags updated','','green')">Set audience</button>
+      <button class="tb-btn" style="font-size:11px;padding:3px 10px" onclick="showToast('Export ready','','green')">Export selected</button>
+      <button class="tb-btn danger" style="font-size:11px;padding:3px 10px;margin-left:auto" onclick="showToast('Resources removed','','red')">Remove</button>
     </div>
   </div>
 </div>
@@ -623,12 +894,12 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
     <div class="card">
       <div class="card-head"><div class="card-title">Users</div><span style="font-size:11.5px;color:var(--ink3)" id="user-count">6,210 total</span></div>
       <div class="card-body" style="padding:0 16px" id="user-list">
-        <div class="user-row" data-role="superadmin"><div class="user-avi" style="background:#1a3a5c">AD</div><div class="user-info"><div class="user-name">Admin Director</div><div class="user-sub">admin@hivemind.org · Joined Jan 2024 · Last seen today</div></div><span class="badge badge-red">Super admin</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#2a4b8d">QF</div><div class="user-info"><div class="user-name">quantumfox</div><div class="user-sub">qfox@example.com · Physics editor · 84 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#1a4a2a">SR</div><div class="user-info"><div class="user-name">sara_r</div><div class="user-sub">sara@example.com · Physics editor · 61 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#7c3aed">NX</div><div class="user-info"><div class="user-name">neuro_x</div><div class="user-sub">neurox@example.com · Biology / Neuroscience · 47 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#b45309">LW</div><div class="user-info"><div class="user-name">lena_w</div><div class="user-sub">lena@example.com · Neuroscience editor · 39 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="contributor"><div class="user-avi" style="background:#166534">AS</div><div class="user-info"><div class="user-name">anil_s</div><div class="user-sub">anil@example.com · Math / Physics · 28 edits</div></div><span class="badge badge-green">Contributor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button><button class="tb-btn" style="padding:3px 9px;font-size:11px;color:var(--green)" onclick="showToast('Promoted to editor','','green')">Promote</button></div></div>
+        <div class="user-row" data-role="superadmin"><div class="user-avi" style="background:#1a3a5c">AD</div><div class="user-info"><div class="user-name">Admin Director</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1d7c797074735d75746b787074737933726f7a">[email&#160;protected]</a> · Joined Jan 2024 · Last seen today</div></div><span class="badge badge-red">Super admin</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#2a4b8d">QF</div><div class="user-info"><div class="user-name">quantumfox</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d3c2b22350d28352c203d2128632e2220">[email&#160;protected]</a> · Physics editor · 84 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#1a4a2a">SR</div><div class="user-info"><div class="user-name">sara_r</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8bf8eaf9eacbeef3eae6fbe7eea5e8e4e6">[email&#160;protected]</a> · Physics editor · 61 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#7c3aed">NX</div><div class="user-info"><div class="user-name">neuro_x</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="08666d7d7a6770486d70696578646d266b6765">[email&#160;protected]</a> · Biology / Neuroscience · 47 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#b45309">LW</div><div class="user-info"><div class="user-name">lena_w</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="98f4fdf6f9d8fde0f9f5e8f4fdb6fbf7f5">[email&#160;protected]</a> · Neuroscience editor · 39 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="contributor"><div class="user-avi" style="background:#166534">AS</div><div class="user-info"><div class="user-name">anil_s</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7c1d1215103c19041d110c1019521f1311">[email&#160;protected]</a> · Math / Physics · 28 edits</div></div><span class="badge badge-green">Contributor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button><button class="tb-btn" style="padding:3px 9px;font-size:11px;color:var(--green)" onclick="showToast('Promoted to editor','','green')">Promote</button></div></div>
         <div class="user-row" data-role="suspended"><div class="user-avi" style="background:#6b7280">A4</div><div class="user-info"><div class="user-name">anon_42</div><div class="user-sub">IP: 192.168.x.x · 2 contributions · 3 spam reports</div></div><span class="badge badge-red">Suspended</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px;color:var(--green)" onclick="showToast('Account reinstated','','green')">Reinstate</button><button class="tb-btn danger" style="padding:3px 9px;font-size:11px" onclick="showToast('User permanently banned','','red')">Ban</button></div></div>
       </div>
     </div>
@@ -1134,7 +1405,7 @@ USA</textarea></div>
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-head"><span class="modal-title">Edit user — quantumfox</span><button class="modal-close" onclick="closeModal('modal-user-edit')">×</button></div>
     <div class="modal-body">
-      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#2a4b8d;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff">QF</div><div><div style="font-size:13px;font-weight:500;color:var(--ink)">quantumfox</div><div style="font-size:11.5px;color:var(--ink3)">qfox@example.com · Joined Feb 2025 · 84 edits</div></div></div>
+      <div style="display:flex;align-items:center;gap:12px;padding:12px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:40px;height:40px;border-radius:50%;background:#2a4b8d;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:#fff">QF</div><div><div style="font-size:13px;font-weight:500;color:var(--ink)">quantumfox</div><div style="font-size:11.5px;color:var(--ink3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d3c2b22350d28352c203d2128632e2220">[email&#160;protected]</a> · Joined Feb 2025 · 84 edits</div></div></div>
       <div class="form-grid"><div class="form-field"><label>Display name</label><input class="form-input" value="quantumfox"/></div><div class="form-field"><label>Role</label><select class="form-select"><option>Reader</option><option>Contributor</option><option selected>Editor</option><option>Admin</option></select></div></div>
       <div class="form-field"><label>Subject specialisations</label><input class="form-input" value="Physics, Quantum mechanics"/></div>
       <div class="form-field"><label>ORCID iD</label><input class="form-input" value="0000-0001-2345-6789" style="font-family:monospace;font-size:12px"/></div>
@@ -1227,7 +1498,7 @@ USA</textarea></div>
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-head"><span class="modal-title">Account settings</span><button class="modal-close" onclick="closeModal('modal-profile')">×</button></div>
     <div class="modal-body">
-      <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:48px;height:48px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff">AD</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)">Admin Director</div><div style="font-size:12px;color:var(--ink3)">admin@hivemind.org · Super administrator</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:48px;height:48px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff">AD</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)">Admin Director</div><div style="font-size:12px;color:var(--ink3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3051545d595e70585946555d595e541e5f4257">[email&#160;protected]</a> · Super administrator</div></div></div>
       <div class="form-grid"><div class="form-field"><label>Display name</label><input class="form-input" value="Admin Director"/></div><div class="form-field"><label>Email</label><input class="form-input" value="admin@hivemind.org"/></div></div>
       <div class="form-field"><label>ORCID iD</label><input class="form-input" value="0000-0000-0000-0000" style="font-family:monospace;font-size:12px"/></div>
       <div class="form-field"><label>New password</label><input class="form-input" type="password" placeholder="Leave blank to keep current"/></div>
@@ -1261,11 +1532,24 @@ USA</textarea></div>
 </div>
 
 <!-- JAVASCRIPT -->
-<script>
+<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
 'use strict';
 var PAGE_TITLES={overview:'Overview',analytics:'Analytics',pipeline:'Content pipeline',moderation:'Moderation queue',resources:'Resource library',users:'Users & roles',discussions:'Discussions',finance:'Finance & donations',settings:'Settings'};
 var PAGE_ACTIONS={overview:'+ New article',analytics:'Export report',pipeline:'+ New article',moderation:'Bulk approve',resources:'+ Add resource',users:'Invite user',discussions:'+ New topic',finance:'Record donation',settings:'Save settings'};
 
+// ── MOB NAV ── defined first because navigate() calls closeMobNav()
+var ham=document.getElementById('ham'),mobnav=document.getElementById('mob-nav'),backdrop=document.getElementById('mob-nav-backdrop');
+function closeMobNav(){
+  if(mobnav)mobnav.classList.remove('open');
+  if(backdrop)backdrop.classList.remove('open');
+  if(ham)ham.classList.remove('open');
+}
+if(ham&&mobnav)ham.addEventListener('click',function(){
+  var opening=!mobnav.classList.contains('open');
+  mobnav.classList.toggle('open',opening);
+  if(backdrop)backdrop.classList.toggle('open',opening);
+  ham.classList.toggle('open',opening);
+});
 function navigate(pgId){
   document.querySelectorAll('.pg').forEach(function(p){p.classList.remove('on')});
   document.querySelectorAll('.sbn').forEach(function(n){n.classList.remove('on')});
@@ -1273,8 +1557,7 @@ function navigate(pgId){
   document.querySelectorAll('.sbn[data-pg="'+pgId+'"]').forEach(function(n){n.classList.add('on')});
   var tt=document.getElementById('topbar-title');if(tt)tt.textContent=PAGE_TITLES[pgId]||pgId;
   var ta=document.getElementById('topbar-action');if(ta)ta.textContent=PAGE_ACTIONS[pgId]||'Action';
-  var mn=document.getElementById('mob-nav');if(mn)mn.classList.remove('open');
-  var h=document.getElementById('ham');if(h)h.classList.remove('open');
+  closeMobNav();
 }
 function navigateSpg(spgId){
   document.querySelectorAll('.spg').forEach(function(p){p.classList.remove('on')});
@@ -1297,8 +1580,7 @@ function handleTopAction(){
   var map={overview:'modal-new-article',pipeline:'modal-new-article',resources:'modal-add-resource',users:'modal-invite',discussions:'modal-new-discussion',finance:'modal-donation'};
   if(map[pgId])openModal(map[pgId]);else showToast('Action triggered for '+PAGE_TITLES[pgId]);
 }
-var ham=document.getElementById('ham'),mobnav=document.getElementById('mob-nav');
-if(ham&&mobnav)ham.addEventListener('click',function(){ham.classList.toggle('open');mobnav.classList.toggle('open')});
+// ham wiring is above, near navigate()
 document.querySelectorAll('.tog').forEach(function(t){
   t.addEventListener('click',function(){t.classList.toggle('on');showToast(t.classList.contains('on')?'Setting enabled':'Setting disabled')});
 });
@@ -1353,36 +1635,142 @@ function filterUsers(q){
   q=q.toLowerCase();
   document.querySelectorAll('#user-list .user-row').forEach(function(row){row.style.display=row.textContent.toLowerCase().includes(q)?'':'none'});
 }
+var _resAudience='';
+function setResAudience(btn,audience){
+  _resAudience=audience;
+  document.querySelectorAll('#res-audience-strip .uf').forEach(function(x){x.classList.remove('on')});
+  if(btn)btn.classList.add('on');
+  // Sync the role select dropdown
+  var sel=document.getElementById('res-role');
+  if(sel)sel.value=audience;
+  filterResources();
+}
 function filterResources(){
   var q=(document.getElementById('res-search')||{}).value||'';
   var subj=(document.getElementById('res-subject')||{}).value||'';
   var type=(document.getElementById('res-type')||{}).value||'';
+  var role=(document.getElementById('res-role')||{}).value||_resAudience||'';
   var rows=document.querySelectorAll('#res-tbody tr'),v=0;
   rows.forEach(function(row){
-    var show=row.textContent.toLowerCase().includes(q.toLowerCase())&&(!subj||row.getAttribute('data-subject')===subj)&&(!type||row.getAttribute('data-type')===type);
+    var text=row.textContent.toLowerCase();
+    var ds=row.getAttribute('data-subject')||'';
+    var dt=row.getAttribute('data-type')||'';
+    var dr=row.getAttribute('data-role')||'';
+    var show=text.includes(q.toLowerCase())
+      &&(!subj||ds===subj)
+      &&(!type||dt===type)
+      &&(!role||dr===role);
     row.style.display=show?'':'none';if(show)v++;
   });
-  var c=document.getElementById('res-count');if(c)c.textContent=v+(v===1?' resource':' resources')+(q||subj||type?' (filtered)':'');
+  var c=document.getElementById('res-count');
+  if(c)c.textContent=v+(v===1?' resource':' resources')+(q||subj||type||role?' (filtered)':'');
 }
+function toggleAllRes(masterCb){
+  document.querySelectorAll('#res-tbody input[type=checkbox]').forEach(function(cb){
+    cb.checked=masterCb.checked;
+  });
+  updateResBulkBar();
+}
+function updateResBulkBar(){
+  var checked=document.querySelectorAll('#res-tbody input[type=checkbox]:checked').length;
+  var bar=document.getElementById('res-bulk-bar');
+  var cnt=document.getElementById('res-selected-count');
+  if(bar){bar.style.display=checked>0?'flex':'none';}
+  if(cnt)cnt.textContent=checked+' selected';
+}
+// Wire row checkboxes to bulk bar
+document.addEventListener('change',function(e){
+  if(e.target.closest('#res-tbody'))updateResBulkBar();
+});
 function filterDisc(btn,type){
   document.querySelectorAll('#pg-discussions .uf').forEach(function(x){x.classList.remove('on')});btn.classList.add('on');
   document.querySelectorAll('#disc-list .disc-row').forEach(function(row){row.style.display=(type==='all'||row.getAttribute('data-type')===type)?'':'none'});
 }
-document.querySelectorAll('.vbtn').forEach(function(b){
-  b.addEventListener('click',function(){
-    document.querySelectorAll('.vbtn').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
-    var mode=b.getAttribute('data-mode');
-    var fw=document.getElementById('fw'),fi=document.getElementById('fi'),vi=document.getElementById('vinfo');
-    if(mode==='desktop'){fw.style.maxWidth='100%';fi.className='fi';if(vi)vi.textContent='Full width'}
-    else if(mode==='tablet'){fw.style.maxWidth='768px';fi.className='fi is-tablet';if(vi)vi.textContent='768px — stacked layout, hamburger nav'}
-    else{fw.style.maxWidth='390px';fi.className='fi is-mobile';if(vi)vi.textContent='390px — single column, mobile nav'}
-    var mn=document.getElementById('mob-nav');if(mn)mn.classList.remove('open');
-    var h=document.getElementById('ham');if(h)h.classList.remove('open');
+// ── VIEWPORT SIMULATOR ──
+// On real mobile/tablet devices: hide the simulator bar entirely and apply
+// the correct layout class automatically based on actual screen width.
+// On desktop: show the simulator bar and let the user switch modes manually.
+function applyViewportMode(mode, updateButtons) {
+  var fw = document.getElementById('fw');
+  var fi = document.getElementById('fi');
+  var vi = document.getElementById('vinfo');
+  var mn = document.getElementById('mob-nav');
+  var h  = document.getElementById('ham');
+  if (mn) mn.classList.remove('open');
+  if (h)  h.classList.remove('open');
+  closeMobNav();
+  if (updateButtons) {
+    document.querySelectorAll('.vbtn').forEach(function(x){ x.classList.remove('on'); });
+    var activeBtn = document.querySelector('.vbtn[data-mode="' + mode + '"]');
+    if (activeBtn) activeBtn.classList.add('on');
+  }
+  if (mode === 'desktop') {
+    if (fw) fw.style.maxWidth = '';
+    if (fi) fi.className = 'fi';
+    if (vi) vi.textContent = 'Full width';
+  } else if (mode === 'tablet') {
+    if (fw) fw.style.maxWidth = '768px';
+    if (fi) fi.className = 'fi is-tablet';
+    if (vi) vi.textContent = '768px — stacked layout, hamburger nav';
+  } else {
+    if (fw) fw.style.maxWidth = '390px';
+    if (fi) fi.className = 'fi is-mobile';
+    if (vi) vi.textContent = '390px — single column, mobile nav';
+  }
+}
+
+// Wire simulator buttons (desktop only)
+document.querySelectorAll('.vbtn').forEach(function(b) {
+  b.addEventListener('click', function() {
+    applyViewportMode(b.getAttribute('data-mode'), true);
   });
 });
-document.getElementById('global-search').addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&this.value.trim()){showToast('Searching for "'+this.value+'"…');this.value=''}
+
+// Detect real device on load — hide simulator and lock layout if on actual mobile/tablet
+(function detectDevice() {
+  var vsim = document.querySelector('.vsim');
+  // Use both screen width and touch capability as signals
+  var isRealTouch = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+  var screenW = window.screen.width;
+  var viewW   = window.innerWidth;
+  var isMobileDevice  = isRealTouch && screenW <= 430;
+  var isTabletDevice  = isRealTouch && screenW > 430 && screenW <= 1024;
+
+  if (isMobileDevice || isTabletDevice) {
+    // Hide the simulator — it's not relevant on a real device
+    if (vsim) vsim.style.display = 'none';
+    // Remove the bottom padding reserved for the vsim bar
+    var fi = document.getElementById('fi');
+    if (fi) fi.style.paddingBottom = '0';
+    // Apply the correct responsive layout class
+    if (viewW <= 480 || isMobileDevice) {
+      applyViewportMode('mobile', false);
+    } else {
+      applyViewportMode('tablet', false);
+    }
+  }
+  // Orientation / resize — only act on real touch devices
+  window.addEventListener('resize', function() {
+    var isTouch = ('ontouchstart' in window || navigator.maxTouchPoints > 0);
+    if (!isTouch) return;
+    var w = window.innerWidth;
+    if (w <= 480) {
+      applyViewportMode('mobile', false);
+    } else if (w <= 1024) {
+      applyViewportMode('tablet', false);
+    } else {
+      applyViewportMode('desktop', false);
+    }
+  });
+})();
+
+document.getElementById('global-search').addEventListener('keydown', function(e) {
+  if (e.key === 'Enter' && this.value.trim()) {
+    showToast('Searching for "' + this.value + '"…');
+    this.value = '';
+  }
 });
+
 navigate('overview');
 navigateSpg('general');
 </script>
