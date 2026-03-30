@@ -1,0 +1,1191 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --ink:#202122;--ink2:#54595d;--ink3:#72777d;--ink4:#a2a9b1;
+  --paper:#fff;--paper2:#f8f9fa;--paper3:#eaecf0;
+  --rule:#a2a9b1;--rule2:#c8ccd1;--rule3:#eaecf0;
+  --blue:#3366cc;--blue2:#2a4b8d;--blue3:#eaf3fb;
+  --accent:#1a3a5c;
+  --serif:Georgia,'Linux Libertine',serif;
+  --sans:var(--font-sans,'Helvetica Neue',Helvetica,sans-serif);
+  --fs:14px;--lh:1.8;
+}
+body{font-family:var(--sans);background:transparent;color:var(--ink);font-size:var(--fs)}
+
+/* themes */
+.theme-standard{--paper:#fff;--paper2:#f8f9fa;--paper3:#eaecf0;--ink:#202122;--blue:#3366cc}
+.theme-dark{--paper:#1e1e1e;--paper2:#2a2a2a;--paper3:#333;--ink:#e8e6e0;--rule:#555;--rule2:#666;--rule3:#3a3a3a;--blue:#6699ff}
+.theme-hivemind{--paper:#fafaf8;--paper2:#f3f2ef;--paper3:#e8e6e0;--ink:#1a1a1a;--blue:#1a3a5c;--rule:#dddbd5;--rule2:#c8c5bc;--rule3:#e8e6e0}
+
+/* ── SIM BAR ── */
+.sim-bar{background:var(--paper3);border-bottom:1px solid var(--rule2);padding:7px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.sim-lbl{font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.sb{padding:3px 10px;font-size:12px;border:1px solid var(--rule2);border-radius:2px;cursor:pointer;background:var(--paper);color:var(--ink2);font-family:var(--sans)}
+.sb.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.pg-btns{display:flex;gap:5px;flex-wrap:wrap;padding:5px 12px;background:var(--paper2);border-bottom:1px solid var(--rule3)}
+.pb{padding:3px 10px;font-size:12px;border:1px solid var(--rule2);border-radius:2px;cursor:pointer;background:var(--paper);color:var(--blue);font-family:var(--sans)}
+.pb.on{background:var(--blue);color:#fff;border-color:var(--blue)}
+.frame-wrap{overflow:hidden;transition:max-width .22s;margin:0 auto}
+.frame-inner{width:100%;min-width:280px;background:var(--paper)}
+
+/* ── GLOBAL NAV ── */
+.gnav{background:var(--paper2);border-bottom:1px solid var(--rule)}
+.gnav-inner{display:flex;align-items:center;height:46px;padding:0 14px;max-width:1200px;margin:0 auto;gap:0}
+.glogo{display:flex;align-items:center;gap:9px;margin-right:22px;cursor:pointer}
+.gball{width:28px;height:28px;border-radius:50%;border:1px solid var(--rule2);background:var(--paper);display:grid;place-items:center}
+.ghex{width:16px;height:16px;border-radius:50%;border:1.5px solid var(--blue);position:relative}
+.ghex::before{content:'';position:absolute;top:50%;left:-2px;right:-2px;height:1px;background:var(--blue)}
+.ghex::after{content:'';position:absolute;top:-2px;bottom:-2px;left:50%;width:1px;background:var(--blue)}
+.gsite-name{font-size:15px;font-weight:500;color:var(--ink)}
+.gsite-tag{font-size:10px;color:var(--ink3);display:block;margin-top:-1px}
+.gnl-row{display:flex;flex:1;gap:0}
+.gnl{padding:0 10px;height:46px;display:flex;align-items:center;font-size:13px;color:var(--blue);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.gnl:hover{background:var(--paper3)}
+.gnl.on{border-bottom-color:var(--blue);color:var(--ink);font-weight:500}
+.gnav-right{display:flex;gap:7px;align-items:center;margin-left:auto}
+.gnb{padding:4px 12px;font-size:12px;border-radius:2px;cursor:pointer;border:none;font-family:var(--sans)}
+.gnb.out{border:1px solid var(--rule2);background:transparent;color:var(--ink2)}
+.gnb.out:hover{background:var(--paper3)}
+.gnb.sol{background:var(--blue);color:#fff}
+.ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:7px;margin-left:auto}
+.ham span{display:block;width:18px;height:2px;background:var(--ink2);border-radius:1px;transition:all .18s}
+.ham.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.mob-menu{display:none;flex-direction:column;background:var(--paper2);border-bottom:1px solid var(--rule)}
+.mob-menu.open{display:flex}
+.mml{display:block;padding:10px 16px;font-size:14px;color:var(--blue);cursor:pointer;border-bottom:1px solid var(--rule3)}
+.mml:hover{background:var(--paper3)}
+.mml.on{font-weight:500;color:var(--ink)}
+.mob-auth-row{display:flex;gap:7px;padding:10px 16px}
+
+/* search bar */
+.search-bar{background:var(--paper2);border-bottom:1px solid var(--rule3);padding:6px 14px;display:flex;align-items:center;gap:8px}
+.search-wrap{display:flex;border:1px solid var(--rule2);background:var(--paper);max-width:500px;flex:1}
+.si{flex:1;padding:5px 9px;font-size:13px;border:none;outline:none;color:var(--ink);font-family:var(--sans);background:transparent;min-width:0}
+.sgb{padding:5px 14px;background:var(--blue);color:#fff;border:none;font-size:12px;cursor:pointer;font-family:var(--sans);white-space:nowrap}
+
+/* PAGES */
+.page{display:none}.page.on{display:block}
+
+/* ══════════════════
+   LANDING
+══════════════════ */
+.hero{background:#1a3a5c;padding:48px 18px 38px;text-align:center}
+.hero-eye{font-size:11px;letter-spacing:.13em;color:rgba(255,255,255,.6);text-transform:uppercase;margin-bottom:12px}
+.hero-h1{font-size:34px;font-weight:500;color:#fff;line-height:1.18;font-family:var(--serif);margin-bottom:13px;max-width:560px;margin-left:auto;margin-right:auto}
+.hero-sub{font-size:15px;color:rgba(255,255,255,.75);line-height:1.7;max-width:440px;margin:0 auto 22px}
+.hero-search-wrap{max-width:460px;margin:0 auto 10px;display:flex;border:1.5px solid rgba(255,255,255,.3);border-radius:2px;overflow:hidden;background:rgba(255,255,255,.08)}
+.hero-inp{flex:1;padding:10px 13px;font-size:14px;background:transparent;border:none;outline:none;color:#fff;font-family:var(--sans);min-width:0}
+.hero-inp::placeholder{color:rgba(255,255,255,.5)}
+.hero-sbtn{padding:10px 16px;background:rgba(255,255,255,.18);color:#fff;border:none;border-left:1px solid rgba(255,255,255,.2);font-size:13px;cursor:pointer;white-space:nowrap}
+.hero-hints{display:flex;gap:7px;justify-content:center;flex-wrap:wrap}
+.hero-hint{font-size:12px;color:rgba(255,255,255,.55);cursor:pointer}
+.hero-hint:hover{color:rgba(255,255,255,.85);text-decoration:underline}
+.stats-bar{background:var(--paper2);border-bottom:1px solid var(--rule3);padding:10px 14px;display:flex;justify-content:center;flex-wrap:wrap}
+.stat{padding:5px 18px;border-right:1px solid var(--rule2);text-align:center}
+.stat:last-child{border-right:none}
+.stat-n{font-size:19px;font-weight:500;color:var(--blue);font-family:var(--serif)}
+.stat-l{font-size:11px;color:var(--ink3);margin-top:1px}
+.lbody{max-width:960px;margin:0 auto;padding:28px 14px}
+.sec-hd{display:flex;align-items:baseline;border-bottom:1px solid var(--rule3);padding-bottom:6px;margin-bottom:14px}
+.sec-hd h2{font-size:17px;font-weight:500;color:var(--ink);font-family:var(--serif)}
+.sec-hd a{font-size:13px;color:var(--blue);cursor:pointer;margin-left:auto}
+
+/* Subject grid — wiki card style */
+.subj-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;border:1px solid var(--rule2);margin-bottom:28px;background:var(--rule2)}
+.scard{background:var(--paper);padding:14px 12px;cursor:pointer;transition:background .1s;display:flex;flex-direction:column;gap:6px}
+.scard:hover{background:var(--paper2)}
+.scard-icon-wrap{width:38px;height:38px;border-radius:6px;display:flex;align-items:center;justify-content:center;margin-bottom:2px}
+.scard-name{font-size:13px;font-weight:500;color:var(--blue);cursor:pointer}
+.scard-name:hover{text-decoration:underline}
+.scard-ct{font-size:12px;color:var(--ink3)}
+
+.feat-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:28px}
+.fcard{border:1px solid var(--rule2);background:var(--paper);cursor:pointer;overflow:hidden}
+.fcard:hover{border-color:var(--blue)}
+.fcard-img{height:64px;display:flex;align-items:center;justify-content:center;border-bottom:1px solid var(--rule3)}
+.fcard-body{padding:10px 12px}
+.fcard-tag{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
+.fcard-title{font-size:14px;font-weight:500;color:var(--blue);margin-bottom:3px;font-family:var(--serif);line-height:1.3}
+.fcard-desc{font-size:12px;color:var(--ink2);line-height:1.6;margin-bottom:5px}
+.fcard-meta{font-size:11px;color:var(--ink4)}
+
+.how-box{border:1px solid var(--rule2);background:var(--paper2);padding:20px 22px;margin-bottom:28px}
+.how-title{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:15px;font-family:var(--serif)}
+.how-steps{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
+.how-step{text-align:center}
+.how-num{width:28px;height:28px;border-radius:50%;background:var(--blue);color:#fff;font-size:12px;font-weight:500;display:flex;align-items:center;justify-content:center;margin:0 auto 8px}
+.how-t{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.how-d{font-size:11px;color:var(--ink3);line-height:1.6}
+
+.don-banner{background:#f0e4b8;border:1px solid #c9a93a;padding:10px 16px;font-size:13px;color:#5d4037;display:flex;align-items:center;gap:6px;flex-wrap:wrap;justify-content:center;text-align:center;margin-bottom:0}
+.don-banner a{color:#8b6914;font-weight:500;cursor:pointer;text-decoration:underline}
+
+/* ══════════════════
+   ARTICLE LAYOUT
+══════════════════ */
+.art-outer{display:grid;grid-template-columns:160px minmax(0,1fr) 185px}
+.art-leftnav{border-right:1px solid var(--rule3);background:var(--paper2);padding:10px 0;font-size:12px}
+.aln-h{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);padding:6px 10px 2px}
+.aln-a{display:block;padding:2px 10px;color:var(--blue);cursor:pointer}
+.aln-a:hover{text-decoration:underline}
+.aln-a.cur{font-weight:500;color:var(--ink)}
+.aln-div{height:1px;background:var(--rule3);margin:4px 0}
+.art-main{padding:12px 16px;max-width:100%}
+.art-rail{border-left:1px solid var(--rule3);padding:10px;background:var(--paper2);font-size:12px}
+.art-pg{display:none}.art-pg.on{display:block}
+.art-h1{font-size:26px;font-weight:500;color:var(--ink);font-family:var(--serif);border-bottom:1px solid var(--rule2);padding-bottom:4px;margin-bottom:3px;line-height:1.2}
+.art-from{font-size:11px;color:var(--ink3);margin-bottom:10px}
+.art-acts{display:flex;gap:0;margin-bottom:0;border-bottom:1px solid var(--rule2);margin-bottom:10px}
+.aa{padding:4px 10px;font-size:13px;color:var(--blue);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;background:transparent;border:none;font-family:var(--sans)}
+.aa:hover{background:var(--paper2)}
+.aa.on{border-bottom:2px solid var(--blue);color:var(--ink);font-weight:500;margin-bottom:-1px}
+.art-sep{width:1px;background:var(--rule3);margin:4px 6px}
+.art-notice{background:#fef6e4;border:1px solid #fc3;border-left:3px solid #fc3;padding:7px 10px;font-size:12px;color:#5d4037;margin-bottom:11px}
+.art-notice a{color:var(--blue);cursor:pointer}
+
+/* infobox */
+.ib{float:right;margin:0 0 12px 14px;border:1px solid var(--rule2);width:200px;font-size:11px;background:var(--paper2)}
+.ib-t{background:#cee0f2;text-align:center;font-size:12px;font-weight:500;padding:5px;border-bottom:1px solid var(--rule2);color:var(--ink)}
+.ib-img{border-bottom:1px solid var(--rule3);padding:7px;text-align:center;background:var(--paper)}
+.ib-r{display:flex;border-bottom:0.5px solid var(--rule3)}
+.ib-k{padding:3px 7px;background:var(--paper3);width:70px;flex-shrink:0;color:var(--ink2);font-weight:500}
+.ib-v{padding:3px 7px;color:var(--ink)}
+.ib-v a{color:var(--blue);cursor:pointer}
+
+/* toc */
+.toc{float:left;margin:0 14px 10px 0;border:1px solid var(--rule2);background:var(--paper2);padding:9px 12px;min-width:145px;max-width:210px}
+.toc-t{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:5px;display:flex;justify-content:space-between;font-family:var(--serif)}
+.toc-t span{font-size:11px;color:var(--blue);cursor:pointer;font-weight:400;font-family:var(--sans)}
+.ti{font-size:12px;color:var(--blue);padding:1.5px 0;cursor:pointer}
+.ti:hover{text-decoration:underline}
+.ti.sub{padding-left:12px;font-size:11px}
+.wp{font-size:var(--fs);line-height:var(--lh);color:var(--ink);margin-bottom:9px;font-family:var(--serif)}
+.wp a{color:var(--blue);cursor:pointer}
+.wref{font-size:11px;color:var(--blue);vertical-align:super;cursor:pointer}
+.wh2{font-size:18px;font-weight:500;border-bottom:1px solid var(--rule2);margin:13px 0 7px;padding-bottom:3px;color:var(--ink);font-family:var(--serif)}
+.wh3{font-size:15px;font-weight:500;margin:10px 0 5px;color:var(--ink);font-family:var(--serif)}
+.refs{margin-top:12px;border-top:1px solid var(--rule2);padding-top:8px}
+.refs-t{font-size:15px;font-weight:500;color:var(--ink);margin-bottom:6px;font-family:var(--serif)}
+.ref-i{font-size:12px;color:var(--ink2);padding:2px 0 2px 18px;position:relative;line-height:1.6}
+.ref-n{position:absolute;left:0;color:var(--blue)}
+.cats-row{clear:both;border-top:1px solid var(--rule2);padding:6px 0;margin-top:8px;font-size:12px;background:var(--paper2);padding:5px 8px}
+.cats-row a{color:var(--blue);cursor:pointer}
+
+/* Wikipedia-style navbox (V·T·E) */
+.navbox{border:1px solid var(--rule2);margin-top:12px;font-size:12px;background:var(--paper2);clear:both}
+.navbox-title{background:#cee0f2;text-align:center;padding:4px 8px;font-weight:500;color:var(--ink);display:flex;justify-content:space-between;align-items:center}
+.navbox-vte{font-size:11px;color:var(--blue);display:flex;gap:4px}
+.navbox-vte span{cursor:pointer}
+.navbox-vte span:hover{text-decoration:underline}
+.navbox-row{display:flex;border-top:1px solid var(--rule3)}
+.navbox-head{background:var(--paper3);padding:4px 8px;min-width:90px;font-weight:500;color:var(--ink2);display:flex;align-items:center;border-right:1px solid var(--rule3);font-size:11px}
+.navbox-body{padding:4px 8px;color:var(--ink);flex:1;line-height:1.8}
+.navbox-body a{color:var(--blue);cursor:pointer;margin:0 1px}
+.navbox-sep{color:var(--ink4)}
+
+/* rail blocks */
+.rblock{border:1px solid var(--rule2);margin-bottom:9px;overflow:hidden;background:var(--paper)}
+.rb-t{background:var(--paper3);padding:5px 8px;font-size:12px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--rule3);display:flex;justify-content:space-between}
+.rb-t a{font-size:11px;color:var(--blue);font-weight:400;cursor:pointer}
+.rb-body{padding:7px 8px}
+.rl{display:block;color:var(--blue);padding:2px 0;cursor:pointer;font-size:12px}
+.rl:hover{text-decoration:underline}
+
+/* mobile */
+.mob-art-tabs{display:none;overflow-x:auto;white-space:nowrap;background:var(--paper2);border-bottom:1px solid var(--rule2);padding:0 4px}
+.mat{display:inline-block;padding:9px 12px;font-size:13px;color:var(--blue);cursor:pointer;border-bottom:2px solid transparent}
+.mat.on{color:var(--ink);border-bottom-color:var(--blue);font-weight:500}
+.mob-rail{display:none;border-top:1px solid var(--rule3)}
+.mrl-item{border-bottom:1px solid var(--rule3)}
+.mrl-head{padding:9px 13px;font-size:13px;font-weight:500;color:var(--ink);cursor:pointer;display:flex;justify-content:space-between;background:var(--paper2)}
+.mrl-head::after{content:'▾';font-size:11px;color:var(--ink4)}
+.mrl-body{padding:8px 13px;display:none;font-size:12px}
+.mrl-body.open{display:block}
+
+/* ══════════════════
+   RESOURCE TREE PAGE
+══════════════════ */
+.tree-pg{padding:10px 0}
+.tree-title{font-size:18px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--rule2);padding-bottom:4px;margin-bottom:9px;font-family:var(--serif)}
+.tree-tb{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:8px;align-items:center;font-size:12px}
+.tree-tb span{color:var(--ink3)}
+.tf{padding:2px 9px;border:1px solid var(--rule2);border-radius:2px;font-size:11px;color:var(--blue);cursor:pointer;background:var(--paper2)}
+.tf.on{background:#cee0f2;color:var(--blue2);border-color:var(--rule2);font-weight:500}
+.tree-leg{display:flex;gap:9px;margin-left:auto;font-size:11px;align-items:center;flex-wrap:wrap}
+.tld{width:8px;height:8px;border-radius:50%;flex-shrink:0;display:inline-block}
+.tree-canvas{border:1px solid var(--rule2);background:#f5f4f0;position:relative;min-height:340px;overflow:hidden;cursor:grab;user-select:none}
+.tree-canvas.grabbing{cursor:grabbing}
+.t-svg{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+.bub{position:absolute;border-radius:50%;display:flex;align-items:center;justify-content:center;cursor:pointer;border:2px solid rgba(0,0,0,.1);text-align:center;line-height:1.2;transition:transform .12s}
+.bub:hover{transform:scale(1.14)!important;z-index:10}
+.bub.sel{z-index:10;transform:scale(1.14)!important}
+.bub-lbl{font-size:10px;font-weight:500;padding:0 3px;pointer-events:none}
+.bub-full{font-size:9px;padding:0 4px;pointer-events:none;display:none;color:var(--ink2)}
+
+/* tooltip panel */
+.tree-tooltip{position:absolute;border:1px solid var(--rule2);background:var(--paper);padding:10px 12px;width:200px;font-size:12px;z-index:20;pointer-events:none;display:none}
+.tt-badge{display:inline-block;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:500;margin-bottom:5px}
+.tt-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px;line-height:1.3;font-family:var(--serif)}
+.tt-author{font-size:11px;color:var(--ink3);margin-bottom:5px}
+.tt-desc{font-size:11px;color:var(--ink2);line-height:1.55;margin-bottom:5px}
+.tt-ref{font-size:10px;color:var(--ink4);border-top:1px solid var(--rule3);padding-top:4px;margin-top:4px}
+
+/* further reading section below tree */
+.fr-section{margin-top:14px}
+.fr-h2{font-size:17px;font-weight:500;border-bottom:1px solid var(--rule2);margin-bottom:10px;padding-bottom:3px;color:var(--ink);font-family:var(--serif)}
+.fr-h3{font-size:14px;font-weight:500;color:var(--ink);margin:10px 0 5px;font-family:var(--serif)}
+.fr-list{list-style:disc;padding-left:20px;font-size:13px;line-height:1.8;color:var(--ink)}
+.fr-list li{padding:1px 0}
+.fr-list a{color:var(--blue);cursor:pointer}
+.fr-list .fr-note{color:var(--ink3);font-size:11px}
+
+/* related subjects / portal */
+.related-section{margin-top:14px;clear:both}
+.related-h2{font-size:17px;font-weight:500;border-bottom:1px solid var(--rule2);padding-bottom:3px;margin-bottom:10px;color:var(--ink);font-family:var(--serif)}
+.portal-box{background:var(--paper2);border:1px solid var(--rule2);padding:10px 12px;margin-bottom:10px;display:flex;align-items:flex-start;gap:10px}
+.portal-icon{width:36px;height:36px;border-radius:4px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.portal-text{}
+.portal-title{font-size:13px;font-weight:500;color:var(--blue);cursor:pointer;margin-bottom:2px}
+.portal-title:hover{text-decoration:underline}
+.portal-desc{font-size:12px;color:var(--ink3)}
+.related-links{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px}
+.related-link{padding:3px 10px;border:1px solid var(--rule2);border-radius:2px;font-size:12px;color:var(--blue);cursor:pointer;background:var(--paper)}
+.related-link:hover{background:var(--paper3)}
+
+/* communities */
+.comm-section{margin-top:14px}
+.comm-h2{font-size:17px;font-weight:500;border-bottom:1px solid var(--rule2);padding-bottom:3px;margin-bottom:10px;color:var(--ink);font-family:var(--serif)}
+.comm-card{border:1px solid var(--rule2);padding:9px 12px;margin-bottom:7px;background:var(--paper);display:flex;align-items:center;gap:10px;cursor:pointer}
+.comm-card:hover{border-color:var(--blue)}
+.comm-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.comm-name{font-size:13px;font-weight:500;color:var(--blue);flex:1}
+.comm-name:hover{text-decoration:underline}
+.comm-meta{font-size:11px;color:var(--ink3)}
+
+/* discuss */
+.disc-h1{font-size:18px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--rule2);padding-bottom:4px;margin-bottom:10px;font-family:var(--serif)}
+.disc-notice{background:#dce6f5;border:1px solid #a2a9b1;border-left:3px solid var(--blue);padding:7px 10px;font-size:12px;color:var(--blue2);margin-bottom:10px}
+.thread{border:1px solid var(--rule2);margin-bottom:9px;overflow:hidden}
+.th-head{background:var(--paper3);padding:7px 10px;border-bottom:1px solid var(--rule3);display:flex;justify-content:space-between;align-items:flex-start;gap:7px;flex-wrap:wrap}
+.th-topic{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.th-meta{font-size:11px;color:var(--ink3)}
+.th-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap}
+.th-body{padding:9px 10px}
+.th-reply{display:flex;gap:8px;padding:5px 0;border-bottom:0.5px solid var(--rule3);font-size:12px}
+.th-reply:last-child{border-bottom:none}
+.th-avi{width:22px;height:22px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:500;color:#fff;flex-shrink:0}
+.th-txt{color:var(--ink);line-height:1.65;flex:1}
+.th-user{font-weight:500;color:var(--blue);cursor:pointer}
+.th-time{color:var(--ink4);font-size:10px;margin-left:3px}
+.vote-row{display:flex;gap:6px;align-items:center;margin-top:4px;flex-wrap:wrap}
+.vote{padding:2px 7px;border:1px solid var(--rule2);border-radius:2px;font-size:10px;cursor:pointer;background:var(--paper2);color:var(--ink3)}
+.vote.up{background:#dcedc8;border-color:#aed581;color:#1a4a2a}
+.vote.dn{background:#fce4ec;border-color:#ef9a9a;color:#6b1a1a}
+.replybox{background:var(--paper2);border-top:1px solid var(--rule3);padding:7px 10px}
+.reply-ta{width:100%;height:44px;border:1px solid var(--rule2);padding:5px 8px;font-size:12px;font-family:var(--sans);color:var(--ink);background:var(--paper);resize:none}
+.rfoot{display:flex;justify-content:flex-end;gap:5px;margin-top:4px}
+.rb2{padding:4px 10px;border:1px solid var(--rule2);font-size:12px;cursor:pointer;background:var(--paper2);color:var(--ink2);font-family:var(--sans)}
+.rb2.p{background:var(--blue);color:#fff;border-color:var(--blue)}
+
+/* ══════════════════
+   RESOURCES PAGE
+══════════════════ */
+.res-hero{background:var(--paper2);border-bottom:1px solid var(--rule2);padding:22px 14px 16px}
+.rh-inner{max-width:920px;margin:0 auto}
+.rh-h1{font-size:22px;font-weight:500;color:var(--ink);font-family:var(--serif);margin-bottom:4px}
+.rh-sub{font-size:13px;color:var(--ink3);margin-bottom:11px}
+.rh-search{display:flex;border:1px solid var(--rule2);background:var(--paper);max-width:420px}
+.rh-inp{flex:1;padding:7px 10px;font-size:13px;border:none;outline:none;color:var(--ink);font-family:var(--sans);min-width:0;background:transparent}
+.rh-btn{padding:7px 13px;background:var(--blue);color:#fff;border:none;font-size:12px;cursor:pointer;white-space:nowrap}
+.mob-filter-btn{display:none;width:100%;padding:7px 12px;border:1px solid var(--rule2);font-size:13px;background:var(--paper2);color:var(--ink2);cursor:pointer;margin-bottom:8px;text-align:left;font-family:var(--sans)}
+.res-layout{max-width:920px;margin:0 auto;padding:16px 14px;display:grid;grid-template-columns:180px minmax(0,1fr);gap:16px}
+.r-sec-t{font-size:10px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);margin-bottom:6px;padding-bottom:3px;border-bottom:1px solid var(--rule3)}
+.rf{display:flex;align-items:center;gap:5px;padding:3px 0;font-size:12px;color:var(--ink2);cursor:pointer}
+.rf:hover{color:var(--blue)}
+.rf.on{color:var(--blue);font-weight:500}
+.rf-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.rf-ct{margin-left:auto;font-size:10px;color:var(--ink4)}
+.r-list-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;font-size:12px;color:var(--ink3);flex-wrap:wrap;gap:5px}
+.r-list-hdr select{border:1px solid var(--rule2);padding:3px 7px;font-size:12px;color:var(--ink2);background:var(--paper);font-family:var(--sans)}
+.ritem{border:1px solid var(--rule2);padding:11px 13px;background:var(--paper);margin-bottom:8px;cursor:pointer}
+.ritem:hover{border-color:var(--blue)}
+.ritem-top{display:flex;align-items:flex-start;gap:7px;margin-bottom:4px}
+.rbadge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:500;white-space:nowrap;flex-shrink:0;margin-top:2px}
+.rb-p{background:#dce6f5;color:#0d3a6b}
+.rb-f{background:#dcedc8;color:#1a4a2a}
+.rb-d{background:#fce4ec;color:#6b1a1a}
+.rb-s{background:#fff8e1;color:#6b4a1a}
+.ritem-title{font-size:14px;font-weight:500;color:var(--blue);font-family:var(--serif);line-height:1.3}
+.ritem-author{font-size:12px;color:var(--ink3);margin-bottom:5px}
+.ritem-desc{font-size:12px;color:var(--ink2);line-height:1.6;margin-bottom:6px}
+.ritem-foot{display:flex;gap:5px;align-items:center;flex-wrap:wrap}
+.rtag{font-size:10px;padding:2px 7px;border:1px solid var(--rule2);border-radius:10px;color:var(--ink3)}
+.ritem-acts{margin-left:auto;display:flex;gap:4px;flex-wrap:wrap}
+.ri-btn{padding:3px 8px;border:1px solid var(--rule2);font-size:11px;color:var(--blue);background:var(--paper2);cursor:pointer}
+
+/* ══════════════════
+   ABOUT
+══════════════════ */
+.about-hero{background:var(--paper2);border-bottom:1px solid var(--rule2);padding:36px 18px 24px}
+.ah-inner{max-width:640px;margin:0 auto}
+.ah-h1{font-size:26px;font-weight:500;color:var(--ink);font-family:var(--serif);margin-bottom:10px;line-height:1.25}
+.about-body{max-width:680px;margin:0 auto;padding:24px 14px}
+.a-sec{margin-bottom:24px;padding-bottom:24px;border-bottom:1px solid var(--rule3)}
+.a-sec:last-child{border-bottom:none}
+.a-sec h2{font-size:18px;font-weight:500;color:var(--ink);font-family:var(--serif);margin-bottom:9px}
+.a-sec p{font-size:14px;color:var(--ink2);line-height:1.8;margin-bottom:8px}
+.a-sec a{color:var(--blue);cursor:pointer}
+.p-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.pc{border:1px solid var(--rule2);padding:11px 13px;background:var(--paper)}
+.pc-n{font-size:10px;font-weight:500;letter-spacing:.1em;text-transform:uppercase;color:var(--ink3);margin-bottom:3px}
+.pc-t{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:3px}
+.pc-d{font-size:12px;color:var(--ink3);line-height:1.6}
+.team-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}
+.tc{border:1px solid var(--rule2);padding:11px;background:var(--paper);text-align:center}
+.tc-avi{width:40px;height:40px;border-radius:50%;margin:0 auto 8px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:500;color:#fff}
+.tc-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.tc-role{font-size:11px;color:var(--ink3)}
+
+/* ══════════════════
+   DONATE
+══════════════════ */
+.donate-hero{background:#f0e4b8;border-bottom:1px solid #c9a93a;padding:36px 18px 24px;text-align:center}
+.donate-body{max-width:560px;margin:0 auto;padding:24px 14px}
+.d-card{border:1px solid var(--rule2);padding:22px;background:var(--paper);margin-bottom:16px}
+.amt-grid{display:flex;gap:6px;margin-bottom:10px;flex-wrap:wrap}
+.amt-btn{flex:1;min-width:52px;padding:8px;border:1px solid var(--rule2);font-size:14px;background:var(--paper2);color:var(--ink);cursor:pointer;text-align:center;font-family:var(--sans)}
+.amt-btn.on{border:2px solid var(--blue);background:#e8f0f8;color:var(--blue);font-weight:500}
+.freq-row{display:flex;gap:6px;margin-bottom:10px}
+.freq-btn{flex:1;padding:7px;text-align:center;font-size:13px;cursor:pointer;font-family:var(--sans)}
+.freq-btn.on{border:2px solid var(--blue);background:#e8f0f8;color:var(--blue);font-weight:500}
+.freq-btn:not(.on){border:1px solid var(--rule2);background:var(--paper2);color:var(--ink2)}
+.d-inp{width:100%;padding:8px 10px;border:1px solid var(--rule2);font-size:13px;font-family:var(--sans);color:var(--ink);background:var(--paper);margin-bottom:7px}
+.d-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:7px}
+.don-sub{width:100%;padding:10px;background:var(--blue);color:#fff;border:none;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+
+/* ══════════════════
+   AUTH
+══════════════════ */
+.auth-overlay{min-height:400px;background:rgba(0,0,0,.35);display:flex;align-items:center;justify-content:center;padding:16px}
+.auth-box{background:var(--paper);border:1px solid var(--rule2);width:100%;max-width:360px;padding:22px 20px}
+.auth-logo-name{font-size:18px;font-weight:500;color:var(--ink);font-family:var(--serif);text-align:center;margin-bottom:2px}
+.auth-logo-tag{font-size:11px;color:var(--ink3);text-align:center;margin-bottom:15px}
+.auth-tabs{display:flex;border-bottom:1px solid var(--rule2);margin-bottom:15px}
+.auth-tab{flex:1;padding:7px;text-align:center;font-size:13px;cursor:pointer;border-bottom:2px solid transparent;color:var(--ink3)}
+.auth-tab.on{color:var(--blue);border-bottom-color:var(--blue);font-weight:500}
+.auth-field{margin-bottom:10px}
+.auth-field label{display:block;font-size:12px;color:var(--ink2);margin-bottom:3px;font-weight:500}
+.auth-input{width:100%;padding:7px 9px;border:1px solid var(--rule2);font-size:13px;font-family:var(--sans);color:var(--ink);background:var(--paper)}
+.auth-sub{width:100%;padding:9px;background:var(--blue);color:#fff;border:none;font-size:14px;font-weight:500;cursor:pointer;font-family:var(--sans)}
+.auth-div{text-align:center;font-size:12px;color:var(--ink4);margin:11px 0;position:relative}
+.auth-div::before,.auth-div::after{content:'';position:absolute;top:50%;width:36%;height:1px;background:var(--rule2)}
+.auth-div::before{left:0}.auth-div::after{right:0}
+.auth-soc{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.auth-sbtn{padding:7px;border:1px solid var(--rule2);font-size:12px;cursor:pointer;background:var(--paper2);color:var(--ink2);text-align:center;font-family:var(--sans)}
+.auth-footer{text-align:center;font-size:11px;color:var(--ink3);margin-top:10px}
+.auth-footer a{color:var(--blue);cursor:pointer}
+
+/* ══════════════════
+   APPEARANCE SIDEBAR
+══════════════════ */
+.appear-sidebar{border:1px solid var(--rule2);background:var(--paper2);font-size:12px;overflow:hidden}
+.as-head{background:var(--paper3);padding:6px 10px;border-bottom:1px solid var(--rule2);font-size:13px;font-weight:500;color:var(--ink);display:flex;justify-content:space-between;align-items:center}
+.as-hide{font-size:11px;color:var(--blue);cursor:pointer;font-weight:400}
+.as-body{padding:10px}
+.as-section{margin-bottom:12px;padding-bottom:12px;border-bottom:1px solid var(--rule3)}
+.as-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.as-section-label{font-size:11px;color:var(--ink3);margin-bottom:7px;display:block}
+.as-radio-item{display:flex;align-items:center;gap:7px;padding:3px 0;cursor:pointer;color:var(--ink2)}
+.as-radio-item input[type=radio]{cursor:pointer}
+.as-radio-item.on{color:var(--ink)}
+.as-link{color:var(--blue);cursor:pointer;display:block;font-size:11px;margin-top:4px}
+.as-link:hover{text-decoration:underline}
+.as-slider-wrap{display:flex;align-items:center;gap:8px;margin-top:5px}
+.as-slider-label{font-size:11px;color:var(--ink3);width:32px}
+.as-slider{flex:1;height:3px;border-radius:2px}
+.as-theme-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-top:5px}
+.as-theme-btn{padding:5px 4px;border:1px solid var(--rule2);border-radius:2px;font-size:11px;cursor:pointer;background:var(--paper);color:var(--ink2);text-align:center}
+.as-theme-btn.on{border-color:var(--blue);color:var(--blue);background:#e8f0f8;font-weight:500}
+.as-bg-grid{display:flex;gap:5px;margin-top:5px}
+.as-bg-swatch{width:32px;height:22px;border:1px solid var(--rule2);border-radius:2px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:9px}
+.as-bg-swatch.on{border:2px solid var(--blue)}
+
+/* ══ FOOTER ══ */
+.site-footer{background:var(--paper2);border-top:1px solid var(--rule2);padding:20px 14px}
+.foot-inner{max-width:920px;margin:0 auto;display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.fc-title{font-size:11px;font-weight:500;color:var(--ink);margin-bottom:7px;text-transform:uppercase;letter-spacing:.06em}
+.fc-link{display:block;font-size:12px;color:var(--ink3);padding:2px 0;cursor:pointer}
+.fc-link:hover{color:var(--blue);text-decoration:underline}
+.foot-bottom{max-width:920px;margin:12px auto 0;border-top:1px solid var(--rule3);padding-top:9px;font-size:11px;color:var(--ink4);display:flex;justify-content:space-between;flex-wrap:wrap;gap:4px}
+
+/* ══ RESPONSIVE ══ */
+.is-tablet .gnl-row,.is-tablet .gnav-right{display:none}
+.is-tablet .ham{display:flex}
+.is-tablet .subj-grid{grid-template-columns:repeat(2,1fr)}
+.is-tablet .feat-grid{grid-template-columns:1fr}
+.is-tablet .how-steps{grid-template-columns:repeat(2,1fr)}
+.is-tablet .p-grid{grid-template-columns:1fr}
+.is-tablet .team-grid{grid-template-columns:1fr 1fr}
+.is-tablet .foot-inner{grid-template-columns:1fr 1fr}
+.is-tablet .res-layout{grid-template-columns:1fr}
+.is-tablet .r-sidebar-panel{display:none}
+.is-tablet .r-sidebar-panel.open{display:block}
+.is-tablet .mob-filter-btn{display:block}
+.is-tablet .art-outer{grid-template-columns:1fr}
+.is-tablet .art-leftnav,.is-tablet .art-rail{display:none}
+.is-tablet .mob-art-tabs{display:block}
+.is-tablet .mob-rail{display:block}
+.is-tablet .ib{width:165px}
+.is-tablet .d-row{grid-template-columns:1fr}
+
+.is-mobile .gnl-row,.is-mobile .gnav-right{display:none}
+.is-mobile .ham{display:flex}
+.is-mobile .subj-grid{grid-template-columns:repeat(2,1fr)}
+.is-mobile .feat-grid{grid-template-columns:1fr}
+.is-mobile .how-steps{grid-template-columns:1fr 1fr}
+.is-mobile .p-grid{grid-template-columns:1fr}
+.is-mobile .team-grid{grid-template-columns:1fr}
+.is-mobile .foot-inner{grid-template-columns:1fr 1fr}
+.is-mobile .res-layout{grid-template-columns:1fr}
+.is-mobile .r-sidebar-panel{display:none}
+.is-mobile .r-sidebar-panel.open{display:block}
+.is-mobile .mob-filter-btn{display:block}
+.is-mobile .art-outer{grid-template-columns:1fr}
+.is-mobile .art-leftnav,.is-mobile .art-rail{display:none}
+.is-mobile .mob-art-tabs{display:block}
+.is-mobile .mob-rail{display:block}
+.is-mobile .ib{float:none;width:100%;margin:0 0 10px 0}
+.is-mobile .toc{float:none;width:100%;max-width:100%;margin:0 0 10px 0}
+.is-mobile .hero-h1{font-size:24px}
+.is-mobile .d-row{grid-template-columns:1fr}
+.is-mobile .amt-btn{min-width:calc(50% - 4px)}
+.is-mobile .lbody{padding:16px 12px}
+</style>
+
+<div>
+<!-- SIM BAR -->
+<div class="sim-bar">
+  <span class="sim-lbl">Viewport:</span>
+  <button class="sb on" data-mode="desktop">Desktop</button>
+  <button class="sb" data-mode="tablet">Tablet</button>
+  <button class="sb" data-mode="mobile">Mobile</button>
+  <span style="font-size:11px;color:var(--ink4);margin-left:4px" id="sim-info">Full width</span>
+  <span style="margin-left:auto;font-size:11px;color:var(--ink3)">Theme:</span>
+  <button class="sb on" data-theme="theme-standard">Standard</button>
+  <button class="sb" data-theme="theme-hivemind">Hivemind</button>
+  <button class="sb" data-theme="theme-dark">Dark</button>
+</div>
+<div class="pg-btns">
+  <button class="pb on" data-pg="landing">Home</button>
+  <button class="pb" data-pg="about">About</button>
+  <button class="pb" data-pg="resources">Resources</button>
+  <button class="pb" data-pg="article">Article</button>
+  <button class="pb" data-pg="donate">Donate</button>
+  <button class="pb" data-pg="auth">Log in / Join</button>
+</div>
+
+<div class="frame-wrap" id="frame-wrap">
+<div class="frame-inner theme-standard" id="frame-inner">
+
+<!-- GNAV -->
+<div class="gnav">
+  <div class="gnav-inner">
+    <div class="glogo" data-pg="landing">
+      <div class="gball"><div class="ghex"></div></div>
+      <div><span class="gsite-name">Hivemind</span><span class="gsite-tag">The open science library</span></div>
+    </div>
+    <div class="gnl-row">
+      <span class="gnl on" data-pg="landing">Home</span>
+      <span class="gnl" data-pg="about">About</span>
+      <span class="gnl" data-pg="resources">Resources</span>
+      <span class="gnl" data-pg="article">Read</span>
+      <span class="gnl" data-pg="donate">Donate</span>
+    </div>
+    <div class="gnav-right">
+      <button class="gnb out" data-pg="auth">Log in</button>
+      <button class="gnb sol" data-pg="auth">Join free</button>
+    </div>
+    <div class="ham" id="ham"><span></span><span></span><span></span></div>
+  </div>
+</div>
+<div class="mob-menu" id="mob-menu">
+  <span class="mml on" data-pg="landing">Home</span>
+  <span class="mml" data-pg="about">About</span>
+  <span class="mml" data-pg="resources">Resources</span>
+  <span class="mml" data-pg="article">Read</span>
+  <span class="mml" data-pg="donate">Donate</span>
+  <div class="mob-auth-row" style="gap:7px;padding:10px 16px">
+    <button style="flex:1;padding:7px;border:1px solid var(--rule2);border-radius:2px;font-size:13px;cursor:pointer;background:var(--paper2);color:var(--ink2);font-family:var(--sans)" data-pg="auth">Log in</button>
+    <button style="flex:1;padding:7px;background:var(--blue);color:#fff;border:none;border-radius:2px;font-size:13px;cursor:pointer;font-family:var(--sans);font-weight:500" data-pg="auth">Join free</button>
+  </div>
+</div>
+<div class="don-banner">Hivemind is a nonprofit — no ads, no paywalls. <a data-pg="donate">Support open science</a></div>
+
+<!-- ═══════════ LANDING ═══════════ -->
+<div id="pg-landing" class="page on">
+  <div class="hero">
+    <div class="hero-eye">A nonprofit science library</div>
+    <h1 class="hero-h1">Free knowledge, organized by the people who use it</h1>
+    <p class="hero-sub">Structured articles, community-curated resource trees, and open discussion — for students and researchers.</p>
+    <div class="hero-search-wrap">
+      <input class="hero-inp" placeholder="Search articles, textbooks, researchers…" readonly />
+      <button class="hero-sbtn">Search</button>
+    </div>
+    <div class="hero-hints">
+      <span class="hero-hint" data-pg="article">Quantum mechanics</span>
+      <span style="color:rgba(255,255,255,.3)">·</span>
+      <span class="hero-hint">CRISPR</span>
+      <span style="color:rgba(255,255,255,.3)">·</span>
+      <span class="hero-hint">General relativity</span>
+    </div>
+  </div>
+  <div class="stats-bar">
+    <div class="stat"><div class="stat-n">14,820</div><div class="stat-l">Articles</div></div>
+    <div class="stat"><div class="stat-n">92,400</div><div class="stat-l">Resources indexed</div></div>
+    <div class="stat"><div class="stat-n">6,210</div><div class="stat-l">Contributors</div></div>
+    <div class="stat"><div class="stat-n">100%</div><div class="stat-l">Free, forever</div></div>
+  </div>
+  <div class="lbody">
+    <div class="sec-hd"><h2>Browse by subject</h2><a>View all subjects</a></div>
+
+    <!-- SUBJECT GRID — wiki card style matching screenshot -->
+    <div class="subj-grid" style="border:1px solid var(--rule2);margin-bottom:28px">
+      <div class="scard" data-pg="article" style="border-right:1px solid var(--rule2);border-bottom:1px solid var(--rule2)">
+        <div class="scard-icon-wrap" style="background:#dce6f5">
+          <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="#2a4b8d" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="none" stroke="#2a4b8d" stroke-width="1.5"/><line x1="11" y1="3" x2="11" y2="19" stroke="#2a4b8d" stroke-width="1"/><line x1="3" y1="11" x2="19" y2="11" stroke="#2a4b8d" stroke-width="1"/></svg>
+        </div>
+        <div class="scard-name">Physics</div>
+        <div class="scard-ct">3,410 articles · 24,800 resources</div>
+      </div>
+      <div class="scard" data-pg="article" style="border-right:1px solid var(--rule2);border-bottom:1px solid var(--rule2)">
+        <div class="scard-icon-wrap" style="background:#dcedc8">
+          <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="7" r="3" fill="none" stroke="#2e7d32" stroke-width="1.5"/><path d="M4 19c0-4 3-6 7-6s7 2 7 6" fill="none" stroke="#2e7d32" stroke-width="1.5"/><circle cx="7" cy="13" r="2" fill="none" stroke="#2e7d32" stroke-width="1.2"/><circle cx="15" cy="13" r="2" fill="none" stroke="#2e7d32" stroke-width="1.2"/></svg>
+        </div>
+        <div class="scard-name">Biology</div>
+        <div class="scard-ct">4,120 articles · 31,200 resources</div>
+      </div>
+      <div class="scard" data-pg="article" style="border-right:1px solid var(--rule2);border-bottom:1px solid var(--rule2)">
+        <div class="scard-icon-wrap" style="background:#fce4ec">
+          <svg width="22" height="22" viewBox="0 0 22 22"><path d="M7 18V9l4-5 4 5v9" fill="none" stroke="#c62828" stroke-width="1.5"/><rect x="9" y="13" width="4" height="5" fill="none" stroke="#c62828" stroke-width="1.2"/><circle cx="11" cy="10" r="1.5" fill="#c62828"/></svg>
+        </div>
+        <div class="scard-name">Chemistry</div>
+        <div class="scard-ct">2,880 articles · 19,400 resources</div>
+      </div>
+      <div class="scard" data-pg="article" style="border-bottom:1px solid var(--rule2)">
+        <div class="scard-icon-wrap" style="background:#fff8e1">
+          <svg width="22" height="22" viewBox="0 0 22 22"><rect x="3" y="3" width="7" height="7" rx="1" fill="none" stroke="#e65100" stroke-width="1.5"/><rect x="12" y="3" width="7" height="7" rx="1" fill="none" stroke="#e65100" stroke-width="1.5"/><rect x="3" y="12" width="7" height="7" rx="1" fill="none" stroke="#e65100" stroke-width="1.5"/><rect x="12" y="12" width="7" height="7" rx="1" fill="none" stroke="#e65100" stroke-width="1.5"/></svg>
+        </div>
+        <div class="scard-name">Mathematics</div>
+        <div class="scard-ct">2,210 articles · 16,100 resources</div>
+      </div>
+      <div class="scard" data-pg="article" style="border-right:1px solid var(--rule2)">
+        <div class="scard-icon-wrap" style="background:#f3e5f5">
+          <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="#6a1b9a" stroke-width="1.5"/><path d="M8 11c0-3 1-5 3-5s3 2 3 5-1 5-3 5-3-2-3-5z" fill="none" stroke="#6a1b9a" stroke-width="1.2"/><line x1="3" y1="11" x2="19" y2="11" stroke="#6a1b9a" stroke-width="1"/></svg>
+        </div>
+        <div class="scard-name">Earth sciences</div>
+        <div class="scard-ct">1,640 articles · 11,900 resources</div>
+      </div>
+      <div class="scard" data-pg="article" style="border-right:1px solid var(--rule2)">
+        <div class="scard-icon-wrap" style="background:#e8f4ec">
+          <svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="#2e7d32" stroke-width="1.5"/><ellipse cx="11" cy="11" rx="4" ry="8" fill="none" stroke="#2e7d32" stroke-width="1.2"/><line x1="3" y1="11" x2="19" y2="11" stroke="#2e7d32" stroke-width="1"/></svg>
+        </div>
+        <div class="scard-name">Astronomy</div>
+        <div class="scard-ct">1,280 articles · 9,400 resources</div>
+      </div>
+      <div class="scard" data-pg="article" style="border-right:1px solid var(--rule2)">
+        <div class="scard-icon-wrap" style="background:#e8f0f8">
+          <svg width="22" height="22" viewBox="0 0 22 22"><rect x="3" y="6" width="16" height="12" rx="1" fill="none" stroke="#1565c0" stroke-width="1.5"/><line x1="8" y1="6" x2="8" y2="18" stroke="#1565c0" stroke-width="1"/><line x1="3" y1="10" x2="19" y2="10" stroke="#1565c0" stroke-width="1"/></svg>
+        </div>
+        <div class="scard-name">Computer science</div>
+        <div class="scard-ct">2,640 articles · 21,300 resources</div>
+      </div>
+      <div class="scard" data-pg="article">
+        <div class="scard-icon-wrap" style="background:#fce4ec">
+          <svg width="22" height="22" viewBox="0 0 22 22"><ellipse cx="11" cy="9" rx="5" ry="4" fill="none" stroke="#c62828" stroke-width="1.5"/><path d="M6 13c0 3 2 5 5 5s5-2 5-5" fill="none" stroke="#c62828" stroke-width="1.2"/></svg>
+        </div>
+        <div class="scard-name">Neuroscience</div>
+        <div class="scard-ct">1,040 articles · 8,200 resources</div>
+      </div>
+    </div>
+
+    <div class="sec-hd"><h2>Featured articles</h2><a data-pg="article">Browse all</a></div>
+    <div class="feat-grid">
+      <div class="fcard" data-pg="article">
+        <div class="fcard-img" style="background:#dce6f5">
+          <svg viewBox="0 0 160 64" width="160" height="64"><rect width="160" height="64" fill="#dce6f5"/><ellipse cx="80" cy="32" rx="50" ry="14" fill="none" stroke="#1a3a5c" stroke-width="1.5"/><ellipse cx="80" cy="32" rx="50" ry="14" fill="none" stroke="#1a3a5c" stroke-width="1.5" transform="rotate(60 80 32)"/><ellipse cx="80" cy="32" rx="50" ry="14" fill="none" stroke="#1a3a5c" stroke-width="1.5" transform="rotate(120 80 32)"/><circle cx="80" cy="32" r="5" fill="#1a3a5c"/><circle cx="126" cy="24" r="4" fill="#c62828"/></svg>
+        </div>
+        <div class="fcard-body"><div class="fcard-tag">Physics · Featured article</div><div class="fcard-title">Quantum mechanics</div><div class="fcard-desc">The fundamental theory describing matter and energy at atomic scales. Includes 38 curated resources in a navigable bubble tree.</div><div class="fcard-meta">38 resources · 4 discussions · Updated 3 hr ago</div></div>
+      </div>
+      <div class="fcard">
+        <div class="fcard-img" style="background:#dcedc8">
+          <svg viewBox="0 0 160 64" width="160" height="64"><rect width="160" height="64" fill="#dcedc8"/><path d="M50 44 Q65 18 80 22 Q95 26 110 44" fill="none" stroke="#1a4a2a" stroke-width="2"/><line x1="50" y1="44" x2="110" y2="44" stroke="#1a4a2a" stroke-width="1.5"/><circle cx="50" cy="44" r="4" fill="#1a4a2a"/><circle cx="110" cy="44" r="4" fill="#1a4a2a"/><circle cx="80" cy="24" r="4" fill="#2e7d32"/></svg>
+        </div>
+        <div class="fcard-body"><div class="fcard-tag">Biology · Featured article</div><div class="fcard-title">CRISPR-Cas9 gene editing</div><div class="fcard-desc">A molecular tool enabling precise DNA editing. Tree spans foundational papers through clinical applications.</div><div class="fcard-meta">51 resources · 7 discussions · Updated 1 day ago</div></div>
+      </div>
+    </div>
+
+    <div class="how-box">
+      <div class="how-title">How Hivemind works</div>
+      <div class="how-steps">
+        <div class="how-step"><div class="how-num">1</div><div class="how-t">Read the article</div><div class="how-d">Wikipedia-style science articles maintained by subject communities.</div></div>
+        <div class="how-step"><div class="how-num">2</div><div class="how-t">Explore the resource tree</div><div class="how-d">Hover bubbles for details, drag to navigate the full resource map.</div></div>
+        <div class="how-step"><div class="how-num">3</div><div class="how-t">Join the discussion</div><div class="how-d">Debate which sources are primary, further reading, or supplemental.</div></div>
+        <div class="how-step"><div class="how-num">4</div><div class="how-t">Contribute</div><div class="how-d">Edit articles, add resources to trees, help organize knowledge.</div></div>
+      </div>
+    </div>
+  </div>
+  <div class="site-footer">
+    <div class="foot-inner">
+      <div><div class="fc-title">Hivemind</div><a class="fc-link" data-pg="about">About us</a><a class="fc-link" data-pg="donate">Donate</a><a class="fc-link">Press</a></div>
+      <div><div class="fc-title">Library</div><a class="fc-link" data-pg="resources">All resources</a><a class="fc-link" data-pg="article">Featured articles</a></div>
+      <div><div class="fc-title">Community</div><a class="fc-link">Contributor portal</a><a class="fc-link">Governance</a><a class="fc-link">Style guide</a></div>
+      <div><div class="fc-title">Legal</div><a class="fc-link">Privacy policy</a><a class="fc-link">Terms of use</a><a class="fc-link">CC BY-SA license</a></div>
+    </div>
+    <div class="foot-bottom"><span>Hivemind Foundation, 501(c)(3). Content under CC BY-SA 4.0.</span><span><a>Contact</a> · <a>Sitemap</a></span></div>
+  </div>
+</div>
+
+<!-- ═══════════ ARTICLE ═══════════ -->
+<div id="pg-article" class="page">
+  <div class="search-bar">
+    <div class="search-wrap"><input class="si" placeholder="Search Hivemind…" readonly /><button class="sgb">Search</button></div>
+  </div>
+  <div class="mob-art-tabs" id="mob-art-tabs">
+    <span class="mat on" data-artpg="read">Article</span>
+    <span class="mat" data-artpg="tree">Resource tree</span>
+    <span class="mat" data-artpg="discuss">Discussion</span>
+    <span class="mat" data-artpg="edit">Edit</span>
+  </div>
+  <div class="art-outer">
+    <div class="art-leftnav">
+      <div class="aln-h">Navigate</div>
+      <a class="aln-a cur" data-artpg="read">Article</a>
+      <a class="aln-a" data-artpg="tree">Resource tree</a>
+      <a class="aln-a" data-artpg="discuss">Discussion</a>
+      <a class="aln-a" data-artpg="edit">Edit this page</a>
+      <div class="aln-div"></div>
+      <div class="aln-h">Subject</div>
+      <a class="aln-a">Quantum mechanics</a>
+      <a class="aln-a">Wave functions</a>
+      <a class="aln-a">Schrödinger equation</a>
+      <div class="aln-div"></div>
+      <div class="aln-h">Tools</div>
+      <a class="aln-a">Cite this page</a>
+      <a class="aln-a">Print version</a>
+      <div class="aln-div"></div>
+      <div class="aln-h">Appearance</div>
+      <a class="aln-a" id="appearance-toggle-link">Appearance settings</a>
+    </div>
+
+    <div class="art-main">
+
+      <!-- READ -->
+      <div id="artpg-read" class="art-pg on">
+        <div class="art-h1">Quantum mechanics</div>
+        <div class="art-from">From Hivemind, the open science library</div>
+        <div class="art-acts">
+          <button class="aa on">Article</button>
+          <button class="aa" data-artpg="discuss">Talk</button>
+          <div class="art-sep"></div>
+          <button class="aa">Read</button>
+          <button class="aa" data-artpg="edit">Edit</button>
+          <button class="aa">History</button>
+          <div class="art-sep"></div>
+          <button class="aa" data-artpg="tree">Resource tree</button>
+        </div>
+        <div class="art-notice">This article has 4 open resource discussions. <a data-artpg="discuss">Join the discussion.</a></div>
+        <div style="overflow:hidden">
+          <table class="ib">
+            <tr><td class="ib-t" colspan="2">Quantum mechanics</td></tr>
+            <tr><td class="ib-img" colspan="2"><svg viewBox="0 0 150 68" width="150" height="68"><rect width="150" height="68" fill="#dce6f5"/><ellipse cx="75" cy="34" rx="47" ry="14" fill="none" stroke="#1a3a5c" stroke-width="1.5"/><ellipse cx="75" cy="34" rx="47" ry="14" fill="none" stroke="#1a3a5c" stroke-width="1.5" transform="rotate(60 75 34)"/><ellipse cx="75" cy="34" rx="47" ry="14" fill="none" stroke="#1a3a5c" stroke-width="1.5" transform="rotate(120 75 34)"/><circle cx="75" cy="34" r="5" fill="#1a3a5c"/><circle cx="118" cy="25" r="4" fill="#c62828"/></svg><div style="font-size:10px;color:var(--ink3);margin-top:2px">Bohr model of the hydrogen atom</div></td></tr>
+            <tr class="ib-r"><td class="ib-k">Field</td><td class="ib-v"><a>Physics</a></td></tr>
+            <tr class="ib-r"><td class="ib-k">Branch</td><td class="ib-v"><a>Theoretical physics</a></td></tr>
+            <tr class="ib-r"><td class="ib-k">Founded</td><td class="ib-v">1900–1925</td></tr>
+            <tr class="ib-r"><td class="ib-k">Key figures</td><td class="ib-v"><a>Bohr</a>, <a>Heisenberg</a>, <a>Schrödinger</a></td></tr>
+            <tr class="ib-r"><td class="ib-k">Resources</td><td class="ib-v"><a data-artpg="tree">38 in tree</a></td></tr>
+          </table>
+          <div class="toc"><div class="toc-t">Contents <span>[hide]</span></div><div class="ti">1 Overview</div><div class="ti sub">1.1 Wave-particle duality</div><div class="ti sub">1.2 Mathematical formulation</div><div class="ti">2 History</div><div class="ti sub">2.1 Old quantum theory</div><div class="ti">3 Principles</div><div class="ti">4 Resource tree <a style="font-size:10px;font-family:var(--sans)" data-artpg="tree">→</a></div><div class="ti">5 Further reading</div><div class="ti">6 Related subjects</div><div class="ti">7 References</div></div>
+          <p class="wp"><b>Quantum mechanics</b> is a fundamental theory in <a>physics</a> that describes physical properties of nature at the scale of <a>atoms</a> and <a>subatomic particles</a>.<span class="wref">[1]</span> It is the foundation of all <a>quantum physics</a>, including quantum chemistry, quantum field theory, quantum technology, and quantum information science.</p>
+          <p class="wp">Classical physics describes many aspects of nature at an ordinary (macroscopic) scale, but quantum mechanics is necessary to explain the behavior of matter and light at atomic and subatomic scales.<span class="wref">[2]</span></p>
+          <div class="wh2">Overview</div>
+          <p class="wp">Quantum mechanics differs from classical physics in that energy, momentum, angular momentum, and other quantities of a bound system are restricted to discrete values (<a>quantization</a>); objects have characteristics of both particles and waves (<a>wave–particle duality</a>); and there are limits to how accurately physical quantities can be predicted before measurement (<a>uncertainty principle</a>).<span class="wref">[3]</span></p>
+          <div class="wh3">Mathematical formulation</div>
+          <p class="wp">A mathematical function known as the <a>wave function</a> provides information about the probability amplitude of energy, momentum, and other physical properties of a particle.<span class="wref">[4]</span></p>
+          <div class="wh2">History</div>
+          <p class="wp">The origins of quantum mechanics date to the 1838 discovery of <a>cathode rays</a> by <a>Michael Faraday</a>, followed by the 1859 black-body radiation problem by <a>Gustav Kirchhoff</a> and the 1900 quantum hypothesis by <a>Max Planck</a>.<span class="wref">[5]</span></p>
+
+          <div class="refs"><div class="refs-t">References</div><div class="ref-i"><span class="ref-n">1.</span> Dirac, P.A.M. (1958). <i>The Principles of Quantum Mechanics</i>. Oxford University Press.</div><div class="ref-i"><span class="ref-n">2.</span> Feynman, R.P. (1965). <i>The Feynman Lectures on Physics, Vol. 3</i>. Addison-Wesley.</div><div class="ref-i"><span class="ref-n">3.</span> Heisenberg, W. (1927). "Über den anschaulichen Inhalt der quantentheoretischen Kinematik." <i>Zeitschrift für Physik.</i></div><div class="ref-i"><span class="ref-n">4.</span> Schrödinger, E. (1926). "An Undulatory Theory of the Mechanics of Atoms and Molecules." <i>Physical Review.</i></div><div class="ref-i"><span class="ref-n">5.</span> Planck, M. (1900). "Zur Theorie des Gesetzes der Energieverteilung im Normalspectrum."</div></div>
+
+          <!-- NAVBOX (V·T·E) -->
+          <div class="navbox">
+            <div class="navbox-title"><span>Quantum mechanics</span><span class="navbox-vte"><span>V</span><span>·</span><span>T</span><span>·</span><span>E</span><span style="margin-left:6px;color:var(--ink3)">[hide]</span></span></div>
+            <div class="navbox-row"><div class="navbox-head">Foundations</div><div class="navbox-body"><a>Wave function</a> <span class="navbox-sep">·</span> <a>Schrödinger equation</a> <span class="navbox-sep">·</span> <a>Uncertainty principle</a> <span class="navbox-sep">·</span> <a>Superposition</a> <span class="navbox-sep">·</span> <a>Entanglement</a> <span class="navbox-sep">·</span> <a>Measurement problem</a></div></div>
+            <div class="navbox-row"><div class="navbox-head">Interpretations</div><div class="navbox-body"><a>Copenhagen</a> <span class="navbox-sep">·</span> <a>Many-worlds</a> <span class="navbox-sep">·</span> <a>Pilot wave (Bohm)</a> <span class="navbox-sep">·</span> <a>Relational QM</a></div></div>
+            <div class="navbox-row"><div class="navbox-head">Applications</div><div class="navbox-body"><a>Quantum computing</a> <span class="navbox-sep">·</span> <a>Quantum cryptography</a> <span class="navbox-sep">·</span> <a>Quantum optics</a> <span class="navbox-sep">·</span> <a>Condensed matter physics</a></div></div>
+            <div class="navbox-row"><div class="navbox-head">Related</div><div class="navbox-body"><a>Quantum field theory</a> <span class="navbox-sep">·</span> <a>General relativity</a> <span class="navbox-sep">·</span> <a>Statistical mechanics</a></div></div>
+          </div>
+
+          <div class="cats-row"><span style="font-weight:500;color:var(--ink2)">Categories: </span><a>Quantum mechanics</a> <span style="color:var(--ink4)">|</span> <a>Theoretical physics</a> <span style="color:var(--ink4)">|</span> <a>Foundational quantum physics</a> <span style="color:var(--ink4)">|</span> <a>Physics portals</a></div>
+        </div>
+      </div>
+
+      <!-- TREE -->
+      <div id="artpg-tree" class="art-pg">
+        <div class="tree-pg">
+          <div class="tree-title">Resource tree — Quantum mechanics</div>
+          <div class="tree-tb">
+            <span>Show:</span>
+            <span class="tf on">All (38)</span><span class="tf">Primary (12)</span><span class="tf">Further (16)</span><span class="tf">Disputed (4)</span><span class="tf">Supplemental (6)</span>
+            <div class="tree-leg"><span><span class="tld" style="background:#2a4b8d"></span>Primary</span><span><span class="tld" style="background:#2e7d32"></span>Further</span><span><span class="tld" style="background:#c62828"></span>Disputed</span><span><span class="tld" style="background:#b45309"></span>Supplemental</span></div>
+          </div>
+          <div style="position:relative">
+            <div class="tree-canvas" id="tc4"><svg class="t-svg" id="ts4"></svg></div>
+            <div class="tree-tooltip" id="tree-tooltip"></div>
+          </div>
+
+          <!-- FURTHER READING section -->
+          <div class="fr-section">
+            <div class="fr-h2">Further reading</div>
+            <div class="fr-h3">Introductory textbooks</div>
+            <ul class="fr-list">
+              <li><a>Griffiths, D.J.</a> (2018). <i>Introduction to Quantum Mechanics</i> (3rd ed.). Cambridge University Press. <span class="fr-note">— Standard undergraduate textbook; classification as primary vs. further reading is disputed, see Talk page.</span></li>
+              <li><a>Shankar, R.</a> (1994). <i>Principles of Quantum Mechanics</i> (2nd ed.). Plenum Press.</li>
+            </ul>
+            <div class="fr-h3">Advanced treatments</div>
+            <ul class="fr-list">
+              <li><a>Sakurai, J.J.</a> &amp; Napolitano, J. (2017). <i>Modern Quantum Mechanics</i> (3rd ed.). Cambridge.</li>
+              <li><a>Cohen-Tannoudji, C.</a> et al. (1977). <i>Quantum Mechanics</i> (Vol. 1 &amp; 2). Wiley.</li>
+            </ul>
+            <div class="fr-h3">Historical and philosophical</div>
+            <ul class="fr-list">
+              <li><a>Jammer, M.</a> (1966). <i>The Conceptual Development of Quantum Mechanics</i>. McGraw-Hill.</li>
+              <li><a>Penrose, R.</a> (2004). <i>The Road to Reality</i>. Knopf. <span class="fr-note">— Comprehensive tour; classified supplemental for this article due to scope.</span></li>
+            </ul>
+          </div>
+
+          <!-- RELATED SUBJECTS -->
+          <div class="related-section">
+            <div class="related-h2">Related and following subjects</div>
+            <div class="related-links">
+              <span class="related-link">Quantum field theory</span>
+              <span class="related-link">General relativity</span>
+              <span class="related-link">Statistical mechanics</span>
+              <span class="related-link">Quantum computing</span>
+              <span class="related-link">Condensed matter physics</span>
+              <span class="related-link">Quantum optics</span>
+              <span class="related-link">Particle physics</span>
+            </div>
+            <div class="fr-h3" style="margin-top:8px">Physics portal</div>
+            <div class="portal-box">
+              <div class="portal-icon" style="background:#dce6f5"><svg width="22" height="22" viewBox="0 0 22 22"><circle cx="11" cy="11" r="8" fill="none" stroke="#2a4b8d" stroke-width="1.5"/><circle cx="11" cy="11" r="3" fill="none" stroke="#2a4b8d" stroke-width="1.5"/><line x1="11" y1="3" x2="11" y2="19" stroke="#2a4b8d" stroke-width="1"/><line x1="3" y1="11" x2="19" y2="11" stroke="#2a4b8d" stroke-width="1"/></svg></div>
+              <div class="portal-text"><div class="portal-title">Physics portal</div><div class="portal-desc">Explore all 3,410 articles in the Physics macrosubject, organized by subfield and reading level.</div></div>
+            </div>
+          </div>
+
+          <!-- COMMUNITIES (macro-subject level) -->
+          <div class="comm-section">
+            <div class="comm-h2">Community discussion spaces</div>
+            <div style="font-size:12px;color:var(--ink3);margin-bottom:9px;font-style:italic">Community spaces are available at the macrosubject (Physics) level. Individual articles link to the relevant subject community.</div>
+            <div class="comm-card"><div class="comm-dot" style="background:#2a4b8d"></div><div><div class="comm-name">Physics — open discussion</div><div class="comm-meta">4,210 members · 38 active threads · Public</div></div></div>
+            <div class="comm-card"><div class="comm-dot" style="background:#6a1b9a"></div><div><div class="comm-name">Quantum foundations study group</div><div class="comm-meta">820 members · 12 active threads · Public</div></div></div>
+            <div class="comm-card"><div class="comm-dot" style="background:#2e7d32"></div><div><div class="comm-name">Physics textbook review</div><div class="comm-meta">1,140 members · 24 active threads · Public</div></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- DISCUSS -->
+      <div id="artpg-discuss" class="art-pg">
+        <div class="disc-h1">Talk: Quantum mechanics — resources</div>
+        <div style="display:flex;gap:6px;margin-bottom:10px"><button class="rb2 p">+ New topic</button><button class="rb2">Subscribe</button></div>
+        <div class="disc-notice">Discussions focus on the resource tree: which sources are primary, further reading, supplemental, or disputed.</div>
+        <div class="thread">
+          <div class="th-head"><div><div class="th-topic">Should Griffiths be primary or further reading?</div><div class="th-meta">Opened by <a style="color:var(--blue);cursor:pointer">quantumfox</a> · 8 replies · 3 days ago</div></div><span class="th-badge" style="background:#dce6f5;color:#0d3a6b">Primary debate</span></div>
+          <div class="th-body">
+            <div class="th-reply"><div class="th-avi" style="background:#1a3a5c">QF</div><div class="th-txt"><span class="th-user">quantumfox</span><span class="th-time">3 days ago</span><br>Griffiths is the de facto standard undergrad textbook at most universities. It belongs in primary sources — it's the first thing most students encounter.<div class="vote-row"><button class="vote up">▲ 14</button><button class="vote dn">▼ 2</button><button class="vote">Reply</button></div></div></div>
+            <div class="th-reply"><div class="th-avi" style="background:#1a4a2a">SR</div><div class="th-txt"><span class="th-user">sara_r</span><span class="th-time">2 days ago</span><br>Dirac's Principles is genuinely primary — it's where the formalism originates. Griffiths is pedagogical, not primary. Keep it in further reading with a clear explanatory note.<div class="vote-row"><button class="vote up">▲ 9</button><button class="vote dn">▼ 3</button><button class="vote">Reply</button></div></div></div>
+          </div>
+          <div class="replybox"><textarea class="reply-ta" placeholder="Add your reply…" readonly></textarea><div class="rfoot"><button class="rb2">Cancel</button><button class="rb2 p">Post reply</button></div></div>
+        </div>
+        <div class="thread">
+          <div class="th-head"><div><div class="th-topic">Penrose's "The Road to Reality" — move to supplemental?</div><div class="th-meta">Opened by <a style="color:var(--blue);cursor:pointer">lena_w</a> · 4 replies · 6 days ago</div></div><span class="th-badge" style="background:#fff8e1;color:#6b4a1a">Supplemental debate</span></div>
+          <div class="th-body"><div class="th-reply"><div class="th-avi" style="background:#b45309">LW</div><div class="th-txt"><span class="th-user">lena_w</span><span class="th-time">6 days ago</span><br>It spans all of physics and mathematics and requires maturity far beyond intro QM. I'd classify it supplemental for this article specifically.<div class="vote-row"><button class="vote up">▲ 7</button><button class="vote dn">▼ 4</button><button class="vote">Reply</button></div></div></div></div>
+          <div class="replybox"><textarea class="reply-ta" placeholder="Add your reply…" readonly></textarea><div class="rfoot"><button class="rb2">Cancel</button><button class="rb2 p">Post reply</button></div></div>
+        </div>
+      </div>
+
+      <!-- EDIT -->
+      <div id="artpg-edit" class="art-pg">
+        <div style="font-size:18px;font-weight:500;color:var(--ink);border-bottom:1px solid var(--rule2);padding-bottom:4px;margin-bottom:9px;font-family:var(--serif)">Editing: Quantum mechanics</div>
+        <div style="display:flex;border-bottom:1px solid var(--rule2);margin-bottom:9px;overflow-x:auto">
+          <div style="padding:5px 12px;font-size:12px;color:var(--blue);border-bottom:2px solid var(--blue);font-weight:500;cursor:pointer;white-space:nowrap">Article text</div>
+          <div style="padding:5px 12px;font-size:12px;color:var(--blue);cursor:pointer;white-space:nowrap">Resource tree</div>
+          <div style="padding:5px 12px;font-size:12px;color:var(--blue);cursor:pointer;white-space:nowrap">Infobox</div>
+        </div>
+        <div style="background:#fef6e4;border:1px solid #fc3;border-left:3px solid #fc3;padding:7px 10px;font-size:12px;color:#5d4037;margin-bottom:8px">Editing the article text. Use the resource tree editor tab to reorganize resources.</div>
+        <div style="display:flex;gap:3px;background:var(--paper2);border:1px solid var(--rule2);padding:5px 8px;border-radius:2px 2px 0 0;flex-wrap:wrap">
+          <button style="padding:0 7px;height:22px;border:none;background:transparent;font-size:11px;cursor:pointer;color:var(--ink2)"><b>B</b></button>
+          <button style="padding:0 7px;height:22px;border:none;background:transparent;font-size:11px;cursor:pointer;color:var(--ink2)"><i>I</i></button>
+          <button style="padding:0 8px;height:22px;border:none;background:transparent;font-size:11px;cursor:pointer;color:var(--ink2)">H2</button>
+          <button style="padding:0 8px;height:22px;border:none;background:transparent;font-size:11px;cursor:pointer;color:var(--blue)">[[link]]</button>
+          <button style="padding:0 8px;height:22px;border:none;background:transparent;font-size:11px;cursor:pointer;color:var(--blue)">cite</button>
+          <button style="padding:0 8px;height:22px;border:none;background:transparent;font-size:11px;cursor:pointer;color:var(--blue)">math</button>
+        </div>
+        <textarea style="width:100%;min-height:160px;border:1px solid var(--rule2);border-top:none;padding:9px;font-size:13px;line-height:1.7;font-family:var(--sans);color:var(--ink);background:var(--paper);resize:vertical">'''Quantum mechanics''' is a fundamental theory in [[physics]] that describes the physical properties of nature at the scale of [[atoms]] and [[subatomic particles]].<ref name="Dirac1958"/>
+
+==Overview==
+Quantum mechanics differs from classical physics in that energy, momentum, angular momentum, and other quantities of a bound system are restricted to discrete values ([[quantization]]).</textarea>
+        <div style="display:flex;gap:6px;margin-top:7px;align-items:center;flex-wrap:wrap">
+          <input placeholder="Edit summary…" style="flex:1;min-width:100px;height:30px;padding:0 8px;border:1px solid var(--rule2);font-size:12px;font-family:var(--sans);color:var(--ink);background:var(--paper)" readonly />
+          <button style="padding:4px 12px;background:var(--paper2);border:1px solid var(--rule2);font-size:12px;cursor:pointer;font-family:var(--sans);color:var(--ink2)">Preview</button>
+          <button style="padding:4px 14px;background:var(--blue);color:#fff;border:none;font-size:12px;cursor:pointer;font-family:var(--sans);font-weight:500">Publish</button>
+        </div>
+      </div>
+
+      <!-- MOBILE RAIL ACCORDIONS -->
+      <div class="mob-rail" id="mob-rail">
+        <div class="mrl-item"><div class="mrl-head" data-mrl="primary">Primary resources</div><div class="mrl-body" id="mrl-primary"><a class="rl" style="color:var(--blue);cursor:pointer;display:block;padding:2px 0;font-size:12px">Dirac — Principles of QM</a><a class="rl" style="color:var(--blue);cursor:pointer;display:block;padding:2px 0;font-size:12px">Feynman Lectures Vol. 3</a><a class="rl" style="color:var(--blue);cursor:pointer;display:block;padding:2px 0;font-size:12px">Heisenberg (1927)</a><a style="color:var(--ink4);cursor:pointer;display:block;padding:2px 0;font-size:11px" data-artpg="tree">+ 8 more in tree</a></div></div>
+        <div class="mrl-item"><div class="mrl-head" data-mrl="further">Further reading</div><div class="mrl-body" id="mrl-further"><a class="rl" style="color:var(--blue);cursor:pointer;display:block;padding:2px 0;font-size:12px">Griffiths — Intro QM</a><a class="rl" style="color:var(--blue);cursor:pointer;display:block;padding:2px 0;font-size:12px">Shankar — Principles</a><a style="color:var(--ink4);cursor:pointer;display:block;padding:2px 0;font-size:11px" data-artpg="tree">+ 13 more</a></div></div>
+        <div class="mrl-item"><div class="mrl-head" data-mrl="discuss">Discussions</div><div class="mrl-body" id="mrl-discuss"><a style="color:var(--blue);cursor:pointer;display:block;padding:2px 0;font-size:12px" data-artpg="discuss">Griffiths: primary or further?</a><a style="color:var(--blue);cursor:pointer;display:block;padding:2px 0;font-size:12px" data-artpg="discuss">Penrose → supplemental?</a></div></div>
+      </div>
+
+    </div>
+
+    <!-- RIGHT RAIL + APPEARANCE SIDEBAR -->
+    <div class="art-rail" id="art-rail">
+      <!-- Appearance sidebar -->
+      <div class="appear-sidebar" id="appear-sidebar">
+        <div class="as-head">Appearance <span class="as-hide" id="appear-hide-btn">[hide]</span></div>
+        <div class="as-body" id="appear-body">
+          <div class="as-section">
+            <span class="as-section-label">Text size</span>
+            <div class="as-slider-wrap">
+              <span class="as-slider-label" style="font-size:11px">Aa</span>
+              <input type="range" class="as-slider" id="text-size-slider" min="12" max="18" value="14" step="1" style="flex:1" />
+              <span class="as-slider-label" style="font-size:14px;text-align:right">Aa</span>
+            </div>
+            <div style="font-size:11px;color:var(--ink4);text-align:center;margin-top:3px" id="text-size-label">Standard</div>
+          </div>
+          <div class="as-section">
+            <span class="as-section-label">Width</span>
+            <div class="as-radio-item on"><input type="radio" name="width" checked /> Standard</div>
+            <div class="as-radio-item"><input type="radio" name="width" /> Wide</div>
+          </div>
+          <div class="as-section">
+            <span class="as-section-label">Theme</span>
+            <div class="as-theme-grid">
+              <button class="as-theme-btn on" data-theme="theme-standard">Standard</button>
+              <button class="as-theme-btn" data-theme="theme-hivemind">Hivemind</button>
+              <button class="as-theme-btn" data-theme="theme-dark">Dark</button>
+              <button class="as-theme-btn" style="color:var(--ink4);border-style:dashed">Custom +</button>
+            </div>
+          </div>
+          <div class="as-section">
+            <span class="as-section-label">Background color</span>
+            <div class="as-bg-grid">
+              <div class="as-bg-swatch on" style="background:#fff" title="White"></div>
+              <div class="as-bg-swatch" style="background:#f8f9fa" title="Light gray"></div>
+              <div class="as-bg-swatch" style="background:#fafaf8" title="Warm white"></div>
+              <div class="as-bg-swatch" style="background:#1e1e1e;border-color:#555" title="Dark"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- Resource rail -->
+      <div style="margin-top:9px">
+        <div class="rblock"><div class="rb-t">Primary resources <a data-artpg="tree">Tree</a></div><div class="rb-body"><a class="rl">Dirac — Principles of QM</a><a class="rl">Feynman Lectures Vol. 3</a><a class="rl">Heisenberg (1927)</a><a class="rl" style="color:var(--ink4);font-size:11px" data-artpg="tree">+ 8 more</a></div></div>
+        <div class="rblock"><div class="rb-t">Further reading</div><div class="rb-body"><a class="rl">Griffiths — Intro QM</a><a class="rl">Shankar — Principles</a><a class="rl" style="color:var(--ink4);font-size:11px" data-artpg="tree">+ 13 more</a></div></div>
+        <div class="rblock"><div class="rb-t">Discussions <a data-artpg="discuss">All</a></div><div class="rb-body"><a class="rl" data-artpg="discuss">Griffiths: primary or further?</a><a class="rl" data-artpg="discuss">Penrose → supplemental?</a></div></div>
+        <div class="rblock"><div class="rb-t">Related articles</div><div class="rb-body"><a class="rl">Wave functions</a><a class="rl">Schrödinger equation</a><a class="rl">Quantum entanglement</a><a class="rl">Quantum field theory</a></div></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ RESOURCES ═══════════ -->
+<div id="pg-resources" class="page">
+  <div class="res-hero"><div class="rh-inner"><div class="rh-h1">Resource library</div><div class="rh-sub">92,400 textbooks, papers, and references — classified, debated, organized by subject</div><div class="rh-search"><input class="rh-inp" placeholder="Search textbooks, authors, DOI…" readonly /><button class="rh-btn">Search</button></div></div></div>
+  <div class="res-layout">
+    <div>
+      <button class="mob-filter-btn" id="mob-filter-btn">Filter resources ▾</button>
+      <div class="r-sidebar-panel" id="r-sidebar-panel">
+        <div style="margin-bottom:12px"><div class="r-sec-t">Classification</div><div class="rf on"><span class="rf-dot" style="background:#1a3a5c"></span>All<span class="rf-ct">92,400</span></div><div class="rf"><span class="rf-dot" style="background:#0d3a6b"></span>Primary<span class="rf-ct">28,100</span></div><div class="rf"><span class="rf-dot" style="background:#1a4a2a"></span>Further reading<span class="rf-ct">41,200</span></div><div class="rf"><span class="rf-dot" style="background:#6b4a1a"></span>Supplemental<span class="rf-ct">16,800</span></div><div class="rf"><span class="rf-dot" style="background:#6b1a1a"></span>Disputed<span class="rf-ct">6,300</span></div></div>
+        <div style="margin-bottom:12px"><div class="r-sec-t">Subject</div><div class="rf on">All subjects</div><div class="rf">Physics</div><div class="rf">Biology</div><div class="rf">Chemistry</div><div class="rf">Mathematics</div><div class="rf">Neuroscience</div></div>
+        <div><div class="r-sec-t">Format</div><div class="rf">Textbook</div><div class="rf">Journal paper</div><div class="rf">Lecture series</div><div class="rf">Review article</div></div>
+      </div>
+    </div>
+    <div>
+      <div class="r-list-hdr"><span>Showing 92,400 resources</span><select><option>Sort: Most cited</option><option>Most discussed</option><option>Recently added</option></select></div>
+      <div class="ritem" data-pg="article"><div class="ritem-top"><span class="rbadge rb-p">Primary</span><div class="ritem-title">The Principles of Quantum Mechanics</div></div><div class="ritem-author">P.A.M. Dirac · 1958 · Oxford University Press · 4th edition</div><div class="ritem-desc">The definitive formal treatment of quantum mechanics. Introduces bra-ket notation still standard today. Marked primary across 14 article resource trees.</div><div class="ritem-foot"><span class="rtag">Physics</span><span class="rtag">Graduate</span><div class="ritem-acts"><button class="ri-btn">In 14 trees</button><button class="ri-btn" data-pg="article">View in tree</button></div></div></div>
+      <div class="ritem"><div class="ritem-top"><span class="rbadge rb-f">Further reading</span><div class="ritem-title">Introduction to Quantum Mechanics</div></div><div class="ritem-author">David Griffiths · 2018 · Cambridge University Press · 3rd edition</div><div class="ritem-desc">The standard undergraduate textbook. Status as primary vs further reading is actively debated across 3 article trees.</div><div class="ritem-foot"><span class="rtag">Physics</span><span class="rtag">Undergraduate</span><div class="ritem-acts"><button class="ri-btn">In 18 trees</button><button class="ri-btn" style="color:#6b1a1a;border-color:#ef9a9a">3 disputes</button></div></div></div>
+      <div class="ritem"><div class="ritem-top"><span class="rbadge rb-d">Disputed</span><div class="ritem-title">Quantum Theory</div></div><div class="ritem-author">David Bohm · 1951 · Prentice-Hall</div><div class="ritem-desc">Thorough treatment but Bohm's interpretation diverges from Copenhagen orthodoxy. Classification actively contested.</div><div class="ritem-foot"><span class="rtag">Physics</span><span class="rtag">Interpretation</span><div class="ritem-acts"><button class="ri-btn" data-pg="article">View discussion</button></div></div></div>
+      <div class="ritem"><div class="ritem-top"><span class="rbadge rb-s">Supplemental</span><div class="ritem-title">The Road to Reality</div></div><div class="ritem-author">Roger Penrose · 2004 · Knopf</div><div class="ritem-desc">Comprehensive tour of mathematical physics. Requires significant mathematical maturity. Supplemental on most QM trees.</div><div class="ritem-foot"><span class="rtag">Physics</span><span class="rtag">Graduate+</span><div class="ritem-acts"><button class="ri-btn" data-pg="article">View in tree</button></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════ ABOUT ═══════════ -->
+<div id="pg-about" class="page">
+  <div class="about-hero"><div class="ah-inner"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink3);margin-bottom:9px">Our mission</div><h1 class="ah-h1">A free science library, built and governed by its community</h1><p style="font-size:14px;color:var(--ink2);line-height:1.8">Hivemind is a nonprofit dedicated to organizing the world's scientific knowledge — not for profit, not for algorithms, but for the people who want to learn.</p></div></div>
+  <div class="about-body">
+    <div class="a-sec"><h2>What we are building</h2><p>Most science knowledge is scattered — across paywalled journals, inconsistent Wikipedia stubs, and Reddit threads. Hivemind structures that knowledge into something students and researchers can navigate.</p><p>Each article contains a structured encyclopedia entry and a <a data-pg="article">resource tree</a> — a community-curated bubble map organized by type: primary, further reading, supplemental, and disputed sources.</p></div>
+    <div class="a-sec"><h2>Our principles</h2><div class="p-grid"><div class="pc"><div class="pc-n">01</div><div class="pc-t">Free, forever</div><div class="pc-d">No ads, no paywalls. Knowledge should not cost money to access.</div></div><div class="pc"><div class="pc-n">02</div><div class="pc-t">Community governed</div><div class="pc-d">Editors and contributors decide what belongs. No single institution controls the content.</div></div><div class="pc"><div class="pc-n">03</div><div class="pc-t">Transparent sourcing</div><div class="pc-d">Every classification is debated openly. Disputes are visible, not hidden.</div></div><div class="pc"><div class="pc-n">04</div><div class="pc-t">Anti-dependency by design</div><div class="pc-d">We build tools that make you a better, more independent learner.</div></div></div></div>
+    <div class="a-sec"><h2>The team</h2><div class="team-grid"><div class="tc"><div class="tc-avi" style="background:#1a3a5c">FD</div><div class="tc-name">Founder / Director</div><div class="tc-role">Vision, community, governance</div></div><div class="tc"><div class="tc-avi" style="background:#1a4a2a">TE</div><div class="tc-name">Lead engineer</div><div class="tc-role">Platform, infrastructure, tree system</div></div><div class="tc"><div class="tc-avi" style="background:#4a148c">TS</div><div class="tc-name">Trust &amp; safety</div><div class="tc-role">Governance, moderation</div></div></div></div>
+    <div class="a-sec"><h2>Funding and nonprofit status</h2><p>Hivemind is a registered 501(c)(3) nonprofit funded entirely by individual donors and foundation grants. We do not accept advertising revenue or sell user data. <a data-pg="donate">Support our work →</a></p></div>
+  </div>
+</div>
+
+<!-- ═══════════ DONATE ═══════════ -->
+<div id="pg-donate" class="page">
+  <div class="donate-hero"><div style="font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:#8b6914;margin-bottom:9px">Support Hivemind</div><h1 style="font-size:26px;font-weight:500;color:var(--ink);font-family:var(--serif);margin-bottom:10px">Help keep science free</h1><p style="font-size:14px;color:var(--ink2);max-width:440px;margin:0 auto;line-height:1.7">Hivemind is a 501(c)(3) nonprofit. Every dollar goes toward servers, editors, and keeping the library open for everyone.</p></div>
+  <div class="donate-body">
+    <div class="d-card"><div style="font-size:14px;font-weight:500;color:var(--ink);margin-bottom:13px;font-family:var(--serif)">Make a donation</div><div class="amt-grid"><button class="amt-btn">$5</button><button class="amt-btn on">$25</button><button class="amt-btn">$50</button><button class="amt-btn">$100</button><button class="amt-btn">Other</button></div><div class="freq-row"><button class="freq-btn on">Monthly</button><button class="freq-btn">One-time</button></div><input class="d-inp" placeholder="Card number" readonly /><div class="d-row"><input class="d-inp" style="margin-bottom:0" placeholder="MM / YY" readonly /><input class="d-inp" style="margin-bottom:0" placeholder="CVC" readonly /></div><div style="margin-top:7px"></div><button class="don-sub">Donate $25 / month</button><div style="text-align:center;font-size:11px;color:var(--ink4);margin-top:7px">Hivemind Foundation, EIN 00-0000000. Tax-deductible in the USA. Secure via Stripe.</div></div>
+  </div>
+</div>
+
+<!-- ═══════════ AUTH ═══════════ -->
+<div id="pg-auth" class="page">
+  <div class="auth-overlay">
+    <div class="auth-box">
+      <div class="auth-logo-name">Hivemind</div>
+      <div class="auth-logo-tag">The open science library</div>
+      <div class="auth-tabs"><div class="auth-tab on" id="auth-login-tab">Log in</div><div class="auth-tab" id="auth-join-tab">Create account</div></div>
+      <div id="auth-login-form">
+        <div class="auth-field"><label>Username or email</label><input class="auth-input" placeholder="your@email.com" readonly /></div>
+        <div class="auth-field"><label>Password</label><input class="auth-input" type="password" placeholder="••••••••" readonly /></div>
+        <button class="auth-sub" data-pg="article">Log in to Hivemind</button>
+        <div class="auth-div">or</div>
+        <div class="auth-soc"><button class="auth-sbtn">Google</button><button class="auth-sbtn">ORCID</button></div>
+        <div class="auth-footer">No account? <a id="auth-to-join">Join free</a> · <a>Forgot password?</a></div>
+      </div>
+      <div id="auth-join-form" style="display:none">
+        <div class="auth-field"><label>Username</label><input class="auth-input" placeholder="Choose a username" readonly /></div>
+        <div class="auth-field"><label>Email</label><input class="auth-input" placeholder="your@email.com" readonly /></div>
+        <div class="auth-field"><label>Password</label><input class="auth-input" type="password" placeholder="••••••••" readonly /></div>
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:10px;line-height:1.6">By joining you agree to our <a style="color:var(--blue);cursor:pointer">terms of use</a>. Hivemind does not sell your data.</div>
+        <button class="auth-sub" data-pg="article">Create free account</button>
+        <div class="auth-div">or</div>
+        <div class="auth-soc"><button class="auth-sbtn">Google</button><button class="auth-sbtn">ORCID</button></div>
+        <div class="auth-footer">Already have an account? <a id="auth-to-login">Log in</a></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+</div>
+
+<script>
+var BCOLS={primary:'#1d4e89',further:'#1a4a2a',disputed:'#6b1a1a',supplemental:'#7a4f00'};
+var BBGS={primary:'#dce6f5',further:'#dcedc8',disputed:'#fce4ec',supplemental:'#fff3cd'};
+var BNODES=[
+  {id:'root',label:'QM\nroot',x:50,y:48,r:38,bg:'#e8eaf6',bc:'#5c6bc0',tc:'#1a237e'},
+  {id:'math',label:'Math\nfound.',x:24,y:24,r:28,bg:'#ede7f6',bc:'#7b1fa2',tc:'#4a148c'},
+  {id:'hist',label:'Historical',x:76,y:20,r:26,bg:'#e0f2f1',bc:'#00695c',tc:'#004d40'},
+  {id:'apps',label:'Applic.',x:78,y:76,r:22,bg:'#fff3e0',bc:'#e65100',tc:'#bf360c'},
+  {id:'interp',label:'Interp.',x:22,y:76,r:22,bg:'#fce4ec',bc:'#880e4f',tc:'#4a0026'},
+  {id:'dirac',label:'Dirac\n1958',x:11,y:42,r:20,bg:BBGS.primary,bc:BCOLS.primary,tc:BCOLS.primary},
+  {id:'feyn',label:'Feynman\nLec.3',x:30,y:10,r:19,bg:BBGS.primary,bc:BCOLS.primary,tc:BCOLS.primary},
+  {id:'griff',label:'Griffiths',x:40,y:30,r:18,bg:BBGS.further,bc:BCOLS.further,tc:BCOLS.further},
+  {id:'planck',label:'Planck\n1900',x:88,y:10,r:16,bg:BBGS.primary,bc:BCOLS.primary,tc:BCOLS.primary},
+  {id:'heis',label:'Heis.\n1927',x:68,y:11,r:17,bg:BBGS.primary,bc:BCOLS.primary,tc:BCOLS.primary},
+  {id:'shankar',label:'Shankar',x:54,y:16,r:16,bg:BBGS.further,bc:BCOLS.further,tc:BCOLS.further},
+  {id:'penrose',label:'Penrose',x:88,y:62,r:16,bg:BBGS.supplemental,bc:BCOLS.supplemental,tc:BCOLS.supplemental},
+  {id:'bohm',label:'Bohm',x:13,y:62,r:15,bg:BBGS.disputed,bc:BCOLS.disputed,tc:BCOLS.disputed},
+  {id:'sakurai',label:'Sakurai',x:62,y:36,r:15,bg:BBGS.further,bc:BCOLS.further,tc:BCOLS.further},
+];
+var BEDGES=[['root','math'],['root','hist'],['root','apps'],['root','interp'],['math','dirac'],['math','feyn'],['math','griff'],['math','shankar'],['math','sakurai'],['hist','planck'],['hist','heis'],['apps','penrose'],['interp','bohm']];
+var BDATA={
+  root:{title:'Quantum mechanics — root',author:'',type:'root',desc:'All resources in this tree relate to the Quantum mechanics article.',ref:''},
+  math:{title:'Mathematical foundations branch',author:'',type:'branch',desc:'Linear algebra, Hilbert space, operator theory, and formal QM treatments.',ref:''},
+  hist:{title:'Historical sources branch',author:'',type:'branch',desc:'Original papers from 1900–1930s documenting the birth of quantum theory.',ref:''},
+  apps:{title:'Applications branch',author:'',type:'branch',desc:'Quantum chemistry, condensed matter, computing, and optics.',ref:''},
+  interp:{title:'Interpretations branch',author:'',type:'branch',desc:'Copenhagen, Many-worlds, Pilot wave/Bohmian mechanics.',ref:''},
+  dirac:{title:'The Principles of Quantum Mechanics',author:'P.A.M. Dirac, 1958',type:'primary',desc:'Definitive formal treatment of QM. Introduces bra-ket notation. Required reading for the mathematical structure of quantum mechanics.',ref:'Dirac, P.A.M. (1958). The Principles of Quantum Mechanics, 4th ed. Oxford University Press. ISBN 978-0-19-852011-5.'},
+  feyn:{title:'The Feynman Lectures on Physics, Vol. 3',author:'Richard Feynman, 1965',type:'primary',desc:'Exceptional physical intuition alongside rigorous treatment. Freely available online from Caltech.',ref:'Feynman, R.P., Leighton, R.B., Sands, M. (1965). The Feynman Lectures on Physics, Vol. 3. Addison-Wesley.'},
+  griff:{title:'Introduction to Quantum Mechanics',author:'David Griffiths, 2018',type:'further',desc:'Standard undergraduate textbook. Classification as primary vs. further reading is actively debated — see discussion page.',ref:'Griffiths, D.J. (2018). Introduction to Quantum Mechanics, 3rd ed. Cambridge University Press. ISBN 978-1-107-18963-8.'},
+  planck:{title:'On the Theory of the Energy Distribution Law of the Normal Spectrum',author:'Max Planck, 1900',type:'primary',desc:'The paper introducing the quantum hypothesis. Birth of quantum theory. Essential historical primary source.',ref:'Planck, M. (1900). Verhandlungen der Deutschen Physikalischen Gesellschaft, 2, 237–245.'},
+  heis:{title:'Über den anschaulichen Inhalt der quantentheoretischen Kinematik',author:'Werner Heisenberg, 1927',type:'primary',desc:'The paper introducing the uncertainty principle. One of the foundational papers of quantum mechanics.',ref:'Heisenberg, W. (1927). Zeitschrift für Physik, 43(3–4), 172–198. doi:10.1007/BF01397280.'},
+  shankar:{title:'Principles of Quantum Mechanics',author:'R. Shankar, 1994',type:'further',desc:'More rigorous than Griffiths. Bridges undergraduate to graduate level. Includes thorough mathematical introduction.',ref:'Shankar, R. (1994). Principles of Quantum Mechanics, 2nd ed. Plenum Press. ISBN 978-0-306-44790-7.'},
+  penrose:{title:'The Road to Reality',author:'Roger Penrose, 2004',type:'supplemental',desc:'Comprehensive tour of mathematical physics. QM is one chapter in a vast work. Requires significant mathematical maturity.',ref:'Penrose, R. (2004). The Road to Reality. Knopf. ISBN 978-0-679-45443-4.'},
+  bohm:{title:'Quantum Theory',author:'David Bohm, 1951',type:'disputed',desc:'Clear treatment but Bohm\'s interpretation diverges from Copenhagen orthodoxy. Classification as primary vs. supplemental is contested.',ref:'Bohm, D. (1951). Quantum Theory. Prentice-Hall. ISBN 978-0-486-65969-5.'},
+  sakurai:{title:'Modern Quantum Mechanics',author:'J.J. Sakurai & Napolitano, 2017',type:'further',desc:'Standard graduate-level text. More demanding than Griffiths or Shankar. Excellent for self-study at advanced level.',ref:'Sakurai, J.J., Napolitano, J. (2017). Modern Quantum Mechanics, 3rd ed. Cambridge. ISBN 978-1-108-42241-3.'},
+};
+
+function pct(v,max){return(v/100)*max}
+var hoverTimer=null;
+var tooltip=null;
+
+function drawTree(){
+  var canvas=document.getElementById('tc4');
+  var svgEl=document.getElementById('ts4');
+  tooltip=document.getElementById('tree-tooltip');
+  if(!canvas||!svgEl)return;
+  while(canvas.children.length>1)canvas.removeChild(canvas.lastChild);
+  svgEl.innerHTML='';
+  var W=canvas.offsetWidth||560;
+  var H=340;
+  canvas.style.minHeight=H+'px';
+  svgEl.setAttribute('viewBox','0 0 '+W+' '+H);
+  var placed={};
+  BNODES.forEach(function(n){placed[n.id]={x:pct(n.x,W),y:pct(n.y,H),r:n.r}});
+  BEDGES.forEach(function(e){
+    var a=placed[e[0]],b=placed[e[1]];if(!a||!b)return;
+    var line=document.createElementNS('http://www.w3.org/2000/svg','line');
+    line.setAttribute('x1',a.x);line.setAttribute('y1',a.y);
+    line.setAttribute('x2',b.x);line.setAttribute('y2',b.y);
+    line.setAttribute('stroke','#bbb');line.setAttribute('stroke-width','1.5');
+    svgEl.appendChild(line);
+  });
+  BNODES.forEach(function(n){
+    var p=placed[n.id];
+    var div=document.createElement('div');
+    div.className='bub';
+    div.style.cssText='width:'+(p.r*2)+'px;height:'+(p.r*2)+'px;left:'+(p.x-p.r)+'px;top:'+(p.y-p.r)+'px;background:'+n.bg+';border-color:'+n.bc+'66;color:'+n.tc+';';
+    div.innerHTML='<span class="bub-lbl">'+n.label+'</span>';
+    div.addEventListener('mouseenter',function(e){
+      clearTimeout(hoverTimer);
+      div.style.transform='scale(1.18)';
+      var d=BDATA[n.id];if(!d||!tooltip)return;
+      var typeMap={primary:'<span style="background:#dce6f5;color:#0d3a6b;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:500">Primary</span>',further:'<span style="background:#dcedc8;color:#1a4a2a;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:500">Further reading</span>',disputed:'<span style="background:#fce4ec;color:#6b1a1a;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:500">Disputed</span>',supplemental:'<span style="background:#fff3cd;color:#7a4f00;font-size:10px;padding:1px 7px;border-radius:10px;font-weight:500">Supplemental</span>',branch:'',root:''};
+      tooltip.innerHTML=(typeMap[d.type]||'')+(typeMap[d.type]?'<br>':'')+'<div class="tt-title">'+d.title+'</div>'+(d.author?'<div class="tt-author">'+d.author+'</div>':'')+'<div class="tt-desc">'+d.desc+'</div>'+(d.ref?'<div class="tt-ref">'+d.ref+'</div>':'');
+      var cr=canvas.getBoundingClientRect();
+      var nr=div.getBoundingClientRect();
+      var relX=nr.left-cr.left;
+      var relY=nr.top-cr.top;
+      var tx=relX+p.r*2+6;
+      var ty=relY;
+      if(tx+200>W)tx=relX-206;
+      if(tx<0)tx=4;
+      tooltip.style.left=tx+'px';
+      tooltip.style.top=ty+'px';
+      tooltip.style.display='block';
+    });
+    div.addEventListener('mouseleave',function(){
+      div.style.transform='scale(1)';
+      hoverTimer=setTimeout(function(){if(tooltip)tooltip.style.display='none'},300);
+    });
+    canvas.appendChild(div);
+  });
+  if(tooltip){
+    tooltip.addEventListener('mouseenter',function(){clearTimeout(hoverTimer)});
+    tooltip.addEventListener('mouseleave',function(){tooltip.style.display='none'});
+  }
+}
+
+function navigate(pgId){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.gnl,.mml').forEach(function(l){l.classList.remove('on')});
+  document.querySelectorAll('.pb').forEach(function(b){b.classList.remove('on')});
+  var pg=document.getElementById('pg-'+pgId);if(pg)pg.classList.add('on');
+  document.querySelectorAll('.gnl[data-pg="'+pgId+'"],.mml[data-pg="'+pgId+'"]').forEach(function(l){l.classList.add('on')});
+  var pb=document.querySelector('.pb[data-pg="'+pgId+'"]');if(pb)pb.classList.add('on');
+  if(pgId==='article')setTimeout(drawTree,80);
+  var mm=document.getElementById('mob-menu');if(mm)mm.classList.remove('open');
+  var h=document.getElementById('ham');if(h)h.classList.remove('open');
+}
+function navigateArtPg(id){
+  document.querySelectorAll('.art-pg').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.aln-a').forEach(function(l){l.classList.remove('cur')});
+  document.querySelectorAll('.mat').forEach(function(t){t.classList.remove('on')});
+  var pg=document.getElementById('artpg-'+id);if(pg)pg.classList.add('on');
+  var al=document.querySelector('.aln-a[data-artpg="'+id+'"]');if(al)al.classList.add('cur');
+  var mt=document.querySelector('.mat[data-artpg="'+id+'"]');if(mt)mt.classList.add('on');
+  if(id==='tree')setTimeout(drawTree,80);
+}
+document.querySelectorAll('[data-pg]').forEach(function(el){el.addEventListener('click',function(e){e.preventDefault();navigate(el.getAttribute('data-pg'))})});
+document.querySelectorAll('[data-artpg]').forEach(function(el){el.addEventListener('click',function(e){e.preventDefault();navigateArtPg(el.getAttribute('data-artpg'))})});
+
+/* hamburger */
+var ham=document.getElementById('ham');
+var mm2=document.getElementById('mob-menu');
+if(ham&&mm2)ham.addEventListener('click',function(){ham.classList.toggle('open');mm2.classList.toggle('open')});
+
+/* mobile filter */
+var mfb=document.getElementById('mob-filter-btn');
+var mfp=document.getElementById('r-sidebar-panel');
+if(mfb&&mfp)mfb.addEventListener('click',function(){mfp.classList.toggle('open');mfb.textContent=mfp.classList.contains('open')?'Hide filters ▴':'Filter resources ▾'});
+
+/* mobile rail accordions */
+document.querySelectorAll('.mrl-head').forEach(function(h2){
+  h2.addEventListener('click',function(){var k=h2.getAttribute('data-mrl');var b=document.getElementById('mrl-'+k);if(b)b.classList.toggle('open')});
+});
+
+/* tree filters */
+document.querySelectorAll('.tf').forEach(function(f){f.addEventListener('click',function(){document.querySelectorAll('.tf').forEach(function(x){x.classList.remove('on')});f.classList.add('on')})});
+
+/* resource filters */
+document.querySelectorAll('.rf').forEach(function(f){f.addEventListener('click',function(){document.querySelectorAll('.rf').forEach(function(x){x.classList.remove('on')});f.classList.add('on')})});
+
+/* auth tabs */
+var lt=document.getElementById('auth-login-tab');var jt=document.getElementById('auth-join-tab');
+var lf=document.getElementById('auth-login-form');var jf=document.getElementById('auth-join-form');
+if(lt)lt.addEventListener('click',function(){lt.classList.add('on');jt.classList.remove('on');lf.style.display='block';jf.style.display='none'});
+if(jt)jt.addEventListener('click',function(){jt.classList.add('on');lt.classList.remove('on');jf.style.display='block';lf.style.display='none'});
+var tj=document.getElementById('auth-to-join');var tl2=document.getElementById('auth-to-login');
+if(tj)tj.addEventListener('click',function(){jt.click()});if(tl2)tl2.addEventListener('click',function(){lt.click()});
+
+/* appearance sidebar */
+var hideBtn=document.getElementById('appear-hide-btn');
+var asBody=document.getElementById('appear-body');
+if(hideBtn&&asBody)hideBtn.addEventListener('click',function(){var hidden=asBody.style.display==='none';asBody.style.display=hidden?'block':'none';hideBtn.textContent=hidden?'[hide]':'[show]'});
+
+var sizeSlider=document.getElementById('text-size-slider');
+var sizeLabel=document.getElementById('text-size-label');
+var sizeNames={12:'Small',14:'Standard',16:'Large',18:'Largest'};
+if(sizeSlider)sizeSlider.addEventListener('input',function(){
+  var v=parseInt(sizeSlider.value);
+  document.getElementById('frame-inner').style.setProperty('--fs',v+'px');
+  if(sizeLabel)sizeLabel.textContent=sizeNames[v]||v+'px';
+});
+
+document.querySelectorAll('.as-theme-btn').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    var th=btn.getAttribute('data-theme');
+    if(!th)return;
+    document.querySelectorAll('.as-theme-btn').forEach(function(b){b.classList.remove('on')});
+    btn.classList.add('on');
+    var fi=document.getElementById('frame-inner');
+    fi.className='frame-inner '+th;
+    document.querySelectorAll('.sb[data-theme]').forEach(function(b){b.classList.remove('on')});
+    var sb=document.querySelector('.sb[data-theme="'+th+'"]');
+    if(sb)sb.classList.add('on');
+  });
+});
+
+/* viewport simulator */
+var fw=document.getElementById('frame-wrap');
+var fi2=document.getElementById('frame-inner');
+var sinfo=document.getElementById('sim-info');
+var modes={desktop:{w:'100%',cls:'',info:'Full width — all columns visible'},tablet:{w:'768px',cls:'is-tablet',info:'Tablet — collapsible nav, stacked layout'},mobile:{w:'390px',cls:'is-mobile',info:'Mobile — hamburger nav, single column'}};
+document.querySelectorAll('.sb[data-mode]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.sb[data-mode]').forEach(function(b){b.classList.remove('on')});
+    btn.classList.add('on');
+    var cfg=modes[btn.getAttribute('data-mode')];
+    fw.style.maxWidth=cfg.w;
+    var th=fi2.className.match(/theme-\S+/);
+    fi2.className='frame-inner '+(th?th[0]:'')+' '+cfg.cls;
+    if(sinfo)sinfo.textContent=cfg.info;
+    var m=document.getElementById('mob-menu');if(m)m.classList.remove('open');
+    var hh=document.getElementById('ham');if(hh)hh.classList.remove('open');
+    setTimeout(drawTree,100);
+  });
+});
+document.querySelectorAll('.sb[data-theme]').forEach(function(btn){
+  btn.addEventListener('click',function(){
+    document.querySelectorAll('.sb[data-theme]').forEach(function(b){b.classList.remove('on')});
+    btn.classList.add('on');
+    var th=btn.getAttribute('data-theme');
+    var fi=document.getElementById('frame-inner');
+    var modeClass=fi.className.match(/is-\S+/);
+    fi.className='frame-inner '+th+' '+(modeClass?modeClass[0]:'');
+    document.querySelectorAll('.as-theme-btn[data-theme="'+th+'"]').forEach(function(b){b.classList.add('on')});
+    document.querySelectorAll('.as-theme-btn:not([data-theme="'+th+'"])').forEach(function(b){b.classList.remove('on')});
+  });
+});
+document.querySelectorAll('.pb').forEach(function(b){b.addEventListener('click',function(){navigate(b.getAttribute('data-pg'))})});
+setTimeout(function(){drawTree()},350);
+</script>

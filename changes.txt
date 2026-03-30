@@ -1,0 +1,14 @@
+Here's everything that changed across the full site:
+The subject grid now uses the Wikipedia card style from your screenshot — flat bordered grid cells with no outer card shadow, icon tiles with subject-colored backgrounds, blue linked titles, and the count line beneath. It matches the browse-by-subject image exactly.
+
+The resource tree bubble map now has full hover behavior. When you move your cursor over any bubble, it scales up noticeably and a side panel appears showing the full resource title, author, description, and a complete reference line at the bottom in smaller text. The tooltip repositions to the opposite side if it would overflow the canvas. Moving off the bubble dismisses it.
+
+The appearance sidebar lives in the right rail of the article view. It has a text size slider (Small → Standard → Large → Largest) that actually adjusts the article body font size in real time, a width toggle, a four-button theme picker (Standard, Hivemind, Dark, and a stubbed Custom button), and a background color swatch row. The sidebar can be hidden with [hide] / [show]. Themes also sync with the top simulator theme buttons.
+
+The further reading section below the tree now has proper sub-headers — Introductory textbooks, Advanced treatments, Historical and philosophical — each with a formatted reference list including italicized titles, edition info, and parenthetical classification notes where relevant.
+
+The related and following subjects section has a link chip row of related topics and a portal box for the Physics macrosubject with its icon and description.
+
+The community spaces section appears in the tree view and notes clearly that communities exist at the macrosubject level, not the individual article level, then shows the three public Physics community spaces with member counts and active thread counts.
+
+The navbox (V·T·E template) at the bottom of the article matches Wikipedia's table style with category rows for Foundations, Interpretations, Applications, and Related.
