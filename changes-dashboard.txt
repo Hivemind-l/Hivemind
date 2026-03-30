@@ -1,0 +1,19 @@
+Every section in the left sidebar is fully clickable and navigates between the 9 views. Here's what each section covers:
+
+The overview is the home screen — four metric cards (MAU, articles, donations, moderation queue), a 30-day traffic sparkline with session stats, a live moderation queue with approve/reject actions, a top articles table, a real-time activity feed, and a subject coverage bar chart.
+
+Analytics has the full monthly bar chart for 2025, traffic source breakdowns with progress bars, top referring domains, and a detailed engagement table with tree interaction counts per article.
+
+Content pipeline is a Kanban board — Draft, Under Review, Approved, and Published columns, each with article cards showing author, subject badge, and status. Items in review have an amber left border; approved items have green.
+
+Moderation queue shows the full 12-item queue with article diffs (red strikethrough / green addition), resource additions, new article submissions, and spam reports, each with contextual action buttons that differ by item type.
+
+Users & roles has the full user list with role badges, an editable permissions matrix showing what each role level can do, and filter chips to segment by role.
+
+Finance shows YTD totals, MRR, expense ratio, and runway, with a scrollable donation ledger (color-coded by type: monthly, one-time, grant), and a budget allocation breakdown.
+
+Discussions is a sortable table of all open threads across the site, filterable by resource disputes, article talk, and governance — with reply counts, last activity, and status.
+
+Resource library gives the org a management view of all 92,400 resources with dispute counts flagged in red, type badges, tree appearances, and edit buttons.
+
+Settings has a two-column layout with a section nav (General, Appearance, Moderation rules, Notifications, etc.), organization detail fields, and toggle switches for all platform configuration — all interactive.
