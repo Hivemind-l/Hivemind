@@ -292,6 +292,135 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .is-mobile .uf-strip{gap:4px}
 .is-mobile .uf{font-size:11px;padding:3px 8px}
 .is-mobile .card-head{gap:6px}
+
+/* ═══════════════════════════════════════════
+   PERSONNEL TIER SYSTEM
+   tier-basic  = Reader / Contributor
+   tier-elite  = Editor / Admin / Super Admin
+   Body gets data-tier attribute; certain UI
+   elements are shown/hidden accordingly.
+═══════════════════════════════════════════ */
+[data-tier="basic"]  .elite-only  { display:none !important }
+[data-tier="elite"]  .basic-only  { display:none !important }
+[data-tier="basic"]  .sb-section.elite-section { display:none }
+[data-tier="basic"]  .sbn.elite-nav { display:none }
+
+/* ═══════════════════════════════════════════
+   PERSONA / TEAM SWITCHER  (in sidebar)
+═══════════════════════════════════════════ */
+.sb-persona{padding:8px 10px;margin:8px 10px 4px;border-radius:6px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);cursor:pointer;transition:background .15s}
+.sb-persona:hover{background:rgba(255,255,255,.1)}
+.sb-persona-top{display:flex;align-items:center;gap:8px}
+.sb-persona-avi{width:24px;height:24px;border-radius:5px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:700;color:#fff;flex-shrink:0}
+.sb-persona-name{font-size:11.5px;font-weight:500;color:#fff;flex:1;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sb-persona-role{font-size:10px;color:rgba(255,255,255,.5);margin-top:1px}
+.sb-persona-caret{opacity:.4;flex-shrink:0}
+.sb-team-strip{margin:6px 10px 0;display:flex;gap:5px;flex-wrap:wrap}
+.sb-team-chip{padding:2px 8px;border-radius:10px;font-size:10px;font-weight:500;border:1px solid rgba(255,255,255,.15);color:rgba(255,255,255,.6);cursor:pointer;transition:all .12s;white-space:nowrap}
+.sb-team-chip:hover{background:rgba(255,255,255,.1);color:#fff}
+.sb-team-chip.on{background:rgba(96,165,250,.2);border-color:#60a5fa;color:#93c5fd}
+.sb-tier-badge{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:8px;font-size:9px;font-weight:600;letter-spacing:.04em;margin-left:auto;flex-shrink:0}
+.sb-tier-badge.basic{background:rgba(255,255,255,.1);color:rgba(255,255,255,.6)}
+.sb-tier-badge.elite{background:rgba(96,165,250,.2);color:#93c5fd}
+.sb-tier-badge.super{background:rgba(245,158,11,.18);color:#fcd34d}
+
+/* ═══════════════════════════════════════════
+   MACRO BAR — pinned below topbar, elite only
+═══════════════════════════════════════════ */
+.macro-bar{height:36px;background:var(--paper);border-bottom:1px solid var(--rule);padding:0 18px;display:flex;align-items:center;gap:4px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.macro-bar::-webkit-scrollbar{display:none}
+.macro-bar-lbl{font-size:10px;font-weight:600;color:var(--ink4);text-transform:uppercase;letter-spacing:.07em;margin-right:4px;white-space:nowrap;flex-shrink:0}
+.macro-btn{display:flex;align-items:center;gap:5px;padding:3px 10px;border-radius:4px;font-size:11.5px;font-weight:500;color:var(--ink2);cursor:pointer;border:1px solid transparent;background:transparent;font-family:var(--sans);white-space:nowrap;transition:all .12s;flex-shrink:0}
+.macro-btn:hover{background:var(--paper3);border-color:var(--rule2)}
+.macro-btn.active{background:var(--blue-bg);color:var(--blue2);border-color:var(--blue-lt)}
+.macro-btn svg{opacity:.6;flex-shrink:0}
+.macro-sep{width:1px;height:18px;background:var(--rule);flex-shrink:0;margin:0 2px}
+.is-mobile .macro-bar{padding:0 12px}
+
+/* ═══════════════════════════════════════════
+   UTILITY TRAY — fixed right edge strip
+   Icon strip (44px) → expands to panel (300px)
+═══════════════════════════════════════════ */
+.tray{position:fixed;right:0;top:50px;bottom:44px;z-index:150;display:flex;align-items:flex-start;pointer-events:none}
+.tray-strip{width:44px;background:var(--paper);border-left:1px solid var(--rule);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;pointer-events:auto;height:100%;flex-shrink:0;box-shadow:-2px 0 8px rgba(0,0,0,.04)}
+.tray-btn{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);border:none;background:transparent;transition:all .12s;position:relative;flex-shrink:0}
+.tray-btn:hover{background:var(--paper3);color:var(--ink)}
+.tray-btn.on{background:var(--blue-bg);color:var(--blue2)}
+.tray-btn-badge{position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:50%;background:var(--red-mid);border:1.5px solid var(--paper)}
+.tray-sep{width:20px;height:1px;background:var(--rule);margin:4px 0;flex-shrink:0}
+.tray-tip{font-size:9px;color:var(--ink4);text-transform:uppercase;letter-spacing:.06em;writing-mode:vertical-rl;transform:rotate(180deg);padding:6px 0;opacity:.6;user-select:none}
+.tray-panel{width:0;overflow:hidden;background:var(--paper);border-left:1px solid var(--rule);transition:width .22s cubic-bezier(.4,0,.2,1);pointer-events:auto;display:flex;flex-direction:column;height:100%;box-shadow:-4px 0 16px rgba(0,0,0,.06)}
+.tray-panel.open{width:300px}
+.tray-panel-head{padding:12px 14px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;min-width:300px}
+.tray-panel-title{font-size:13px;font-weight:600;color:var(--ink)}
+.tray-panel-close{width:24px;height:24px;border-radius:4px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:16px}
+.tray-panel-close:hover{background:var(--paper3)}
+.tray-panel-body{flex:1;overflow-y:auto;min-width:300px;-webkit-overflow-scrolling:touch}
+/* Sections inside tray panels */
+.tp-section{padding:10px 14px;border-bottom:1px solid var(--rule)}
+.tp-section:last-child{border-bottom:none}
+.tp-section-head{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:8px}
+/* Live feed items */
+.feed-item{display:flex;gap:9px;padding:9px 14px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .1s}
+.feed-item:hover{background:var(--paper2)}
+.feed-item:last-child{border-bottom:none}
+.feed-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.feed-body{flex:1;min-width:0}
+.feed-text{font-size:11.5px;color:var(--ink2);line-height:1.45;margin-bottom:2px}
+.feed-text strong{color:var(--ink);font-weight:500}
+.feed-time{font-size:10.5px;color:var(--ink4)}
+.feed-badge{font-size:9.5px;padding:1px 6px;border-radius:6px;font-weight:600;white-space:nowrap;flex-shrink:0;margin-top:2px}
+/* Bookmark items */
+.bm-item{display:flex;align-items:center;gap:9px;padding:8px 14px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .1s}
+.bm-item:hover{background:var(--paper2)}
+.bm-item:last-child{border-bottom:none}
+.bm-icon{width:28px;height:28px;border-radius:5px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.bm-body{flex:1;min-width:0}
+.bm-title{font-size:12px;font-weight:500;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bm-sub{font-size:10.5px;color:var(--ink3)}
+.bm-remove{width:18px;height:18px;border-radius:3px;display:flex;align-items:center;justify-content:center;color:var(--ink4);font-size:14px;cursor:pointer;flex-shrink:0;opacity:0;transition:opacity .12s}
+.bm-item:hover .bm-remove{opacity:1}
+/* Macro list inside tray */
+.macro-list-item{display:flex;align-items:center;gap:10px;padding:8px 14px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .1s}
+.macro-list-item:hover{background:var(--paper2)}
+.macro-list-item:last-child{border-bottom:none}
+.macro-list-icon{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px}
+.macro-list-body{flex:1;min-width:0}
+.macro-list-name{font-size:12px;font-weight:500;color:var(--ink)}
+.macro-list-desc{font-size:10.5px;color:var(--ink3)}
+.macro-list-kbd{font-size:9.5px;background:var(--paper3);border:1px solid var(--rule2);border-radius:3px;padding:1px 5px;color:var(--ink3);font-family:monospace;white-space:nowrap;flex-shrink:0}
+/* Team member flow */
+.team-member{display:flex;align-items:center;gap:9px;padding:8px 14px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .1s}
+.team-member:hover{background:var(--paper2)}
+.team-member:last-child{border-bottom:none}
+.tm-avi{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;color:#fff;flex-shrink:0}
+.tm-body{flex:1;min-width:0}
+.tm-name{font-size:12px;font-weight:500;color:var(--ink)}
+.tm-role{font-size:10.5px;color:var(--ink3)}
+.tm-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+/* Content area shifts left when tray panel is open */
+.tray-panel.open ~ .tray-strip { box-shadow:none }
+/* On tablet/mobile hide the tray (nav takes precedence) */
+.is-tablet .tray,.is-mobile .tray{display:none}
+/* Adjust content right padding for tray strip on desktop */
+.fi .main { padding-right:44px }
+.is-tablet .fi .main,.is-mobile .fi .main { padding-right:0 }
+
+/* ═══════════════════════════════════════════
+   PERSONA SWITCHER MODAL
+═══════════════════════════════════════════ */
+.persona-card{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--rule);border-radius:7px;cursor:pointer;margin-bottom:8px;transition:all .15s}
+.persona-card:hover{border-color:var(--blue-mid);background:var(--blue-bg)}
+.persona-card.active{border-color:var(--blue-mid);background:var(--blue-bg)}
+.persona-card:last-child{margin-bottom:0}
+.pc-avi{width:38px;height:38px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;color:#fff;flex-shrink:0}
+.pc-body{flex:1}
+.pc-name{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.pc-desc{font-size:11px;color:var(--ink3);line-height:1.4}
+.pc-tier{font-size:9px;font-weight:600;padding:2px 7px;border-radius:6px;flex-shrink:0}
+.pc-tier.basic{background:var(--paper3);color:var(--ink3)}
+.pc-tier.elite{background:var(--blue-bg);color:var(--blue2)}
+.pc-tier.super{background:var(--amber-bg);color:var(--amber)}
 </style>
 <div>
 <div class="vsim">
@@ -310,29 +439,50 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
     <div class="sb-ball"><div class="sb-hex"></div></div>
     <div><div class="sb-name">Hivemind</div><div class="sb-sub">Organization dashboard</div></div>
   </div>
-  <div class="sb-user" onclick="openModal('modal-profile')">
-    <div class="sb-avi">AD</div>
-    <div><div class="sb-uname">Admin Director</div><div class="sb-urole">Super administrator</div></div>
-    <svg style="margin-left:auto;opacity:.4" width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M3 5l3 3 3-3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+
+  <!-- PERSONA / USER SWITCHER -->
+  <div class="sb-persona" onclick="openModal('modal-persona')">
+    <div class="sb-persona-top">
+      <div class="sb-persona-avi" style="background:#1a3a5c" id="sb-persona-avi">AD</div>
+      <div style="flex:1;min-width:0">
+        <div class="sb-persona-name" id="sb-persona-name">Admin Director</div>
+        <div class="sb-persona-role" id="sb-persona-role">Super administrator</div>
+      </div>
+      <span class="sb-tier-badge super" id="sb-tier-badge">⚡ Elite</span>
+    </div>
   </div>
+
+  <!-- TEAM CONTEXT STRIP -->
+  <div class="sb-team-strip" id="sb-team-strip">
+    <div class="sb-team-chip on" onclick="switchTeam(this,'All teams')">All teams</div>
+    <div class="sb-team-chip" onclick="switchTeam(this,'Physics')">Physics</div>
+    <div class="sb-team-chip" onclick="switchTeam(this,'Biology')">Biology</div>
+    <div class="sb-team-chip" onclick="switchTeam(this,'Moderation')">Moderation</div>
+  </div>
+
   <nav class="sb-nav">
     <div class="sb-section">Overview</div>
     <div class="sbn on" data-pg="overview"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="1" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="9" y="9" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>Overview</div>
     <div class="sbn" data-pg="analytics"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><polyline points="1,13 5,8 8,11 12,5 15,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>Analytics</div>
+
     <div class="sb-section">Content</div>
     <div class="sbn" data-pg="pipeline"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="3" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="7" width="14" height="3" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x="1" y="12" width="14" height="3" rx="1" stroke="currentColor" stroke-width="1.4"/></svg>Content pipeline</div>
-    <div class="sbn" data-pg="moderation"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4" x2="8" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.5" r=".8" fill="currentColor"/></svg>Moderation<span class="sbn-badge" id="mod-badge">12</span></div>
+    <div class="sbn elite-nav" data-pg="moderation"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4" x2="8" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="8" cy="11.5" r=".8" fill="currentColor"/></svg>Moderation<span class="sbn-badge" id="mod-badge">12</span></div>
     <div class="sbn" data-pg="resources"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="5" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="5" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Resource library</div>
+
     <div class="sb-section">Community</div>
     <div class="sbn" data-pg="users"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M1 14c0-3 2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M12 10c1.5 0 3 1 3 4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Users &amp; roles</div>
     <div class="sbn" data-pg="discussions"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><path d="M2 3h10a1 1 0 011 1v6a1 1 0 01-1 1H6l-3 2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Discussions<span class="sbn-badge amber">38</span></div>
-    <div class="sb-section">Operations</div>
-    <div class="sbn" data-pg="finance"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/><line x1="1" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.4"/><line x1="4" y1="11.5" x2="7" y2="11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Finance &amp; donations</div>
-    <div class="sbn" data-pg="settings"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Settings</div>
+
+    <div class="sb-section elite-section">Operations</div>
+    <div class="sbn elite-nav" data-pg="finance"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.4"/><line x1="1" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.4"/><line x1="4" y1="11.5" x2="7" y2="11.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Finance &amp; donations</div>
+    <div class="sbn elite-nav" data-pg="settings"><svg class="sbn-icon" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="2.5" stroke="currentColor" stroke-width="1.4"/><path d="M8 1v2M8 13v2M1 8h2M13 8h2M3.05 3.05l1.41 1.41M11.54 11.54l1.41 1.41M3.05 12.95l1.41-1.41M11.54 4.46l1.41-1.41" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Settings</div>
   </nav>
+
   <div class="sb-bottom">
+    <span class="sb-bl" onclick="openTrayPanel('feed')">📡 Live feed</span>
+    <span class="sb-bl" onclick="openTrayPanel('bookmarks')">🔖 Bookmarks</span>
     <span class="sb-bl">Documentation</span>
-    <span class="sb-bl">Support</span>
     <span class="sb-bl" onclick="openModal('modal-profile')">Account settings</span>
     <span class="sb-bl" style="color:rgba(255,255,255,.25)">Sign out</span>
   </div>
@@ -349,6 +499,27 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
       <button class="tb-btn primary" id="topbar-action" onclick="handleTopAction()">+ New article</button>
     </div>
   </header>
+
+  <!-- MACRO BAR — elite only, context-aware quick actions -->
+  <div class="macro-bar elite-only" id="macro-bar">
+    <span class="macro-bar-lbl">Quick:</span>
+    <button class="macro-btn" onclick="openModal('modal-new-article')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><line x1="8" y1="2" x2="8" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="8" x2="14" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>New article</button>
+    <button class="macro-btn" onclick="openModal('modal-invite')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.4"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Invite user</button>
+    <button class="macro-btn" onclick="openModal('modal-add-resource')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="5" x2="8" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Add resource</button>
+    <div class="macro-sep"></div>
+    <button class="macro-btn" onclick="navigate('moderation')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.4"/><line x1="8" y1="4" x2="8" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>Mod queue <span id="macro-mod-count" style="background:var(--red-mid);color:#fff;font-size:9px;padding:0 5px;border-radius:8px;margin-left:2px">12</span></button>
+    <button class="macro-btn" onclick="openModal('modal-donation')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M8 13s-6-4-6-8a6 6 0 0112 0c0 4-6 8-6 8z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Record donation</button>
+    <div class="macro-sep"></div>
+    <button class="macro-btn active" id="macro-feed-btn" onclick="openTrayPanel('feed')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="3" cy="13" r="1.5" fill="currentColor"/><path d="M2 9c2.2 0 5 2.8 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M2 5c4.4 0 9 4.6 9 9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Live feed</button>
+    <button class="macro-btn" onclick="openTrayPanel('bookmarks')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><path d="M3 2h10v13l-5-3-5 3V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>Bookmarks</button>
+    <button class="macro-btn" onclick="openTrayPanel('macros')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4 2h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="4" y1="9" x2="12" y2="9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Macros</button>
+    <div class="macro-sep"></div>
+    <button class="macro-btn" onclick="openTrayPanel('team')"><svg width="11" height="11" viewBox="0 0 16 16" fill="none"><circle cx="5" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><circle cx="11" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 13c0-2.2 1.8-4 4-4M10 9c2.2 0 4 1.8 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M7 9c2.2 0 4 1.8 4 4H5c0-2.2 1.8-4 4-4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Team flow</button>
+    <div style="margin-left:auto;display:flex;align-items:center;gap:6px">
+      <span style="font-size:10px;color:var(--ink4)" id="macro-team-ctx">All teams</span>
+      <div style="width:6px;height:6px;border-radius:50%;background:var(--green-mid)" title="Live feed active"></div>
+    </div>
+  </div>
   <div class="mob-nav-backdrop" id="mob-nav-backdrop" onclick="closeMobNav()"></div>
   <nav class="mob-nav" id="mob-nav">
     <!-- sticky header inside nav so brand/close is always visible -->
@@ -1315,6 +1486,158 @@ USA</textarea></div>
 </div><!-- /main -->
 </div><!-- /dash-shell -->
 </div></div><!-- /fi /fw -->
+
+<!-- ═══════════════════════════════════════
+     UTILITY TRAY — fixed right edge
+     Icon strip + 4 slide-in panels
+════════════════════════════════════════ -->
+<div class="tray" id="tray">
+  <!-- Active panel (rendered before strip so panel appears to left of strip) -->
+  <div class="tray-panel" id="tray-panel">
+    <!-- LIVE FEED PANEL -->
+    <div id="tp-feed" style="display:none;flex-direction:column;height:100%">
+      <div class="tray-panel-head">
+        <span class="tray-panel-title">📡 Live feed</span>
+        <div style="display:flex;align-items:center;gap:8px">
+          <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--green)"><div style="width:6px;height:6px;border-radius:50%;background:var(--green-mid);animation:pulse 2s infinite"></div>Live</div>
+          <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
+        </div>
+      </div>
+      <div style="padding:8px 14px;border-bottom:1px solid var(--rule);display:flex;gap:4px;flex-wrap:wrap">
+        <button class="uf on" style="font-size:10.5px;padding:2px 9px" onclick="feedFilter(this,'all')">All</button>
+        <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFilter(this,'edit')">Edits</button>
+        <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFilter(this,'publish')">Published</button>
+        <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFilter(this,'mod')">Mod</button>
+        <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFilter(this,'team')">Team</button>
+      </div>
+      <div class="tray-panel-body" id="feed-list">
+        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>mx_robin</strong> published "Wave function collapse"</div><div class="feed-time">just now</div></div><span class="feed-badge badge-green">Published</span></div>
+        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Moderation queue SLA breach — <strong>3 items</strong> over 24h</div><div class="feed-time">2 min ago</div></div><span class="feed-badge badge-red">⚠ SLA</span></div>
+        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#3b82f6"></div><div class="feed-body"><div class="feed-text"><strong>quantumfox</strong> submitted edit to Quantum mechanics §Overview</div><div class="feed-time">4 min ago</div></div><span class="feed-badge badge-blue">Edit</span></div>
+        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>sara_r</strong> added 3 resources to Physics tree</div><div class="feed-time">11 min ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span></div>
+        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#f59e0b"></div><div class="feed-body"><div class="feed-text"><strong>lena_w</strong> flagged resource classification dispute</div><div class="feed-time">28 min ago</div></div><span class="feed-badge badge-amber">Dispute</span></div>
+        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>neuro_x</strong> published "DNA methylation — epigenetics"</div><div class="feed-time">42 min ago</div></div><span class="feed-badge badge-green">Published</span></div>
+        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>anil_s</strong> joined Physics team as contributor</div><div class="feed-time">1 hr ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span></div>
+        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Spam report submitted: <strong>anon_882</strong> · Thermodynamics talk</div><div class="feed-time">1 hr ago</div></div><span class="feed-badge badge-red">Report</span></div>
+        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#3b82f6"></div><div class="feed-body"><div class="feed-text"><strong>sara_r</strong> submitted new resource: Cohen-Tannoudji Vol. 2</div><div class="feed-time">2 hr ago</div></div><span class="feed-badge badge-blue">Resource</span></div>
+        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>quantumfox</strong> published "Entropy — statistical mechanics"</div><div class="feed-time">3 hr ago</div></div><span class="feed-badge badge-green">Published</span></div>
+        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>Dr. Priya Mehta</strong> applied for Chemistry editor role</div><div class="feed-time">4 hr ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">New user</span></div>
+        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#f59e0b"></div><div class="feed-body"><div class="feed-text">Donation received: <strong>$500</strong> from James R.</div><div class="feed-time">5 hr ago</div></div><span class="feed-badge badge-amber">Finance</span></div>
+      </div>
+    </div>
+    <!-- BOOKMARKS PANEL -->
+    <div id="tp-bookmarks" style="display:none;flex-direction:column;height:100%">
+      <div class="tray-panel-head">
+        <span class="tray-panel-title">🔖 Bookmarks</span>
+        <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
+      </div>
+      <div style="padding:8px 14px;border-bottom:1px solid var(--rule)">
+        <div class="tb-search" style="width:100%"><svg width="12" height="12" viewBox="0 0 16 16" fill="none"><circle cx="6.5" cy="6.5" r="5" stroke="currentColor" stroke-width="1.5"/><line x1="10.5" y1="10.5" x2="14" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><input placeholder="Search bookmarks…" style="font-size:11.5px"/></div>
+      </div>
+      <div class="tray-panel-body">
+        <div class="tp-section-head" style="padding:10px 14px 4px">Pages</div>
+        <div class="bm-item" onclick="navigate('moderation');closeTrayPanel()"><div class="bm-icon" style="background:var(--red-bg)">⚠</div><div class="bm-body"><div class="bm-title">Moderation queue</div><div class="bm-sub">12 pending items</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="navigate('analytics');closeTrayPanel()"><div class="bm-icon" style="background:var(--blue-bg)">📊</div><div class="bm-body"><div class="bm-title">Analytics</div><div class="bm-sub">March 2026 report</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="navigate('finance');closeTrayPanel()"><div class="bm-icon" style="background:var(--green-bg)">💰</div><div class="bm-body"><div class="bm-title">Finance &amp; donations</div><div class="bm-sub">$184,210 raised YTD</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="tp-section-head" style="padding:10px 14px 4px;border-top:1px solid var(--rule)">Resources</div>
+        <div class="bm-item" onclick="showToast('Opening resource…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📖</div><div class="bm-body"><div class="bm-title">Principles of Quantum Mechanics</div><div class="bm-sub">Dirac · Primary · Physics</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="showToast('Opening resource…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📖</div><div class="bm-body"><div class="bm-title">CLRS — Introduction to Algorithms</div><div class="bm-sub">Cormen et al. · Primary · CS</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="tp-section-head" style="padding:10px 14px 4px;border-top:1px solid var(--rule)">Articles</div>
+        <div class="bm-item" onclick="showToast('Opening article…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📄</div><div class="bm-body"><div class="bm-title">Quantum mechanics</div><div class="bm-sub">48,210 views · Physics</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="showToast('Opening article…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📄</div><div class="bm-body"><div class="bm-title">CRISPR-Cas9 gene editing</div><div class="bm-sub">36,840 views · Biology</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+      </div>
+      <div style="padding:10px 14px;border-top:1px solid var(--rule)">
+        <button class="tb-btn" style="width:100%;font-size:12px" onclick="showToast('Bookmark current page','','green')">+ Bookmark current page</button>
+      </div>
+    </div>
+    <!-- MACROS PANEL -->
+    <div id="tp-macros" style="display:none;flex-direction:column;height:100%">
+      <div class="tray-panel-head">
+        <span class="tray-panel-title">⚡ Macros</span>
+        <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
+      </div>
+      <div class="tray-panel-body">
+        <div class="tp-section">
+          <div class="tp-section-head">Content actions</div>
+          <div class="macro-list-item" onclick="openModal('modal-new-article');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--blue-bg)">✏️</div><div class="macro-list-body"><div class="macro-list-name">New article</div><div class="macro-list-desc">Open article creation form</div></div><span class="macro-list-kbd">⌘N</span></div>
+          <div class="macro-list-item" onclick="navigate('moderation');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--red-bg)">⚠️</div><div class="macro-list-body"><div class="macro-list-name">Review mod queue</div><div class="macro-list-desc">Jump to pending items</div></div><span class="macro-list-kbd">⌘M</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-diff');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--paper3)">🔍</div><div class="macro-list-body"><div class="macro-list-name">View latest diff</div><div class="macro-list-desc">Last submitted edit change</div></div><span class="macro-list-kbd">⌘D</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-add-resource');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--green-bg)">📚</div><div class="macro-list-body"><div class="macro-list-name">Add resource</div><div class="macro-list-desc">Add to resource library</div></div><span class="macro-list-kbd">⌘R</span></div>
+        </div>
+        <div class="tp-section">
+          <div class="tp-section-head">People &amp; teams</div>
+          <div class="macro-list-item" onclick="openModal('modal-invite');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--purple-bg)">👤</div><div class="macro-list-body"><div class="macro-list-name">Invite user</div><div class="macro-list-desc">Send role-based invitation</div></div><span class="macro-list-kbd">⌘I</span></div>
+          <div class="macro-list-item" onclick="openTrayPanel('team')"><div class="macro-list-icon" style="background:var(--paper3)">👥</div><div class="macro-list-body"><div class="macro-list-name">Team flow</div><div class="macro-list-desc">View team members &amp; status</div></div><span class="macro-list-kbd">⌘T</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-persona');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--amber-bg)">🎭</div><div class="macro-list-body"><div class="macro-list-name">Switch persona</div><div class="macro-list-desc">Change active role view</div></div><span class="macro-list-kbd">⌘P</span></div>
+        </div>
+        <div class="tp-section">
+          <div class="tp-section-head">Finance &amp; reports</div>
+          <div class="macro-list-item" onclick="openModal('modal-donation');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--green-bg)">💳</div><div class="macro-list-body"><div class="macro-list-name">Record donation</div><div class="macro-list-desc">Manual donation entry</div></div><span class="macro-list-kbd">⌘$</span></div>
+          <div class="macro-list-item" onclick="navigate('analytics');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--blue-bg)">📈</div><div class="macro-list-body"><div class="macro-list-name">Analytics report</div><div class="macro-list-desc">Jump to analytics page</div></div><span class="macro-list-kbd">⌘A</span></div>
+          <div class="macro-list-item" onclick="showToast('Export queued','','green');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--paper3)">⬇️</div><div class="macro-list-body"><div class="macro-list-name">Export all data</div><div class="macro-list-desc">Full org data export (ZIP)</div></div></div>
+        </div>
+      </div>
+    </div>
+    <!-- TEAM FLOW PANEL -->
+    <div id="tp-team" style="display:none;flex-direction:column;height:100%">
+      <div class="tray-panel-head">
+        <span class="tray-panel-title">👥 Team flow</span>
+        <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
+      </div>
+      <div style="padding:8px 14px;border-bottom:1px solid var(--rule)">
+        <select class="form-select" style="font-size:12px;padding:5px 9px" onchange="showToast('Switched to '+this.value+' team')">
+          <option>All teams</option><option>Physics</option><option>Biology</option>
+          <option>Chemistry</option><option>Mathematics</option><option>Neuroscience</option><option>Moderation</option>
+        </select>
+      </div>
+      <div class="tray-panel-body">
+        <div class="tp-section-head" style="padding:10px 14px 4px">Online now (4)</div>
+        <div class="team-member"><div class="tm-avi" style="background:#1a3a5c">AD</div><div class="tm-body"><div class="tm-name">Admin Director</div><div class="tm-role">Super admin · Reviewing moderation</div></div><div class="tm-status" style="background:#22c55e" title="Online"></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#2a4b8d">QF</div><div class="tm-body"><div class="tm-name">quantumfox</div><div class="tm-role">Editor · Physics · Editing Quantum mechanics</div></div><div class="tm-status" style="background:#22c55e" title="Online"></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#1a4a2a">SR</div><div class="tm-body"><div class="tm-name">sara_r</div><div class="tm-role">Editor · Physics · Resource triage</div></div><div class="tm-status" style="background:#22c55e" title="Online"></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#7c3aed">NX</div><div class="tm-body"><div class="tm-name">neuro_x</div><div class="tm-role">Editor · Biology · Writing article</div></div><div class="tm-status" style="background:#f59e0b" title="Away"></div></div>
+        <div class="tp-section-head" style="padding:10px 14px 4px;border-top:1px solid var(--rule)">Away (2)</div>
+        <div class="team-member"><div class="tm-avi" style="background:#b45309">LW</div><div class="tm-body"><div class="tm-name">lena_w</div><div class="tm-role">Editor · Neuroscience</div></div><div class="tm-status" style="background:#d1d5db" title="Away"></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#166534">AS</div><div class="tm-body"><div class="tm-name">anil_s</div><div class="tm-role">Contributor · Math / Physics</div></div><div class="tm-status" style="background:#d1d5db" title="Away"></div></div>
+        <div style="padding:12px 14px;border-top:1px solid var(--rule)">
+          <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:8px">Personnel type flow</div>
+          <div style="display:flex;flex-direction:column;gap:6px">
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11.5px"><span style="color:var(--ink2)">Super admins</span><span style="font-weight:600;color:var(--ink)">1</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11.5px"><span style="color:var(--ink2)">Editors</span><span style="font-weight:600;color:var(--ink)">284</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11.5px"><span style="color:var(--ink2)">Contributors</span><span style="font-weight:600;color:var(--ink)">2,840</span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;font-size:11.5px"><span style="color:var(--ink2)">Readers</span><span style="font-weight:600;color:var(--ink)">3,082</span></div>
+          </div>
+          <button class="tb-btn" style="width:100%;margin-top:10px;font-size:12px" onclick="navigate('users');closeTrayPanel()">Manage all users →</button>
+        </div>
+      </div>
+    </div>
+  </div><!-- /tray-panel -->
+
+  <!-- ICON STRIP -->
+  <div class="tray-strip">
+    <button class="tray-btn" id="tray-feed-btn" onclick="openTrayPanel('feed')" title="Live feed">
+      <div class="tray-btn-badge" id="tray-feed-badge"></div>
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none"><circle cx="3" cy="13" r="1.5" fill="currentColor"/><path d="M2 9c2.2 0 5 2.8 5 5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/><path d="M2 5c4.4 0 9 4.6 9 9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg>
+    </button>
+    <button class="tray-btn" id="tray-bm-btn" onclick="openTrayPanel('bookmarks')" title="Bookmarks">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><path d="M3 2h10v13l-5-3-5 3V2z" stroke="currentColor" stroke-width="1.4" stroke-linejoin="round"/></svg>
+    </button>
+    <button class="tray-btn elite-only" id="tray-macro-btn" onclick="openTrayPanel('macros')" title="Macros">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="9" rx="1.5" stroke="currentColor" stroke-width="1.4"/><path d="M4 2h8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="4" y1="9" x2="12" y2="9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    </button>
+    <button class="tray-btn elite-only" id="tray-team-btn" onclick="openTrayPanel('team')" title="Team flow">
+      <svg width="15" height="15" viewBox="0 0 16 16" fill="none"><circle cx="5" cy="5" r="2.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 13c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="12" cy="5" r="2" stroke="currentColor" stroke-width="1.2"/><path d="M10 13c0-1.7 1-3 2-3" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    </button>
+    <div class="tray-sep"></div>
+    <button class="tray-btn" onclick="openModal('modal-profile')" title="Profile">
+      <div style="width:22px;height:22px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff">AD</div>
+    </button>
+    <button class="tray-btn elite-only" onclick="openModal('modal-persona')" title="Switch persona" style="margin-top:auto">
+      <svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="6" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M2 14c0-3 2.7-5 6-5s6 2 6 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+    </button>
+  </div>
+</div><!-- /tray -->
+
 </div><!-- /outer -->
 <!-- TOAST SYSTEM -->
 <div class="toast-wrap" id="toast-wrap"></div>
@@ -1498,12 +1821,50 @@ USA</textarea></div>
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-head"><span class="modal-title">Account settings</span><button class="modal-close" onclick="closeModal('modal-profile')">×</button></div>
     <div class="modal-body">
-      <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:48px;height:48px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff">AD</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)">Admin Director</div><div style="font-size:12px;color:var(--ink3)"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3051545d595e70585946555d595e541e5f4257">[email&#160;protected]</a> · Super administrator</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:48px;height:48px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff" id="profile-avi">AD</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)" id="profile-name">Admin Director</div><div style="font-size:12px;color:var(--ink3)" id="profile-role">admin@hivemind.org · Super administrator</div></div></div>
       <div class="form-grid"><div class="form-field"><label>Display name</label><input class="form-input" value="Admin Director"/></div><div class="form-field"><label>Email</label><input class="form-input" value="admin@hivemind.org"/></div></div>
       <div class="form-field"><label>ORCID iD</label><input class="form-input" value="0000-0000-0000-0000" style="font-family:monospace;font-size:12px"/></div>
       <div class="form-field"><label>New password</label><input class="form-input" type="password" placeholder="Leave blank to keep current"/></div>
     </div>
     <div class="modal-foot"><button class="tb-btn" onclick="closeModal('modal-profile')">Cancel</button><button class="tb-btn primary" onclick="closeModal('modal-profile');showToast('Profile updated','','green')">Save changes</button></div>
+  </div>
+</div>
+
+<!-- Persona / role switcher -->
+<div class="modal-backdrop" id="modal-persona" onclick="closeModal('modal-persona')">
+  <div class="modal" style="max-width:480px" onclick="event.stopPropagation()">
+    <div class="modal-head"><span class="modal-title">Switch persona</span><button class="modal-close" onclick="closeModal('modal-persona')">×</button></div>
+    <div class="modal-body">
+      <p style="font-size:12px;color:var(--ink3);margin-bottom:14px;line-height:1.5">Change your active role view. Navigation, tools, and the macro bar adapt to match the selected persona. Your underlying permissions are unchanged.</p>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:8px">Basic tiers</div>
+      <div class="persona-card" onclick="setPersona('reader','RD','Reader','reader@hivemind.org · Read-only access','basic','#6b7280')">
+        <div class="pc-avi" style="background:#6b7280">RD</div>
+        <div class="pc-body"><div class="pc-name">Reader</div><div class="pc-desc">Read-only access. No editing, moderation, or admin tools visible.</div></div>
+        <span class="pc-tier basic">Basic</span>
+      </div>
+      <div class="persona-card" onclick="setPersona('contributor','AS','Contributor','anil_s@hivemind.org · Suggest edits','basic','#166534')">
+        <div class="pc-avi" style="background:#166534">AS</div>
+        <div class="pc-body"><div class="pc-name">Contributor</div><div class="pc-desc">Suggest edits and resource additions. Changes enter the moderation queue.</div></div>
+        <span class="pc-tier basic">Basic</span>
+      </div>
+      <div style="font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:8px;margin-top:14px">Elite tiers</div>
+      <div class="persona-card" onclick="setPersona('editor','QF','Editor','quantumfox@hivemind.org · Physics editor','elite','#2a4b8d')">
+        <div class="pc-avi" style="background:#2a4b8d">QF</div>
+        <div class="pc-body"><div class="pc-name">Editor</div><div class="pc-desc">Publish articles, manage resource trees, and moderate assigned subjects.</div></div>
+        <span class="pc-tier elite">Elite</span>
+      </div>
+      <div class="persona-card" onclick="setPersona('admin','SR','Admin','sara_r@hivemind.org · Org admin','elite','#1a4a2a')">
+        <div class="pc-avi" style="background:#1a4a2a">SR</div>
+        <div class="pc-body"><div class="pc-name">Admin</div><div class="pc-desc">Full moderation, user management, finance, and settings access.</div></div>
+        <span class="pc-tier elite">Elite</span>
+      </div>
+      <div class="persona-card active" id="persona-card-superadmin" onclick="setPersona('superadmin','AD','Super admin','admin@hivemind.org · Super administrator','super','#1a3a5c')">
+        <div class="pc-avi" style="background:#1a3a5c">AD</div>
+        <div class="pc-body"><div class="pc-name">Super admin <span style="font-size:10px;color:var(--green);font-weight:400">(current)</span></div><div class="pc-desc">Unrestricted access to all features, danger zone, and the full dashboard.</div></div>
+        <span class="pc-tier super">⚡ Super</span>
+      </div>
+    </div>
+    <div class="modal-foot"><button class="tb-btn" onclick="closeModal('modal-persona')">Cancel</button></div>
   </div>
 </div>
 
@@ -1773,4 +2134,168 @@ document.getElementById('global-search').addEventListener('keydown', function(e)
 
 navigate('overview');
 navigateSpg('general');
+
+// ── TRAY PANEL SYSTEM ──
+var _activeTray = null;
+function openTrayPanel(id) {
+  var panel = document.getElementById('tray-panel');
+  var panels = ['tp-feed','tp-bookmarks','tp-macros','tp-team'];
+  panels.forEach(function(p){
+    var el=document.getElementById(p);
+    if(el)el.style.display=(p==='tp-'+id)?'flex':'none';
+  });
+  if(_activeTray===id){ closeTrayPanel(); return; }
+  _activeTray=id;
+  if(panel)panel.classList.add('open');
+  // Highlight active tray button
+  ['tray-feed-btn','tray-bm-btn','tray-macro-btn','tray-team-btn'].forEach(function(b){
+    var btn=document.getElementById(b);if(btn)btn.classList.remove('on');
+  });
+  var btnMap={feed:'tray-feed-btn',bookmarks:'tray-bm-btn',macros:'tray-macro-btn',team:'tray-team-btn'};
+  var activeBtn=document.getElementById(btnMap[id]);
+  if(activeBtn)activeBtn.classList.add('on');
+  // Highlight macro bar button too
+  var mfb=document.getElementById('macro-feed-btn');
+  if(mfb)mfb.classList.toggle('active',id==='feed');
+}
+function closeTrayPanel() {
+  var panel=document.getElementById('tray-panel');
+  if(panel)panel.classList.remove('open');
+  _activeTray=null;
+  ['tray-feed-btn','tray-bm-btn','tray-macro-btn','tray-team-btn'].forEach(function(b){
+    var btn=document.getElementById(b);if(btn)btn.classList.remove('on');
+  });
+}
+
+// ── PERSONA SWITCHER ──
+var _currentTier = 'elite'; // default — super admin counts as elite
+function setPersona(role, initials, name, sub, tier, color) {
+  closeModal('modal-persona');
+  // Determine tier bucket
+  var isBasic = (tier==='basic');
+  var isElite = !isBasic;
+  _currentTier = isBasic ? 'basic' : 'elite';
+
+  // Apply data-tier to .fi wrapper so CSS :has selectors fire
+  var fi = document.getElementById('fi');
+  if(fi) fi.setAttribute('data-tier', _currentTier);
+
+  // Update sidebar persona display
+  var aviEl=document.getElementById('sb-persona-avi');
+  var nameEl=document.getElementById('sb-persona-name');
+  var roleEl=document.getElementById('sb-persona-role');
+  var badgeEl=document.getElementById('sb-tier-badge');
+  if(aviEl){aviEl.textContent=initials;aviEl.style.background=color;}
+  if(nameEl)nameEl.textContent=name;
+  if(roleEl)roleEl.textContent=sub;
+  if(badgeEl){
+    badgeEl.textContent=tier==='super'?'⚡ Elite':tier==='elite'?'⚡ Elite':'Basic';
+    badgeEl.className='sb-tier-badge '+(isBasic?'basic':'elite');
+  }
+
+  // Update tray profile button
+  var trayAvi=document.querySelector('.tray-btn [style*="background:#1a3a5c"],.tray-btn div[style*="background"]');
+  // Update profile modal
+  var pAvi=document.getElementById('profile-avi');
+  var pName=document.getElementById('profile-name');
+  var pRole=document.getElementById('profile-role');
+  if(pAvi){pAvi.textContent=initials;pAvi.style.background=color;}
+  if(pName)pName.textContent=name;
+  if(pRole)pRole.textContent=sub;
+
+  // Mark active card in modal
+  document.querySelectorAll('.persona-card').forEach(function(c){c.classList.remove('active')});
+  var roleNameMap={'superadmin':'Super admin','admin':'Admin','editor':'Editor','contributor':'Contributor','reader':'Reader'};
+  document.querySelectorAll('.persona-card').forEach(function(c){
+    if(c.querySelector('.pc-name')&&c.querySelector('.pc-name').textContent.startsWith(roleNameMap[role]))c.classList.add('active');
+  });
+
+  // Show/hide elite nav
+  document.querySelectorAll('.elite-nav,.elite-only,.elite-section').forEach(function(el){
+    el.style.display=isElite?'':'none';
+  });
+  if(isElite)document.querySelectorAll('.elite-nav,.elite-only').forEach(function(el){el.style.display=''});
+
+  // If currently on an elite-only page, redirect to overview
+  var curPg=document.querySelector('.pg.on');
+  var elitePages=['moderation','finance','settings'];
+  if(isBasic&&curPg){
+    var pgId=curPg.id.replace('pg-','');
+    if(elitePages.includes(pgId))navigate('overview');
+  }
+
+  // Sidebar team strip — hide for basic
+  var teamStrip=document.getElementById('sb-team-strip');
+  if(teamStrip)teamStrip.style.display=isBasic?'none':'flex';
+
+  showToast('Persona: '+name+(isBasic?' (Basic)':' (Elite)'),'',isBasic?'':'green');
+}
+
+// ── TEAM CONTEXT SWITCHER ──
+function switchTeam(chip, teamName) {
+  document.querySelectorAll('.sb-team-chip').forEach(function(c){c.classList.remove('on')});
+  chip.classList.add('on');
+  var ctx=document.getElementById('macro-team-ctx');
+  if(ctx)ctx.textContent=teamName;
+  showToast('Team context: '+teamName);
+}
+
+// ── FEED FILTER ──
+function feedFilter(btn, type) {
+  var strip=btn.closest('div');
+  strip.querySelectorAll('.uf').forEach(function(b){b.classList.remove('on')});
+  btn.classList.add('on');
+  document.querySelectorAll('#feed-list .feed-item').forEach(function(item){
+    item.style.display=(type==='all'||item.getAttribute('data-ftype')===type)?'':'none';
+  });
+}
+
+// ── KEYBOARD MACROS (elite only) ──
+document.addEventListener('keydown', function(e) {
+  if(_currentTier!=='elite')return;
+  if(e.metaKey||e.ctrlKey){
+    var map={'n':'modal-new-article','i':'modal-invite','r':'modal-add-resource','d':'modal-diff','p':'modal-persona'};
+    if(map[e.key]){e.preventDefault();openModal(map[e.key]);}
+    if(e.key==='m'){e.preventDefault();navigate('moderation');}
+    if(e.key==='a'){e.preventDefault();navigate('analytics');}
+    if(e.key==='t'){e.preventDefault();openTrayPanel('team');}
+  }
+});
+
+// ── LIVE FEED PULSE ANIMATION ──
+(function injectKeyframes(){
+  var s=document.createElement('style');
+  s.textContent='@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}';
+  document.head.appendChild(s);
+})();
+
+// ── LIVE FEED SIMULATION — adds a new item every ~30s ──
+var feedItems = [
+  {type:'publish',color:'#22c55e',text:'<strong>mx_robin</strong> published a new article',badge:'Published',badgeCls:'badge-green'},
+  {type:'edit',color:'#3b82f6',text:'<strong>quantumfox</strong> submitted an edit for review',badge:'Edit',badgeCls:'badge-blue'},
+  {type:'mod',color:'#ef4444',text:'New item added to moderation queue',badge:'Mod',badgeCls:'badge-red'},
+  {type:'team',color:'#8b5cf6',text:'<strong>sara_r</strong> updated Physics resource tree',badge:'Team',badgeCls:'',badgeStyle:'background:var(--purple-bg);color:var(--purple)'},
+];
+setInterval(function(){
+  var list=document.getElementById('feed-list');
+  if(!list)return;
+  var item=feedItems[Math.floor(Math.random()*feedItems.length)];
+  var div=document.createElement('div');
+  div.className='feed-item';div.setAttribute('data-ftype',item.type);
+  var badgeHtml=item.badgeStyle
+    ?'<span class="feed-badge" style="'+item.badgeStyle+'">'+item.badge+'</span>'
+    :'<span class="feed-badge '+item.badgeCls+'">'+item.badge+'</span>';
+  div.innerHTML='<div class="feed-dot" style="background:'+item.color+'"></div><div class="feed-body"><div class="feed-text">'+item.text+'</div><div class="feed-time">just now</div></div>'+badgeHtml;
+  list.insertBefore(div,list.firstChild);
+  // Badge the tray feed button
+  var badge=document.getElementById('tray-feed-badge');
+  if(badge&&_activeTray!=='feed')badge.style.display='block';
+  // Update existing "just now" → time
+  setTimeout(function(){
+    list.querySelectorAll('.feed-time').forEach(function(t,i){if(i>0&&t.textContent==='just now')t.textContent=(i+1)+' min ago'});
+  },60000);
+},30000);
+
+// Open live feed by default on load
+openTrayPanel('feed');
 </script>
