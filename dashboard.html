@@ -217,7 +217,148 @@ body{font-family:var(--sans);background:transparent;color:var(--ink);font-size:1
   .two-col{grid-template-columns:1fr}
   .three-col{grid-template-columns:1fr 1fr}
 }
+
+/* ── VIEWPORT SIMULATOR ── */
+.vsim{background:var(--paper3);border-bottom:1px solid var(--rule2);padding:7px 12px;display:flex;align-items:center;gap:7px;flex-wrap:wrap}
+.vsim-lbl{font-size:11px;color:var(--ink3);font-weight:500;text-transform:uppercase;letter-spacing:.06em}
+.vbtn{padding:3px 10px;font-size:12px;border:1px solid var(--rule2);border-radius:3px;cursor:pointer;background:var(--paper);color:var(--ink2);font-family:var(--sans)}
+.vbtn.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.fw{overflow:hidden;transition:max-width .22s;margin:0 auto}
+.fi{width:100%;min-width:280px;background:var(--paper)}
+
+/* ── HAMBURGER + MOBILE DRAWER ── */
+.ham{display:none;flex-direction:column;gap:4px;cursor:pointer;padding:6px;background:transparent;border:none}
+.ham span{display:block;width:18px;height:2px;background:rgba(255,255,255,.8);border-radius:1px;transition:all .18s}
+.ham.open span:nth-child(1){transform:rotate(45deg) translate(4px,4px)}
+.ham.open span:nth-child(2){opacity:0}
+.ham.open span:nth-child(3){transform:rotate(-45deg) translate(4px,-4px)}
+.mob-nav{display:none;flex-direction:column;background:var(--navy);border-bottom:1px solid rgba(255,255,255,.1)}
+.mob-nav.open{display:flex}
+
+/* ── SETTINGS LAYOUT (new sub-page system) ── */
+.set-layout{display:grid;grid-template-columns:200px minmax(0,1fr);gap:16px}
+.set-nav{background:var(--paper);border:0.5px solid var(--rule);border-radius:6px;overflow:hidden;height:fit-content}
+.set-nav-head{padding:10px 14px;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);border-bottom:1px solid var(--rule);background:var(--paper3)}
+.sn{display:flex;align-items:center;gap:8px;padding:8px 14px;font-size:13px;color:var(--ink2);cursor:pointer;border-left:3px solid transparent;transition:background .1s}
+.sn:hover{background:var(--paper3)}
+.sn.on{background:var(--blue-bg);color:var(--blue2);border-left-color:var(--blue-mid);font-weight:500}
+.sn-ico{width:15px;height:15px;flex-shrink:0;color:var(--ink3)}
+.sn.on .sn-ico{color:var(--blue-mid)}
+.sn-badge{margin-left:auto;background:var(--amber-bg);color:var(--amber);font-size:10px;padding:1px 5px;border-radius:8px;font-weight:500}
+.mob-set-select{display:none;width:100%;padding:8px 12px;border:1px solid var(--rule2);border-radius:4px;font-size:13px;background:var(--paper);color:var(--ink);font-family:var(--sans);margin-bottom:14px}
+.spg{display:none}.spg.on{display:block}
+
+/* ── SETTINGS FORM HELPERS ── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:14px}
+.form-textarea{width:100%;padding:8px 10px;border:1px solid var(--rule2);border-radius:4px;font-size:13px;font-family:var(--sans);color:var(--ink);background:var(--paper);resize:vertical;min-height:80px}
+.form-select{width:100%;padding:7px 10px;border:1px solid var(--rule2);border-radius:4px;font-size:13px;background:var(--paper);color:var(--ink);font-family:var(--sans)}
+.form-hint{font-size:11px;color:var(--ink3);margin-top:4px}
+.form-actions{display:flex;gap:8px;align-items:center;padding-top:14px;border-top:1px solid var(--rule)}
+.set-section{margin-bottom:20px;padding-bottom:20px;border-bottom:1px solid var(--rule)}
+.set-section:last-child{border-bottom:none;margin-bottom:0;padding-bottom:0}
+.set-section-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:4px}
+.set-section-desc{font-size:12px;color:var(--ink3);margin-bottom:14px}
+.card-desc{font-size:12px;color:var(--ink3);margin-top:1px}
+
+/* ── TOGGLE (new tog system) ── */
+.tog-row{display:flex;align-items:flex-start;justify-content:space-between;padding:12px 0;border-bottom:0.5px solid var(--rule);gap:16px}
+.tog-row:last-child{border-bottom:none}
+.tog-info{flex:1}
+.tog-label{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.tog-desc{font-size:12px;color:var(--ink3);line-height:1.5}
+.tog{width:36px;height:20px;border-radius:10px;background:var(--rule2);cursor:pointer;position:relative;flex-shrink:0;margin-top:1px;transition:background .15s}
+.tog.on{background:var(--navy)}
+.tog::after{content:'';position:absolute;width:14px;height:14px;border-radius:50%;background:#fff;top:3px;left:3px;transition:left .15s}
+.tog.on::after{left:19px}
+
+/* ── SETTINGS COMPONENT CLASSES ── */
+.dtable{width:100%;border-collapse:collapse;font-size:12px}
+.dtable th{padding:8px 12px;text-align:left;font-weight:500;color:var(--ink3);border-bottom:1px solid var(--rule);background:var(--paper2);font-size:11px;letter-spacing:.03em;text-transform:uppercase}
+.dtable td{padding:9px 12px;border-bottom:0.5px solid var(--rule);color:var(--ink2);vertical-align:middle}
+.dtable tr:last-child td{border-bottom:none}
+.dtable tr:hover td{background:var(--paper2)}
+.dtable td a{color:var(--blue);cursor:pointer}
+.prog{height:6px;background:var(--paper3);border-radius:3px;overflow:hidden;margin-top:5px}
+.prog-fill{height:100%;border-radius:3px}
+.kv-row{display:flex;align-items:center;justify-content:space-between;padding:8px 0;border-bottom:0.5px solid var(--rule);gap:10px;flex-wrap:wrap}
+.kv-row:last-child{border-bottom:none}
+.kv-key{font-size:12px;color:var(--ink3);flex-shrink:0}
+.kv-val{font-size:12px;font-weight:500;color:var(--ink);text-align:right}
+.int-card{display:flex;align-items:flex-start;gap:12px;padding:14px;border:0.5px solid var(--rule);border-radius:6px;margin-bottom:10px;background:var(--paper)}
+.int-icon{width:38px;height:38px;border-radius:6px;background:var(--paper3);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:14px;font-weight:500;color:var(--ink3)}
+.int-body{flex:1}
+.int-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.int-desc{font-size:12px;color:var(--ink3);margin-bottom:7px;line-height:1.5}
+.int-actions{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
+.int-status{font-size:11px;color:var(--green);display:flex;align-items:center;gap:4px}
+.int-status-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid);flex-shrink:0}
+.audit-item{display:flex;gap:10px;padding:9px 0;border-bottom:0.5px solid var(--rule)}
+.audit-item:last-child{border-bottom:none}
+.audit-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;margin-top:5px}
+.audit-body{flex:1}
+.audit-title{font-size:12px;font-weight:500;color:var(--ink);margin-bottom:1px}
+.audit-meta{font-size:11px;color:var(--ink3)}
+.audit-time{font-size:11px;color:var(--ink4);white-space:nowrap}
+.danger-action{display:flex;align-items:center;justify-content:space-between;padding:10px 0;border-bottom:0.5px solid #fecdd3;gap:10px;flex-wrap:wrap}
+.danger-action:last-child{border-bottom:none}
+.danger-action-title{font-size:13px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.danger-action-desc{font-size:12px;color:var(--ink3)}
+.plan-card{border:1px solid var(--rule);border-radius:6px;padding:16px;margin-bottom:12px;display:flex;align-items:flex-start;gap:14px}
+.plan-card.current{border-color:var(--blue-mid);background:var(--blue-bg)}
+.plan-icon{width:40px;height:40px;border-radius:6px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.plan-title{font-size:14px;font-weight:500;color:var(--ink);margin-bottom:2px}
+.plan-desc{font-size:12px;color:var(--ink3);margin-bottom:8px;line-height:1.5}
+.plan-price{font-size:18px;font-weight:500;color:var(--ink)}
+.plan-price span{font-size:12px;font-weight:400;color:var(--ink3)}
+.btn{padding:5px 12px;font-size:12px;border:1px solid var(--rule2);border-radius:4px;background:var(--paper);color:var(--ink2);cursor:pointer;font-family:var(--sans)}
+.btn:hover{background:var(--paper3)}
+.btn.p{background:var(--navy);color:#fff;border-color:var(--navy)}
+.btn.p:hover{background:var(--navy2)}
+.btn.danger{background:var(--red-bg);color:var(--red);border-color:#fca5a5}
+
+/* ── CLASS-BASED RESPONSIVE (simulator) ── */
+.is-tablet .dash-shell{grid-template-columns:1fr}
+.is-tablet .sidebar{display:none}
+.is-tablet .ham{display:flex}
+.is-tablet .metric-row{grid-template-columns:1fr 1fr}
+.is-tablet .two-col{grid-template-columns:1fr}
+.is-tablet .three-col{grid-template-columns:1fr 1fr}
+.is-tablet .set-layout{grid-template-columns:1fr}
+.is-tablet .set-nav{display:none}
+.is-tablet .mob-set-select{display:block}
+.is-tablet .form-grid{grid-template-columns:1fr}
+.is-tablet .content{padding:14px}
+
+.is-mobile .dash-shell{grid-template-columns:1fr}
+.is-mobile .sidebar{display:none}
+.is-mobile .ham{display:flex}
+.is-mobile .metric-row{grid-template-columns:1fr 1fr}
+.is-mobile .two-col{grid-template-columns:1fr}
+.is-mobile .three-col{grid-template-columns:1fr}
+.is-mobile .topbar{padding:0 12px;height:44px}
+.is-mobile .set-layout{grid-template-columns:1fr}
+.is-mobile .set-nav{display:none}
+.is-mobile .mob-set-select{display:block}
+.is-mobile .form-grid{grid-template-columns:1fr}
+.is-mobile .content{padding:12px}
+.is-mobile .plan-card{flex-direction:column;gap:10px}
+.is-mobile .int-card{flex-direction:column}
+.is-mobile .card-head{flex-direction:column;align-items:flex-start}
+.is-mobile .form-actions{flex-direction:column;align-items:flex-start}
 </style>
+
+<div>
+<!-- VIEWPORT SIMULATOR -->
+<div class="vsim">
+  <span class="vsim-lbl">Viewport:</span>
+  <button class="vbtn on" data-mode="desktop">Desktop</button>
+  <button class="vbtn" data-mode="tablet">Tablet (768px)</button>
+  <button class="vbtn" data-mode="mobile">Mobile (390px)</button>
+  <span style="font-size:11px;color:var(--ink4);margin-left:4px" id="vinfo">Full width</span>
+</div>
+
+<div class="fw" id="fw">
+<div class="fi" id="fi">
 
 <div class="dash-shell">
 
@@ -292,12 +433,25 @@ body{font-family:var(--sans);background:transparent;color:var(--ink);font-size:1
   <!-- ══ MAIN ══ -->
   <div class="main">
     <div class="topbar">
+      <button class="ham" id="ham"><span></span><span></span><span></span></button>
       <div class="topbar-title" id="topbar-title">Overview</div>
       <div class="topbar-right">
         <div class="topbar-search"><input placeholder="Search anything…" readonly /></div>
         <div class="notif-btn"><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M8 1a5 5 0 015 5v3l1 2H2l1-2V6a5 5 0 015-5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.5 13a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3"/></svg><div class="notif-dot"></div></div>
         <button class="tb-btn primary" id="topbar-action">+ New article</button>
       </div>
+    </div>
+    <!-- mobile nav drawer -->
+    <div class="mob-nav" id="mob-nav">
+      <div class="sbn" data-pg="overview" style="padding:10px 16px;font-size:14px">Overview</div>
+      <div class="sbn" data-pg="analytics" style="padding:10px 16px;font-size:14px">Analytics</div>
+      <div class="sbn" data-pg="pipeline" style="padding:10px 16px;font-size:14px">Content pipeline</div>
+      <div class="sbn" data-pg="moderation" style="padding:10px 16px;font-size:14px">Moderation</div>
+      <div class="sbn" data-pg="resources" style="padding:10px 16px;font-size:14px">Resource library</div>
+      <div class="sbn" data-pg="users" style="padding:10px 16px;font-size:14px">Users &amp; roles</div>
+      <div class="sbn" data-pg="discussions" style="padding:10px 16px;font-size:14px">Discussions</div>
+      <div class="sbn" data-pg="finance" style="padding:10px 16px;font-size:14px">Finance &amp; donations</div>
+      <div class="sbn" data-pg="settings" style="padding:10px 16px;font-size:14px">Settings</div>
     </div>
 
     <div class="content">
@@ -638,31 +792,31 @@ body{font-family:var(--sans);background:transparent;color:var(--ink);font-size:1
             <div class="card-body" style="padding:0 16px">
               <div class="user-row">
                 <div class="user-avi" style="background:#1a3a5c">AD</div>
-                <div class="user-info"><div class="user-name">Admin Director</div><div class="user-sub">admin@hivemind.org · Joined Jan 2024</div></div>
+                <div class="user-info"><div class="user-name">Admin Director</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="0362676e6a6d436b6a75666e6a6d672d6c7164">[email&#160;protected]</a> · Joined Jan 2024</div></div>
                 <span class="badge badge-red">Super admin</span>
                 <div class="user-actions"><button class="tb-btn" style="padding:3px 8px;font-size:11px">Edit</button></div>
               </div>
               <div class="user-row">
                 <div class="user-avi" style="background:#2a4b8d">QF</div>
-                <div class="user-info"><div class="user-name">quantumfox</div><div class="user-sub">quantumfox@mail.com · Physics editor · 84 edits</div></div>
+                <div class="user-info"><div class="user-name">quantumfox</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="a6d7d3c7c8d2d3cbc0c9dee6cbc7cfca88c5c9cb">[email&#160;protected]</a> · Physics editor · 84 edits</div></div>
                 <span class="badge badge-blue">Editor</span>
                 <div class="user-actions"><button class="tb-btn" style="padding:3px 8px;font-size:11px">Edit</button></div>
               </div>
               <div class="user-row">
                 <div class="user-avi" style="background:#1a4a2a">SR</div>
-                <div class="user-info"><div class="user-name">sara_r</div><div class="user-sub">sara@research.edu · Physics editor · 61 edits</div></div>
+                <div class="user-info"><div class="user-name">sara_r</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="b2c1d3c0d3f2c0d7c1d7d3c0d1da9cd7d6c7">[email&#160;protected]</a> · Physics editor · 61 edits</div></div>
                 <span class="badge badge-blue">Editor</span>
                 <div class="user-actions"><button class="tb-btn" style="padding:3px 8px;font-size:11px">Edit</button></div>
               </div>
               <div class="user-row">
                 <div class="user-avi" style="background:#7c3aed">NX</div>
-                <div class="user-info"><div class="user-name">neuro_x</div><div class="user-sub">nx@uni.edu · Biology/Neuroscience · 47 edits</div></div>
+                <div class="user-info"><div class="user-name">neuro_x</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="c5abbd85b0abaceba0a1b0">[email&#160;protected]</a> · Biology/Neuroscience · 47 edits</div></div>
                 <span class="badge badge-blue">Editor</span>
                 <div class="user-actions"><button class="tb-btn" style="padding:3px 8px;font-size:11px">Edit</button></div>
               </div>
               <div class="user-row">
                 <div class="user-avi" style="background:#b45309">LW</div>
-                <div class="user-info"><div class="user-name">lena_w</div><div class="user-sub">lena@institute.org · Neuroscience · 39 edits</div></div>
+                <div class="user-info"><div class="user-name">lena_w</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="99f5fcf7f8d9f0f7eaedf0edecedfcb7f6ebfe">[email&#160;protected]</a> · Neuroscience · 39 edits</div></div>
                 <span class="badge badge-blue">Editor</span>
                 <div class="user-actions"><button class="tb-btn" style="padding:3px 8px;font-size:11px">Edit</button></div>
               </div>
@@ -791,45 +945,389 @@ body{font-family:var(--sans);background:transparent;color:var(--ink);font-size:1
 
       <!-- ══════════ SETTINGS ══════════ -->
       <div id="pg-settings" class="pg">
-        <div class="settings-layout">
-          <div class="settings-nav">
-            <a class="on">General</a>
-            <a>Appearance</a>
-            <a>Moderation rules</a>
-            <a>Notifications</a>
-            <a>Integrations</a>
-            <a>Billing</a>
-            <a>Legal &amp; compliance</a>
+
+        <!-- mobile sub-nav select -->
+        <select class="mob-set-select" id="mob-set-select">
+          <option value="general">General</option>
+          <option value="appearance">Appearance</option>
+          <option value="moderation-rules">Moderation rules</option>
+          <option value="notifications">Notifications</option>
+          <option value="integrations">Integrations</option>
+          <option value="users-perms">Users &amp; permissions</option>
+          <option value="billing">Billing &amp; plan</option>
+          <option value="legal">Legal &amp; compliance</option>
+          <option value="audit">Audit log</option>
+          <option value="danger">Danger zone</option>
+        </select>
+
+        <div class="set-layout">
+          <div class="set-nav">
+            <div class="set-nav-head">Settings</div>
+            <div class="sn on" data-spg="general"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><rect x="1" y="2" width="14" height="12" rx="1.5" stroke="currentColor" stroke-width="1.4"/><line x1="1" y1="6" x2="15" y2="6" stroke="currentColor" stroke-width="1.2"/></svg>General</div>
+            <div class="sn" data-spg="appearance"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.4"/><path d="M5 8a3 3 0 006 0" stroke="currentColor" stroke-width="1.2"/><circle cx="6" cy="6" r="1" fill="currentColor"/><circle cx="10" cy="6" r="1" fill="currentColor"/></svg>Appearance</div>
+            <div class="sn" data-spg="moderation-rules"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><path d="M8 1l2 4h4l-3 3 1 5-4-3-4 3 1-5-3-3h4z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Moderation rules<span class="sn-badge">2</span></div>
+            <div class="sn" data-spg="notifications"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><path d="M8 1a5 5 0 015 5v3l1 2H2l1-2V6a5 5 0 015-5z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><path d="M6.5 13a1.5 1.5 0 003 0" stroke="currentColor" stroke-width="1.3"/></svg>Notifications</div>
+            <div class="sn" data-spg="integrations"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><rect x="1" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="10" y="1" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="1" y="10" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><rect x="10" y="10" width="5" height="5" rx="1" stroke="currentColor" stroke-width="1.3"/><path d="M6 3.5h4M6 12.5h4M3.5 6v4M12.5 6v4" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>Integrations</div>
+            <div class="sn" data-spg="users-perms"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><circle cx="6" cy="5" r="3" stroke="currentColor" stroke-width="1.3"/><path d="M1 14c0-3 2-5 5-5s5 2 5 5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><path d="M12 9l1 1 2-2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>Users &amp; permissions</div>
+            <div class="sn" data-spg="billing"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><rect x="1" y="4" width="14" height="10" rx="1" stroke="currentColor" stroke-width="1.3"/><line x1="1" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.3"/><line x1="4" y1="11" x2="6" y2="11" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>Billing &amp; plan</div>
+            <div class="sn" data-spg="legal"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><path d="M8 1l5 2v5c0 3-2 6-5 7C5.7 14 3 11 3 8V3l5-2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg>Legal &amp; compliance</div>
+            <div class="sn" data-spg="audit"><svg class="sn-ico" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.3"/><line x1="8" y1="5" x2="8" y2="8" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><line x1="8" y1="11" x2="8" y2="11" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Audit log</div>
+            <div class="sn" data-spg="danger" style="color:var(--red)"><svg class="sn-ico" viewBox="0 0 16 16" fill="none" style="color:var(--red)"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="8" cy="12" r=".7" fill="currentColor"/></svg>Danger zone</div>
           </div>
+
           <div>
-            <div class="settings-section">
-              <h3>Organization details</h3>
-              <div class="form-field"><label>Organization name</label><input class="form-input" value="Hivemind Foundation" readonly /></div>
-              <div class="form-field"><label>Public URL</label><input class="form-input" value="hivemind.org" readonly /></div>
-              <div class="form-field"><label>EIN / Tax ID</label><input class="form-input" value="00-0000000" readonly /></div>
-              <div class="form-field"><label>Contact email</label><input class="form-input" value="admin@hivemind.org" readonly /></div>
-              <button class="tb-btn primary">Save changes</button>
+            <!-- GENERAL -->
+            <div id="spg-general" class="spg on">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Organization details</div><div class="card-desc">Basic information about your nonprofit</div></div></div>
+                <div class="card-body">
+                  <div class="set-section">
+                    <div class="form-grid">
+                      <div class="form-field"><label>Organization name</label><input class="form-input" value="Hivemind Foundation" /><div class="form-hint">Displayed across the public site and all communications</div></div>
+                      <div class="form-field"><label>Short name / slug</label><input class="form-input" value="hivemind" /><div class="form-hint">Used in URLs: hivemind.org/org/<strong>hivemind</strong></div></div>
+                    </div>
+                    <div class="form-field"><label>Mission statement</label><textarea class="form-textarea">Hivemind Foundation organizes the world's scientific knowledge freely and openly, for the benefit of students, researchers, and lifelong learners everywhere.</textarea></div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Primary contact email</label><input class="form-input" value="admin@hivemind.org" /></div>
+                      <div class="form-field"><label>Public website URL</label><input class="form-input" value="https://hivemind.org" /></div>
+                    </div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Founded year</label><input class="form-input" value="2024" /></div>
+                      <div class="form-field"><label>Headquarters (city, country)</label><input class="form-input" value="San Francisco, USA" /></div>
+                    </div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Nonprofit registration</div>
+                    <div class="set-section-desc">Legal information for donation receipts and public transparency</div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>EIN / Tax ID</label><input class="form-input" value="00-0000000" /></div>
+                      <div class="form-field"><label>501(c)(3) status</label><select class="form-select"><option>Active — confirmed</option><option>Pending</option><option>Not applicable</option></select></div>
+                    </div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Fiscal year end</label><select class="form-select"><option>December 31</option><option>June 30</option><option>September 30</option></select></div>
+                      <div class="form-field"><label>Country of registration</label><select class="form-select"><option>United States</option><option>United Kingdom</option><option>Canada</option></select></div>
+                    </div>
+                  </div>
+                  <div class="form-actions">
+                    <button class="tb-btn primary">Save changes</button>
+                    <button class="tb-btn">Discard</button>
+                    <span style="font-size:12px;color:var(--ink3);margin-left:auto">Last saved: 2 hours ago</span>
+                  </div>
+                </div>
+              </div>
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div class="card-title">Platform settings</div></div>
+                <div class="card-body">
+                  <div class="tog-row"><div class="tog-info"><div class="tog-label">Require approval for new articles</div><div class="tog-desc">All new articles go through the moderation queue before going live</div></div><div class="tog on"></div></div>
+                  <div class="tog-row"><div class="tog-info"><div class="tog-label">Allow anonymous contributions</div><div class="tog-desc">Unregistered users can suggest edits, subject to enhanced review</div></div><div class="tog"></div></div>
+                  <div class="tog-row"><div class="tog-info"><div class="tog-label">Resource tree editing by contributors</div><div class="tog-desc">Contributors (not just editors) can propose changes to resource trees</div></div><div class="tog on"></div></div>
+                  <div class="tog-row"><div class="tog-info"><div class="tog-label">Public moderation logs</div><div class="tog-desc">All moderation decisions are visible on article talk pages</div></div><div class="tog on"></div></div>
+                  <div class="tog-row"><div class="tog-info"><div class="tog-label">Auto-archive discussions after 90 days</div><div class="tog-desc">Inactive threads are archived and locked automatically</div></div><div class="tog"></div></div>
+                  <div class="tog-row"><div class="tog-info"><div class="tog-label">Open registration</div><div class="tog-desc">Anyone can create a free account (disable for invite-only)</div></div><div class="tog on"></div></div>
+                </div>
+              </div>
             </div>
-            <div class="settings-section">
-              <h3>Platform settings</h3>
-              <div class="setting-row"><div><div class="setting-label">Require approval for new articles</div><div class="setting-desc">All new articles go through moderation before publishing</div></div><div class="toggle on"></div></div>
-              <div class="setting-row"><div><div class="setting-label">Allow anonymous contributions</div><div class="setting-desc">Unregistered users can suggest edits</div></div><div class="toggle"></div></div>
-              <div class="setting-row"><div><div class="setting-label">Public moderation logs</div><div class="setting-desc">Show moderation decisions publicly on article talk pages</div></div><div class="toggle on"></div></div>
-              <div class="setting-row"><div><div class="setting-label">Resource tree editing by contributors</div><div class="setting-desc">Contributors (not just editors) can suggest tree changes</div></div><div class="toggle on"></div></div>
-              <div class="setting-row"><div><div class="setting-label">Auto-archive discussions after 90 days</div><div class="setting-desc">Inactive threads are archived and locked</div></div><div class="toggle"></div></div>
+
+            <!-- APPEARANCE -->
+            <div id="spg-appearance" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Site appearance</div><div class="card-desc">Visual settings for the public-facing library</div></div></div>
+                <div class="card-body">
+                  <div class="set-section">
+                    <div class="set-section-title">Default theme</div>
+                    <div class="set-section-desc">The theme shown to users who haven't set a personal preference</div>
+                    <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
+                      <div style="border:2px solid var(--blue-mid);border-radius:6px;padding:12px 16px;cursor:pointer;background:var(--blue-bg);text-align:center;min-width:100px"><div style="width:40px;height:24px;background:#fff;border:1px solid var(--rule);border-radius:3px;margin:0 auto 6px"></div><div style="font-size:12px;font-weight:500;color:var(--blue2)">Standard</div><div style="font-size:10px;color:var(--blue2);margin-top:2px">Default</div></div>
+                      <div style="border:1px solid var(--rule);border-radius:6px;padding:12px 16px;cursor:pointer;background:var(--paper);text-align:center;min-width:100px"><div style="width:40px;height:24px;background:#fafaf8;border:1px solid #dddbd5;border-radius:3px;margin:0 auto 6px"></div><div style="font-size:12px;font-weight:500;color:var(--ink)">Hivemind</div><div style="font-size:10px;color:var(--ink3);margin-top:2px">Warm</div></div>
+                      <div style="border:1px solid var(--rule);border-radius:6px;padding:12px 16px;cursor:pointer;background:var(--paper);text-align:center;min-width:100px"><div style="width:40px;height:24px;background:#1e1e1e;border:1px solid #444;border-radius:3px;margin:0 auto 6px"></div><div style="font-size:12px;font-weight:500;color:var(--ink)">Dark</div><div style="font-size:10px;color:var(--ink3);margin-top:2px">Night mode</div></div>
+                      <div style="border:1px dashed var(--rule2);border-radius:6px;padding:12px 16px;cursor:pointer;background:var(--paper2);text-align:center;min-width:100px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px"><svg width="20" height="20" viewBox="0 0 20 20" fill="none"><line x1="10" y1="3" x2="10" y2="17" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="3" y1="10" x2="17" y2="10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg><div style="font-size:12px;color:var(--ink3)">Custom theme</div><div style="font-size:10px;color:var(--ink4)">Coming soon</div></div>
+                    </div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Typography</div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Default body font size</label><select class="form-select"><option>Small (13px)</option><option selected>Standard (14px)</option><option>Large (16px)</option><option>Largest (18px)</option></select></div>
+                      <div class="form-field"><label>Default reading width</label><select class="form-select"><option selected>Standard (960px)</option><option>Wide (1200px)</option><option>Full width</option></select></div>
+                    </div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Branding</div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Site name (display)</label><input class="form-input" value="Hivemind" /></div>
+                      <div class="form-field"><label>Tagline</label><input class="form-input" value="The open science library" /></div>
+                    </div>
+                    <div class="form-field"><label>Logo</label><div style="border:1px dashed var(--rule2);border-radius:4px;padding:18px;text-align:center;background:var(--paper2);font-size:12px;color:var(--ink3);cursor:pointer">Click to upload logo (SVG or PNG, max 200×60px)</div></div>
+                    <div class="form-field"><label>Favicon</label><div style="border:1px dashed var(--rule2);border-radius:4px;padding:18px;text-align:center;background:var(--paper2);font-size:12px;color:var(--ink3);cursor:pointer">Click to upload favicon (32×32px ICO or PNG)</div></div>
+                  </div>
+                  <div class="form-actions"><button class="tb-btn primary">Save appearance</button><button class="tb-btn">Discard</button></div>
+                </div>
+              </div>
             </div>
-            <div class="settings-section">
-              <h3>Notification settings</h3>
-              <div class="setting-row"><div><div class="setting-label">Email digest — daily</div><div class="setting-desc">Summary of moderation queue, new donations, and activity</div></div><div class="toggle on"></div></div>
-              <div class="setting-row"><div><div class="setting-label">Slack integration alerts</div><div class="setting-desc">Send moderation alerts to #moderation channel</div></div><div class="toggle on"></div></div>
-              <div class="setting-row"><div><div class="setting-label">Donation notifications</div><div class="setting-desc">Notify admin on donations over $100</div></div><div class="toggle on"></div></div>
+
+            <!-- MODERATION RULES -->
+            <div id="spg-moderation-rules" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Moderation rules</div><div class="card-desc">Configure what requires review and auto-moderation behavior</div></div><button class="tb-btn">+ Add rule</button></div>
+                <div class="card-body">
+                  <div class="set-section">
+                    <div class="set-section-title">Content triggers</div>
+                    <div class="set-section-desc">These actions always require a moderator to review before going live</div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">New articles from contributors</div><div class="tog-desc">Contributors who are not editors must have new articles approved</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Edits changing more than 500 characters</div><div class="tog-desc">Large edits from any user go to moderation queue</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">New resource additions to any tree</div><div class="tog-desc">All proposed resource additions require editor or admin approval</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Resource reclassification proposals</div><div class="tog-desc">Changes to primary / further / disputed classification require review</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">New user accounts</div><div class="tog-desc">Require admin approval before new accounts can contribute</div></div><div class="tog"></div></div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Automated filters</div>
+                    <div class="set-section-desc">AI-assisted pre-screening before items reach the human queue</div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Spam detection</div><div class="tog-desc">Automatically flag submissions matching known spam patterns</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Link safety scanning</div><div class="tog-desc">Check all external links against safe-browsing databases</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Plagiarism detection</div><div class="tog-desc">Flag content with high similarity to existing articles</div></div><div class="tog"></div></div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Queue settings</div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Moderation SLA (hours)</label><input class="form-input" value="24" type="number" /><div class="form-hint">Target response time; triggers escalation alert</div></div>
+                      <div class="form-field"><label>Auto-escalate after (hours)</label><input class="form-input" value="48" type="number" /><div class="form-hint">Notify super-admin if item sits in queue longer than this</div></div>
+                    </div>
+                    <div class="form-field"><label>Default rejection message</label><textarea class="form-textarea">Thank you for your contribution. After review, we are unable to approve this change at this time. Please see the discussion page for more information or to appeal this decision.</textarea></div>
+                  </div>
+                  <div class="form-actions"><button class="tb-btn primary">Save rules</button><button class="tb-btn">Discard</button></div>
+                </div>
+              </div>
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div class="card-title">Active moderation rules</div></div>
+                <div class="card-body" style="padding:0 16px">
+                  <table class="dtable">
+                    <tr><th>Rule</th><th>Trigger</th><th>Action</th><th>Status</th></tr>
+                    <tr><td>Block banned words</td><td>Any submission</td><td>Auto-reject + notify</td><td><span class="badge badge-green">Active</span></td></tr>
+                    <tr><td>New editor approval</td><td>Role promotion</td><td>Admin must confirm</td><td><span class="badge badge-green">Active</span></td></tr>
+                    <tr><td>500+ char edit review</td><td>Article edits</td><td>Queue for review</td><td><span class="badge badge-amber">Draft</span></td></tr>
+                    <tr><td>External link check</td><td>All submissions</td><td>Auto-scan + flag</td><td><span class="badge badge-green">Active</span></td></tr>
+                  </table>
+                </div>
+              </div>
             </div>
+
+            <!-- NOTIFICATIONS -->
+            <div id="spg-notifications" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Notification settings</div><div class="card-desc">Configure when and how admins are notified</div></div></div>
+                <div class="card-body">
+                  <div class="set-section">
+                    <div class="set-section-title">Email notifications</div>
+                    <div class="form-field"><label>Admin notification email</label><input class="form-input" value="admin@hivemind.org" /></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Daily digest</div><div class="tog-desc">Summary of moderation queue, donations, and key activity — sent every morning at 8 AM</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Moderation queue alerts</div><div class="tog-desc">Notify when queue exceeds 10 items or SLA threshold is breached</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">New editor registrations</div><div class="tog-desc">Alert when a user applies for editor status</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Donation received</div><div class="tog-desc">Email notification for donations above threshold</div></div><div class="tog on"></div></div>
+                    <div class="form-field" style="margin-top:10px"><label>Donation notification threshold ($)</label><input class="form-input" value="100" type="number" style="max-width:160px" /></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Security alerts</div><div class="tog-desc">Suspicious login attempts, permission changes, API key usage</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Weekly analytics report</div><div class="tog-desc">Traffic, engagement, and content growth summary sent every Monday</div></div><div class="tog"></div></div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Slack notifications</div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Slack integration active</div><div class="tog-desc">Send alerts to configured Slack workspace and channels</div></div><div class="tog on"></div></div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Moderation alerts channel</label><input class="form-input" value="#moderation" /></div>
+                      <div class="form-field"><label>Donations channel</label><input class="form-input" value="#donations" /></div>
+                    </div>
+                    <div class="form-field"><label>General admin channel</label><input class="form-input" value="#hivemind-admin" /></div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">In-app notifications</div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Moderation queue badge</div><div class="tog-desc">Show count on sidebar nav item</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Real-time alerts</div><div class="tog-desc">Pop-up notifications for urgent moderation items</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Digest notifications off-hours</div><div class="tog-desc">Suppress non-urgent alerts outside 8 AM – 8 PM local time</div></div><div class="tog"></div></div>
+                  </div>
+                  <div class="form-actions"><button class="tb-btn primary">Save notifications</button><button class="tb-btn">Discard</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- INTEGRATIONS -->
+            <div id="spg-integrations" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Integrations</div><div class="card-desc">Connect third-party services to your Hivemind dashboard</div></div><button class="tb-btn">Browse all</button></div>
+                <div class="card-body">
+                  <div class="int-card"><div class="int-icon" style="background:#4a154b;color:#fff;font-size:16px;font-weight:700">S</div><div class="int-body"><div class="int-title">Slack</div><div class="int-desc">Send moderation alerts, donation notifications, and admin digests to your Slack workspace channels.</div><div class="int-actions"><div class="int-status"><div class="int-status-dot"></div>Connected — hivemind-org.slack.com</div><button class="tb-btn" style="margin-left:auto">Configure</button><button class="tb-btn" style="color:var(--red)">Disconnect</button></div></div></div>
+                  <div class="int-card"><div class="int-icon" style="background:#0052cc;color:#fff;font-size:12px;font-weight:700">JIRA</div><div class="int-body"><div class="int-title">Jira</div><div class="int-desc">Sync governance decisions and major content changes to your project management workflow.</div><div class="int-actions"><span class="badge badge-gray">Not connected</span><button class="tb-btn primary" style="margin-left:auto">Connect</button></div></div></div>
+                  <div class="int-card"><div class="int-icon" style="background:#6772e5;color:#fff;font-size:14px;font-weight:700">S</div><div class="int-body"><div class="int-title">Stripe</div><div class="int-desc">Process donations, issue tax receipts, and manage recurring giving through Stripe Payments.</div><div class="int-actions"><div class="int-status"><div class="int-status-dot"></div>Connected — Live mode</div><button class="tb-btn" style="margin-left:auto">Configure</button></div></div></div>
+                  <div class="int-card"><div class="int-icon" style="background:#e8f5e9;color:#2e7d32;font-size:11px;font-weight:700">GA4</div><div class="int-body"><div class="int-title">Google Analytics 4</div><div class="int-desc">Track page views, user sessions, and content engagement. Privacy-respecting analytics.</div><div class="int-actions"><div class="int-status"><div class="int-status-dot"></div>Connected — G-XXXXXXXXXX</div><button class="tb-btn" style="margin-left:auto">Configure</button></div></div></div>
+                  <div class="int-card"><div class="int-icon" style="background:#fff3e0;color:#e65100;font-size:11px;font-weight:700">ZAP</div><div class="int-body"><div class="int-title">Zapier</div><div class="int-desc">Connect Hivemind events to 6,000+ apps. Automate workflows for donations, new articles, and more.</div><div class="int-actions"><span class="badge badge-gray">Not connected</span><button class="tb-btn primary" style="margin-left:auto">Connect</button></div></div></div>
+                  <div style="border-top:1px solid var(--rule);padding-top:14px;margin-top:4px">
+                    <div class="set-section-title" style="margin-bottom:4px">API access</div>
+                    <div class="set-section-desc">Use the Hivemind REST API to build custom integrations</div>
+                    <div class="form-field"><label>API base URL</label><input class="form-input" value="https://api.hivemind.org/v1" readonly style="font-family:monospace;font-size:12px" /></div>
+                    <div style="font-size:12px;font-weight:500;color:var(--ink2);margin-bottom:6px">Active API keys</div>
+                    <table class="dtable" style="margin-bottom:8px">
+                      <tr><th>Name</th><th>Created</th><th>Last used</th><th>Permissions</th><th></th></tr>
+                      <tr><td><span style="font-family:monospace;font-size:11px">hm_live_sk_***2a4f</span></td><td>Jan 12, 2025</td><td>2 hr ago</td><td>Read + Write</td><td><button class="tb-btn" style="padding:2px 8px;font-size:11px;color:var(--red);border-color:#fca5a5">Revoke</button></td></tr>
+                      <tr><td><span style="font-family:monospace;font-size:11px">hm_live_sk_***9b1c</span></td><td>Mar 1, 2025</td><td>Never</td><td>Read only</td><td><button class="tb-btn" style="padding:2px 8px;font-size:11px;color:var(--red);border-color:#fca5a5">Revoke</button></td></tr>
+                    </table>
+                    <button class="tb-btn primary">Generate new API key</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- USERS & PERMISSIONS -->
+            <div id="spg-users-perms" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Role definitions</div><div class="card-desc">What each role can do across the platform</div></div><button class="tb-btn">+ Create role</button></div>
+                <div class="card-body" style="padding:0 16px">
+                  <table class="dtable">
+                    <tr><th>Permission</th><th>Reader</th><th>Contributor</th><th>Editor</th><th>Admin</th><th>Super admin</th></tr>
+                    <tr><td>Read articles</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Suggest edits</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Publish articles</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Add resources to tree</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--amber);text-align:center">Review</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Moderate queue</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--amber);text-align:center">Limited</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Manage users</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Finance access</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--green);text-align:center">✓</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Change settings</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                    <tr><td>Delete content permanently</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--ink4);text-align:center">—</td><td style="color:var(--green);text-align:center">✓</td></tr>
+                  </table>
+                </div>
+              </div>
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Invitation settings</div><div class="card-desc">Control how new users join the platform</div></div></div>
+                <div class="card-body">
+                  <div class="set-section">
+                    <div class="form-grid">
+                      <div class="form-field"><label>Default role for new accounts</label><select class="form-select"><option>Reader</option><option selected>Contributor</option><option>Editor</option></select></div>
+                      <div class="form-field"><label>Invitation expiry</label><select class="form-select"><option>24 hours</option><option selected>7 days</option><option>30 days</option><option>Never</option></select></div>
+                    </div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Email domain allowlist</div><div class="tog-desc">Restrict signups to specific email domains (e.g. university domains)</div></div><div class="tog"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">ORCID verification required for editors</div><div class="tog-desc">Editors must link a valid ORCID iD to verify research identity</div></div><div class="tog on"></div></div>
+                  </div>
+                  <div class="form-actions"><button class="tb-btn primary">Save permissions</button><button class="tb-btn">Discard</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- BILLING -->
+            <div id="spg-billing" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Current plan</div><div class="card-desc">Hivemind Foundation nonprofit tier</div></div><span class="badge badge-green" style="font-size:11px;padding:3px 10px">Nonprofit — free</span></div>
+                <div class="card-body">
+                  <div class="plan-card current">
+                    <div class="plan-icon" style="background:var(--blue-bg)"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2l2.5 5.5H19l-4.5 4 1.5 6L11 14.5 6 17.5l1.5-6L3 7.5h5.5z" stroke="#1d4ed8" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
+                    <div style="flex:1">
+                      <div class="plan-title">Nonprofit open access <span class="badge badge-blue" style="margin-left:6px;vertical-align:middle">Current plan</span></div>
+                      <div class="plan-price">$0 <span>/ month — free for registered nonprofits</span></div>
+                      <div class="plan-desc" style="margin-top:6px">Unlimited articles, unlimited contributors, resource trees, full moderation suite, analytics, and all integrations. Funded by community donations.</div>
+                      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px">
+                        <span style="font-size:12px;color:var(--green)">✓ Unlimited articles</span>
+                        <span style="font-size:12px;color:var(--green)">✓ Unlimited contributors</span>
+                        <span style="font-size:12px;color:var(--green)">✓ Resource trees</span>
+                        <span style="font-size:12px;color:var(--green)">✓ All integrations</span>
+                        <span style="font-size:12px;color:var(--green)">✓ Priority support</span>
+                      </div>
+                    </div>
+                  </div>
+                  <div class="set-section" style="margin-top:14px">
+                    <div class="set-section-title">Infrastructure usage</div>
+                    <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--ink2)">Storage used</span><span style="font-weight:500">4.2 GB / Unlimited</span></div><div class="prog"><div class="prog-fill" style="width:4%;background:var(--blue-mid)"></div></div></div>
+                    <div style="margin-bottom:10px"><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--ink2)">Monthly bandwidth</span><span style="font-weight:500">840 GB / Unlimited</span></div><div class="prog"><div class="prog-fill" style="width:22%;background:var(--green-mid)"></div></div></div>
+                    <div><div style="display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px"><span style="color:var(--ink2)">API calls (30 days)</span><span style="font-weight:500">142,400 / Unlimited</span></div><div class="prog"><div class="prog-fill" style="width:14%;background:var(--amber-mid)"></div></div></div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Billing contact</div>
+                    <div class="form-grid">
+                      <div class="form-field"><label>Billing email</label><input class="form-input" value="finance@hivemind.org" /></div>
+                      <div class="form-field"><label>EIN (for tax purposes)</label><input class="form-input" value="00-0000000" /></div>
+                    </div>
+                    <div class="form-field"><label>Billing address</label><textarea class="form-textarea" style="min-height:60px">Hivemind Foundation
+123 Open Knowledge Ave
+San Francisco, CA 94102
+USA</textarea></div>
+                  </div>
+                  <div class="form-actions"><button class="tb-btn primary">Save billing info</button><button class="tb-btn">Request plan change</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- LEGAL & COMPLIANCE -->
+            <div id="spg-legal" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Legal &amp; compliance</div><div class="card-desc">Policies, licensing, and regulatory compliance settings</div></div></div>
+                <div class="card-body">
+                  <div class="set-section">
+                    <div class="set-section-title">Content licensing</div>
+                    <div class="set-section-desc">All content published on Hivemind is licensed under:</div>
+                    <div style="background:var(--blue-bg);border:1px solid var(--blue-mid);border-radius:4px;padding:12px 14px;margin-bottom:14px"><div style="font-size:13px;font-weight:500;color:var(--blue2);margin-bottom:3px">Creative Commons Attribution-ShareAlike 4.0 (CC BY-SA 4.0)</div><div style="font-size:12px;color:var(--blue2)">Users may share and adapt content with attribution. Derivatives must use the same license.</div></div>
+                    <div class="form-field"><label>Additional licensing terms (optional)</label><textarea class="form-textarea" style="min-height:60px" placeholder="Enter any supplementary licensing terms or restrictions…"></textarea></div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Data protection</div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">GDPR compliance mode</div><div class="tog-desc">Enable EU data subject rights: access, deletion, portability requests</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">CCPA compliance mode</div><div class="tog-desc">Enable California consumer privacy rights and opt-out mechanisms</div></div><div class="tog on"></div></div>
+                    <div class="tog-row"><div class="tog-info"><div class="tog-label">Data retention policy active</div><div class="tog-desc">Automatically delete inactive accounts and their data after 3 years</div></div><div class="tog"></div></div>
+                    <div class="form-field" style="margin-top:10px"><label>Data protection officer email</label><input class="form-input" value="dpo@hivemind.org" /></div>
+                  </div>
+                  <div class="set-section">
+                    <div class="set-section-title">Policy documents</div>
+                    <div class="kv-row"><span class="kv-key">Privacy policy</span><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-green">Published</span><button class="tb-btn" style="padding:3px 10px;font-size:11px">Edit</button></div></div>
+                    <div class="kv-row"><span class="kv-key">Terms of service</span><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-green">Published</span><button class="tb-btn" style="padding:3px 10px;font-size:11px">Edit</button></div></div>
+                    <div class="kv-row"><span class="kv-key">Cookie policy</span><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-amber">Draft</span><button class="tb-btn" style="padding:3px 10px;font-size:11px">Edit</button></div></div>
+                    <div class="kv-row"><span class="kv-key">Contributor agreement</span><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-green">Published</span><button class="tb-btn" style="padding:3px 10px;font-size:11px">Edit</button></div></div>
+                    <div class="kv-row"><span class="kv-key">Annual transparency report</span><div style="display:flex;gap:6px;align-items:center"><span class="badge badge-gray">Not published</span><button class="tb-btn primary" style="padding:3px 10px;font-size:11px">Upload</button></div></div>
+                  </div>
+                  <div class="form-actions"><button class="tb-btn primary">Save compliance settings</button><button class="tb-btn">Discard</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- AUDIT LOG -->
+            <div id="spg-audit" class="spg">
+              <div class="card" style="border-radius:6px;margin-bottom:14px">
+                <div class="card-head"><div><div class="card-title">Audit log</div><div class="card-desc">All admin actions, settings changes, and security events</div></div><button class="tb-btn">Export CSV</button></div>
+                <div class="card-body">
+                  <div style="display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap">
+                    <select class="form-select" style="width:auto;padding:5px 10px"><option>All event types</option><option>Settings changes</option><option>User actions</option><option>Security events</option><option>Moderation</option><option>Finance</option></select>
+                    <select class="form-select" style="width:auto;padding:5px 10px"><option>All users</option><option>Admin Director</option><option>quantumfox</option><option>sara_r</option></select>
+                    <select class="form-select" style="width:auto;padding:5px 10px"><option>Last 7 days</option><option>Last 30 days</option><option>Last 90 days</option><option>Custom range</option></select>
+                    <input class="form-input" placeholder="Search events…" style="flex:1;min-width:160px;padding:5px 10px" />
+                  </div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">Settings changed — moderation SLA threshold updated: 24h → 48h</div><div class="audit-meta">Admin Director · Settings › Moderation rules</div></div><div class="audit-time">2 hr ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">User role promoted — quantumfox: contributor → editor (Physics)</div><div class="audit-meta">Admin Director · Users &amp; roles</div></div><div class="audit-time">6 hr ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--blue-mid)"></div><div class="audit-body"><div class="audit-title">Integration connected — Slack workspace hivemind-org.slack.com</div><div class="audit-meta">Admin Director · Integrations</div></div><div class="audit-time">1 day ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--red-mid)"></div><div class="audit-body"><div class="audit-title">User suspended — anon_882 (3 spam violations)</div><div class="audit-meta">Admin Director · Moderation</div></div><div class="audit-time">1 day ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">Donation received — $10,000 from Wikimedia Foundation (grant)</div><div class="audit-meta">System · Finance</div></div><div class="audit-time">2 days ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">API key generated — hm_live_sk_***9b1c (read only)</div><div class="audit-meta">Admin Director · Integrations › API</div></div><div class="audit-time">3 days ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">Notification settings updated — weekly analytics digest enabled</div><div class="audit-meta">Admin Director · Settings › Notifications</div></div><div class="audit-time">4 days ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--blue-mid)"></div><div class="audit-body"><div class="audit-title">Settings changed — ORCID verification required for editors: enabled</div><div class="audit-meta">Admin Director · Settings › Users &amp; permissions</div></div><div class="audit-time">5 days ago</div></div>
+                  <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">Moderation rule activated — external link safety scanning</div><div class="audit-meta">Admin Director · Settings › Moderation rules</div></div><div class="audit-time">1 week ago</div></div>
+                  <div style="text-align:center;padding-top:12px"><button class="tb-btn">Load more events</button></div>
+                </div>
+              </div>
+            </div>
+
+            <!-- DANGER ZONE -->
+            <div id="spg-danger" class="spg">
+              <div class="card" style="border-radius:6px;border-color:#fca5a5">
+                <div class="card-head" style="background:#fef2f2;border-bottom-color:#fca5a5"><div><div class="card-title" style="color:var(--red)">Danger zone</div><div class="card-desc" style="color:#b91c1c">These actions are irreversible or have significant consequences. Proceed with extreme caution.</div></div></div>
+                <div class="card-body">
+                  <div class="danger-action"><div><div class="danger-action-title">Export all data</div><div class="danger-action-desc">Download a complete export of all articles, resources, user data, and settings as a ZIP archive. May take up to 30 minutes.</div></div><button class="tb-btn" style="flex-shrink:0">Request export</button></div>
+                  <div class="danger-action"><div><div class="danger-action-title">Suspend new registrations</div><div class="danger-action-desc">Temporarily prevent new accounts from being created. Existing users are unaffected. Requires super-admin confirmation.</div></div><button class="tb-btn" style="flex-shrink:0;background:var(--red-bg);color:var(--red);border-color:#fca5a5">Suspend registrations</button></div>
+                  <div class="danger-action"><div><div class="danger-action-title">Put site in read-only mode</div><div class="danger-action-desc">Disable all editing, contributions, and account creation. The site remains publicly readable. Use during maintenance windows.</div></div><button class="tb-btn" style="flex-shrink:0;background:var(--red-bg);color:var(--red);border-color:#fca5a5">Enable read-only</button></div>
+                  <div class="danger-action"><div><div class="danger-action-title">Revoke all API keys</div><div class="danger-action-desc">Immediately invalidate all active API keys across all integrations. You will need to regenerate keys and reconfigure integrations.</div></div><button class="tb-btn" style="flex-shrink:0;background:var(--red-bg);color:var(--red);border-color:#fca5a5">Revoke all keys</button></div>
+                  <div class="danger-action" style="border-bottom:none"><div><div class="danger-action-title" style="color:var(--red)">Delete organization</div><div class="danger-action-desc">Permanently delete this organization, all articles, resources, user accounts, and data. This action <strong>cannot be undone</strong>. A 30-day grace period applies before permanent deletion.</div></div><button class="tb-btn" style="flex-shrink:0;background:var(--red);color:#fff;border-color:var(--red)">Delete organization</button></div>
+                </div>
+              </div>
+            </div>
+
           </div>
         </div>
       </div>
 
     </div>
   </div>
+</div>
+
+</div></div>
 </div>
 
 <script>
@@ -841,12 +1339,20 @@ function navigate(pgId){
   document.querySelectorAll('.sbn').forEach(function(n){n.classList.remove('on')});
   var pg=document.getElementById('pg-'+pgId);
   if(pg)pg.classList.add('on');
-  var sbn=document.querySelector('.sbn[data-pg="'+pgId+'"]');
-  if(sbn)sbn.classList.add('on');
+  document.querySelectorAll('.sbn[data-pg="'+pgId+'"]').forEach(function(n){n.classList.add('on')});
   var tt=document.getElementById('topbar-title');
   if(tt)tt.textContent=titles[pgId]||pgId;
   var ta=document.getElementById('topbar-action');
   if(ta)ta.textContent=actions[pgId]||'Action';
+  var mn=document.getElementById('mob-nav');if(mn)mn.classList.remove('open');
+  var h=document.getElementById('ham');if(h)h.classList.remove('open');
+}
+
+function navigateSpg(spgId){
+  document.querySelectorAll('.spg').forEach(function(p){p.classList.remove('on')});
+  document.querySelectorAll('.sn').forEach(function(n){n.classList.remove('on')});
+  var spg=document.getElementById('spg-'+spgId);if(spg)spg.classList.add('on');
+  document.querySelectorAll('.sn[data-spg="'+spgId+'"]').forEach(function(n){n.classList.add('on')});
 }
 
 document.querySelectorAll('.sbn[data-pg]').forEach(function(n){
@@ -854,27 +1360,49 @@ document.querySelectorAll('.sbn[data-pg]').forEach(function(n){
 });
 
 document.querySelectorAll('[data-pg]').forEach(function(el){
-  if(!el.classList.contains('sbn'))return;
-  el.addEventListener('click',function(){navigate(el.getAttribute('data-pg'))});
-});
-
-document.querySelectorAll('.uf').forEach(function(f){
-  f.closest('.user-filters') && f.addEventListener('click',function(){
-    var group=f.closest('.user-filters');
-    group.querySelectorAll('.uf').forEach(function(x){x.classList.remove('on')});
-    f.classList.add('on');
-  });
-});
-
-document.querySelectorAll('.toggle').forEach(function(t){
-  t.addEventListener('click',function(){t.classList.toggle('on')});
-});
-
-document.querySelectorAll('[data-pg]').forEach(function(el){
   if(el.classList.contains('sbn'))return;
   el.addEventListener('click',function(){
     var pg=el.getAttribute('data-pg');
     if(pg)navigate(pg);
+  });
+});
+
+document.querySelectorAll('.sn[data-spg]').forEach(function(n){
+  n.addEventListener('click',function(){navigateSpg(n.getAttribute('data-spg'))});
+});
+
+var ham=document.getElementById('ham');
+var mobnav=document.getElementById('mob-nav');
+if(ham&&mobnav)ham.addEventListener('click',function(){ham.classList.toggle('open');mobnav.classList.toggle('open')});
+
+var mobSetSel=document.getElementById('mob-set-select');
+if(mobSetSel)mobSetSel.addEventListener('change',function(){navigateSpg(mobSetSel.value)});
+
+document.querySelectorAll('.uf').forEach(function(f){
+  f.closest&&f.closest('.user-filters')&&f.addEventListener('click',function(){
+    var g=f.closest('.user-filters');
+    g.querySelectorAll('.uf').forEach(function(x){x.classList.remove('on')});
+    f.classList.add('on');
+  });
+});
+
+document.querySelectorAll('.toggle,.tog').forEach(function(t){
+  t.addEventListener('click',function(){t.classList.toggle('on')});
+});
+
+document.querySelectorAll('.vbtn').forEach(function(b){
+  b.addEventListener('click',function(){
+    document.querySelectorAll('.vbtn').forEach(function(x){x.classList.remove('on')});
+    b.classList.add('on');
+    var mode=b.getAttribute('data-mode');
+    var fw=document.getElementById('fw');
+    var fi=document.getElementById('fi');
+    var vi=document.getElementById('vinfo');
+    if(mode==='desktop'){fw.style.maxWidth='100%';fi.className='fi';if(vi)vi.textContent='Full width'}
+    else if(mode==='tablet'){fw.style.maxWidth='768px';fi.className='fi is-tablet';if(vi)vi.textContent='768px — collapsible nav, stacked layout'}
+    else{fw.style.maxWidth='390px';fi.className='fi is-mobile';if(vi)vi.textContent='390px — hamburger, single column'}
+    var mn=document.getElementById('mob-nav');if(mn)mn.classList.remove('open');
+    var h=document.getElementById('ham');if(h)h.classList.remove('open');
   });
 });
 </script>
