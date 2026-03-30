@@ -31,9 +31,29 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 /* fw must NOT have overflow:hidden — it breaks position:sticky on sidebar and topbar */
 .fw{transition:max-width .24s;margin:0 auto}
 .fi{width:100%;min-width:300px;background:var(--paper2);padding-bottom:44px}
-.dash-shell{display:grid;grid-template-columns:220px minmax(0,1fr);min-height:100vh}
-.sidebar{background:var(--navy3);display:flex;flex-direction:column;position:sticky;top:0;height:100vh;overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(255,255,255,.1) transparent}
-.sidebar::-webkit-scrollbar{width:3px}.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+/* Shell: sidebar is fixed, so we use a single-column grid + margin-left on main */
+.dash-shell{display:block;min-height:100vh}
+.sidebar{
+  background:var(--navy3);
+  display:flex;flex-direction:column;
+  position:fixed;          /* always on screen regardless of scroll */
+  top:0;left:0;
+  width:220px;
+  height:100vh;
+  z-index:120;             /* above content, below topbar(210) and tray(150) */
+  overflow-y:auto;
+  scrollbar-width:thin;
+  scrollbar-color:rgba(255,255,255,.1) transparent;
+}
+.sidebar::-webkit-scrollbar{width:3px}
+.sidebar::-webkit-scrollbar-thumb{background:rgba(255,255,255,.12);border-radius:2px}
+/* Main shifts right to clear the fixed sidebar */
+.main{
+  display:flex;flex-direction:column;
+  background:var(--paper2);
+  min-width:0;
+  margin-left:220px;       /* exact sidebar width */
+}
 .sb-brand{padding:16px 14px 12px;border-bottom:1px solid rgba(255,255,255,.07);display:flex;align-items:center;gap:9px;flex-shrink:0}
 .sb-ball{width:26px;height:26px;border-radius:50%;border:1.5px solid rgba(255,255,255,.4);display:grid;place-items:center;flex-shrink:0}
 .sb-hex{width:13px;height:13px;border-radius:50%;border:1.5px solid rgba(255,255,255,.85);position:relative}
@@ -257,8 +277,9 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .plan-desc{font-size:12px;color:var(--ink3);margin:6px 0 10px;line-height:1.5}
 .feature-tag{font-size:11.5px;color:var(--green);display:inline-flex;align-items:center;gap:3px}
 /* ── RESPONSIVE — TABLET ── */
-.is-tablet .dash-shell{grid-template-columns:1fr}
-.is-tablet .sidebar{display:none;position:static;height:auto}
+.is-tablet .dash-shell{display:block}
+.is-tablet .sidebar{display:none}
+.is-tablet .main{margin-left:0}
 .is-tablet .ham{display:flex !important}
 .is-tablet .metric-row{grid-template-columns:repeat(2,1fr)}
 .is-tablet .two-col{grid-template-columns:1fr}
@@ -270,8 +291,9 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .is-tablet .pipeline-row{grid-template-columns:repeat(2,1fr)}
 .is-tablet .content{padding:14px}
 /* ── RESPONSIVE — MOBILE ── */
-.is-mobile .dash-shell{grid-template-columns:1fr}
-.is-mobile .sidebar{display:none;position:static;height:auto}
+.is-mobile .dash-shell{display:block}
+.is-mobile .sidebar{display:none}
+.is-mobile .main{margin-left:0}
 .is-mobile .ham{display:flex !important}
 .is-mobile .topbar{height:48px;padding:0 14px}
 .is-mobile .topbar-title{font-size:14px}
@@ -341,25 +363,62 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
    UTILITY TRAY — fixed right edge strip
    Icon strip (44px) → expands to panel (300px)
 ═══════════════════════════════════════════ */
-.tray{position:fixed;right:0;top:50px;bottom:44px;z-index:150;display:flex;align-items:flex-start;pointer-events:none}
-.tray-strip{width:44px;background:var(--paper);border-left:1px solid var(--rule);display:flex;flex-direction:column;align-items:center;padding:8px 0;gap:2px;pointer-events:auto;height:100%;flex-shrink:0;box-shadow:-2px 0 8px rgba(0,0,0,.04)}
-.tray-btn{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);border:none;background:transparent;transition:all .12s;position:relative;flex-shrink:0}
-.tray-btn:hover{background:var(--paper3);color:var(--ink)}
-.tray-btn.on{background:var(--blue-bg);color:var(--blue2)}
-.tray-btn-badge{position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:50%;background:var(--red-mid);border:1.5px solid var(--paper)}
-.tray-sep{width:20px;height:1px;background:var(--rule);margin:4px 0;flex-shrink:0}
-.tray-tip{font-size:9px;color:var(--ink4);text-transform:uppercase;letter-spacing:.06em;writing-mode:vertical-rl;transform:rotate(180deg);padding:6px 0;opacity:.6;user-select:none}
-.tray-panel{width:0;overflow:hidden;background:var(--paper);border-left:1px solid var(--rule);transition:width .22s cubic-bezier(.4,0,.2,1);pointer-events:auto;display:flex;flex-direction:column;height:100%;box-shadow:-4px 0 16px rgba(0,0,0,.06)}
+/* ── TRAY — fixed right edge: [content] [panel] [strip] ── */
+.tray{
+  position:fixed;right:0;top:50px;bottom:44px;z-index:150;
+  display:flex;flex-direction:row;align-items:stretch;
+  pointer-events:none;
+}
+/* Icon strip — always rightmost, always visible */
+.tray-strip{
+  width:44px;background:var(--paper);
+  border-left:1px solid var(--rule);
+  display:flex;flex-direction:column;align-items:center;
+  padding:8px 0;gap:2px;pointer-events:auto;
+  flex-shrink:0;order:2;
+}
+/* Panel — sits LEFT of strip, expands toward content */
+.tray-panel{
+  width:0;overflow:hidden;
+  background:var(--paper);
+  border-left:1px solid var(--rule);
+  transition:width .22s cubic-bezier(.4,0,.2,1);
+  pointer-events:auto;
+  display:flex;flex-direction:column;
+  order:1;                         /* left of strip */
+  box-shadow:-4px 0 16px rgba(0,0,0,.06);
+}
 .tray-panel.open{width:300px}
-.tray-panel-head{padding:12px 14px;border-bottom:1px solid var(--rule);display:flex;align-items:center;justify-content:space-between;flex-shrink:0;min-width:300px}
+.tray-panel-head{
+  padding:12px 14px;border-bottom:1px solid var(--rule);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;min-width:300px;
+}
 .tray-panel-title{font-size:13px;font-weight:600;color:var(--ink)}
-.tray-panel-close{width:24px;height:24px;border-radius:4px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);font-size:16px}
+.tray-panel-close{
+  width:24px;height:24px;border-radius:4px;border:none;
+  background:transparent;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  color:var(--ink3);font-size:16px;
+}
 .tray-panel-close:hover{background:var(--paper3)}
 .tray-panel-body{flex:1;overflow-y:auto;min-width:300px;-webkit-overflow-scrolling:touch}
 /* Sections inside tray panels */
 .tp-section{padding:10px 14px;border-bottom:1px solid var(--rule)}
 .tp-section:last-child{border-bottom:none}
 .tp-section-head{font-size:10px;font-weight:600;text-transform:uppercase;letter-spacing:.07em;color:var(--ink4);margin-bottom:8px}
+.tray-btn{width:32px;height:32px;border-radius:6px;display:flex;align-items:center;justify-content:center;cursor:pointer;color:var(--ink3);border:none;background:transparent;transition:all .12s;position:relative;flex-shrink:0}
+.tray-btn:hover{background:var(--paper3);color:var(--ink)}
+.tray-btn.on{background:var(--blue-bg);color:var(--blue2)}
+.tray-btn-badge{position:absolute;top:3px;right:3px;width:8px;height:8px;border-radius:50%;background:var(--red-mid);border:1.5px solid var(--paper);display:none}
+.tray-sep{width:20px;height:1px;background:var(--rule);margin:4px 0;flex-shrink:0}
+/* Content right padding — strip is always 44px wide */
+.fi .main{padding-right:44px;transition:padding-right .22s cubic-bezier(.4,0,.2,1)}
+/* When panel is open, content also shifts left by panel width */
+.fi.tray-open .main{padding-right:344px}  /* 44px strip + 300px panel */
+.is-tablet .tray,.is-mobile .tray{display:none}
+.is-tablet .fi .main,.is-mobile .fi .main{padding-right:0}
+.is-tablet .fi.tray-open .main,.is-mobile .fi.tray-open .main{padding-right:0}
 /* Live feed items */
 .feed-item{display:flex;gap:9px;padding:9px 14px;border-bottom:1px solid var(--rule);cursor:pointer;transition:background .1s}
 .feed-item:hover{background:var(--paper2)}
@@ -398,13 +457,7 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .tm-name{font-size:12px;font-weight:500;color:var(--ink)}
 .tm-role{font-size:10.5px;color:var(--ink3)}
 .tm-status{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-/* Content area shifts left when tray panel is open */
-.tray-panel.open ~ .tray-strip { box-shadow:none }
 /* On tablet/mobile hide the tray (nav takes precedence) */
-.is-tablet .tray,.is-mobile .tray{display:none}
-/* Adjust content right padding for tray strip on desktop */
-.fi .main { padding-right:44px }
-.is-tablet .fi .main,.is-mobile .fi .main { padding-right:0 }
 
 /* ═══════════════════════════════════════════
    PERSONA SWITCHER MODAL
@@ -421,6 +474,89 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
 .pc-tier.basic{background:var(--paper3);color:var(--ink3)}
 .pc-tier.elite{background:var(--blue-bg);color:var(--blue2)}
 .pc-tier.super{background:var(--amber-bg);color:var(--amber)}
+
+/* ═══════════════════════════════════════════════════════
+   UNIFIED ROW CONTROLS  — consistent across all list views
+   .row-ctrl  = right-side action zone on every list item
+   .row-act   = icon button within that zone
+   Hover reveals the zone; focus/active keeps it visible.
+═══════════════════════════════════════════════════════ */
+.row-ctrl{display:flex;align-items:center;gap:2px;flex-shrink:0;opacity:0;transition:opacity .12s;margin-left:auto;padding-left:8px}
+.row-ctrl.always{opacity:1}
+*:hover > .row-ctrl,
+.queue-item:hover .row-ctrl,
+.mod-item:hover .row-ctrl,
+.user-row:hover .row-ctrl,
+.donation-row:hover .row-ctrl,
+.disc-row:hover .row-ctrl,
+.act-item:hover .row-ctrl,
+.feed-item:hover .row-ctrl,
+.bm-item:hover .row-ctrl,
+.macro-list-item:hover .row-ctrl,
+.team-member:hover .row-ctrl,
+.audit-item:hover .row-ctrl{opacity:1}
+.row-act{width:26px;height:26px;border-radius:4px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .12s;flex-shrink:0;font-family:var(--sans);font-size:11px;font-weight:500}
+.row-act:hover{background:var(--paper3);color:var(--ink)}
+.row-act.approve{color:var(--green)}.row-act.approve:hover{background:var(--green-bg);color:var(--green)}
+.row-act.reject{color:var(--red)}.row-act.reject:hover{background:var(--red-bg);color:var(--red)}
+.row-act.warn{color:var(--amber)}.row-act.warn:hover{background:var(--amber-bg);color:var(--amber)}
+.row-act.primary{color:var(--blue2)}.row-act.primary:hover{background:var(--blue-bg);color:var(--blue2)}
+.row-act-sep{width:1px;height:14px;background:var(--rule2);flex-shrink:0;margin:0 1px}
+/* Row action tooltip via title attribute */
+.row-act[title]{position:relative}
+/* Inline action label — shown next to icon on wider rows */
+.row-act-lbl{font-size:11px;font-weight:500;white-space:nowrap;color:inherit;margin-left:2px;display:none}
+.row-act.with-lbl{width:auto;padding:0 8px;gap:4px}
+.row-act.with-lbl .row-act-lbl{display:inline}
+/* Pill action strip — used in table cells */
+.row-pill-strip{display:flex;gap:4px;align-items:center}
+.row-pill{padding:2px 9px;border-radius:4px;font-size:11px;font-weight:500;border:1px solid var(--rule2);background:var(--paper);color:var(--ink2);cursor:pointer;font-family:var(--sans);transition:all .12s;white-space:nowrap}
+.row-pill:hover{background:var(--paper3)}
+.row-pill.approve{background:var(--green-bg);border-color:var(--green-lt);color:var(--green)}
+.row-pill.reject{background:var(--red-bg);border-color:var(--red-lt);color:var(--red)}
+.row-pill.warn{background:var(--amber-bg);border-color:var(--amber-lt);color:var(--amber)}
+/* Live status dot */
+.status-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
+.status-dot.online{background:var(--green-mid)}
+.status-dot.away{background:var(--amber-mid)}
+.status-dot.offline{background:var(--ink4)}
+
+/* FEED_FLOAT_CSS_START — reserved for later, uncomment to re-enable
+/* ═══════════════════════════════════════════════════════
+   LIVE FEED — detached floating panel
+   Fixed position, resizable via drag handle, toggleable.
+═══════════════════════════════════════════════════════ */
+.feed-float{
+  position:fixed;right:44px;bottom:44px;
+  width:320px;height:420px;min-width:260px;min-height:200px;max-width:560px;max-height:80vh;
+  background:var(--paper);border:1px solid var(--rule);border-radius:8px;
+  box-shadow:0 8px 32px rgba(0,0,0,.14);
+  z-index:160;display:flex;flex-direction:column;
+  overflow:hidden;
+  transform:translateY(0) scale(1);
+  transition:box-shadow .15s;
+}
+.feed-float.hidden{display:none}
+.feed-float.minimized{height:44px !important;min-height:44px}
+.feed-float-head{height:44px;padding:0 12px;background:var(--paper);border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:8px;flex-shrink:0;cursor:move;user-select:none;border-radius:8px 8px 0 0}
+.feed-float.minimized .feed-float-head{border-bottom:none;border-radius:8px}
+.feed-float-title{font-size:12.5px;font-weight:600;color:var(--ink);flex:1;display:flex;align-items:center;gap:6px}
+.feed-live-dot{width:6px;height:6px;border-radius:50%;background:var(--green-mid);animation:pulse 2s infinite;flex-shrink:0}
+.feed-float-controls{display:flex;gap:2px;align-items:center}
+.feed-fc-btn{width:24px;height:24px;border-radius:4px;border:none;background:transparent;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--ink3);transition:all .12s}
+.feed-fc-btn:hover{background:var(--paper3);color:var(--ink)}
+.feed-float-filter{padding:6px 12px;border-bottom:1px solid var(--rule);display:flex;gap:4px;flex-shrink:0;overflow-x:auto;scrollbar-width:none}
+.feed-float-filter::-webkit-scrollbar{display:none}
+.feed-float.minimized .feed-float-filter{display:none}
+.feed-float-body{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.feed-float.minimized .feed-float-body{display:none}
+.feed-resize{height:4px;background:transparent;cursor:ns-resize;flex-shrink:0;transition:background .15s;position:relative}
+.feed-resize::before{content:'';position:absolute;top:0;left:50%;transform:translateX(-50%);width:32px;height:3px;border-radius:2px;background:var(--rule2);margin-top:0}
+.feed-resize:hover{background:var(--blue-lt)}
+.feed-float.minimized .feed-resize{display:none}
+/* On tablet/mobile the floating feed becomes a bottom sheet */
+.is-tablet .feed-float,.is-mobile .feed-float{right:0;left:0;width:auto;max-width:100%;border-radius:12px 12px 0 0;bottom:0}
+FEED_FLOAT_CSS_END */
 </style>
 <div>
 <div class="vsim">
@@ -448,7 +584,7 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
         <div class="sb-persona-name" id="sb-persona-name">Admin Director</div>
         <div class="sb-persona-role" id="sb-persona-role">Super administrator</div>
       </div>
-      <span class="sb-tier-badge super" id="sb-tier-badge">⚡ Elite</span>
+      <span class="sb-tier-badge super" id="sb-tier-badge"> Elite</span>
     </div>
   </div>
 
@@ -480,8 +616,8 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
   </nav>
 
   <div class="sb-bottom">
-    <span class="sb-bl" onclick="openTrayPanel('feed')">📡 Live feed</span>
-    <span class="sb-bl" onclick="openTrayPanel('bookmarks')">🔖 Bookmarks</span>
+    <span class="sb-bl" onclick="openTrayPanel('feed')"> Live feed</span>
+    <span class="sb-bl" onclick="openTrayPanel('bookmarks')"> Bookmarks</span>
     <span class="sb-bl">Documentation</span>
     <span class="sb-bl" onclick="openModal('modal-profile')">Account settings</span>
     <span class="sb-bl" style="color:rgba(255,255,255,.25)">Sign out</span>
@@ -571,7 +707,7 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
       Settings
     </div>
     <div style="padding:10px 16px;border-top:1px solid rgba(255,255,255,.08);margin-top:4px;display:flex;gap:16px">
-      <span style="font-size:12px;color:rgba(255,255,255,.4);cursor:pointer" onclick="closeMobNav()">✕ Close menu</span>
+      <span style="font-size:12px;color:rgba(255,255,255,.4);cursor:pointer" onclick="closeMobNav()"> Close menu</span>
     </div>
   </nav>
   <div class="content">
@@ -611,9 +747,9 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
     <div class="card">
       <div class="card-head"><div class="card-title">Moderation queue</div><a class="card-link" data-pg="moderation">Review all →</a></div>
       <div class="card-body" style="padding:8px 16px" id="ov-queue">
-        <div class="queue-item"><div class="qi-avi" style="background:#2a4b8d">QF</div><div class="qi-main"><div class="qi-title">Edit: Quantum mechanics — §Overview</div><div class="qi-sub">quantumfox · 2 hr ago · Article edit</div><div class="qi-actions"><button class="qi-btn approve" onclick="approveItem(this,'Edit approved')">Approve</button><button class="qi-btn reject" onclick="rejectItem(this)">Reject</button><button class="qi-btn" onclick="openModal('modal-diff')">View diff</button></div></div></div>
-        <div class="queue-item"><div class="qi-avi" style="background:#1a4a2a">SR</div><div class="qi-main"><div class="qi-title">New resource: Cohen-Tannoudji Vol. 2</div><div class="qi-sub">sara_r · 4 hr ago · Resource addition</div><div class="qi-actions"><button class="qi-btn approve" onclick="approveItem(this,'Resource approved')">Approve</button><button class="qi-btn reject" onclick="rejectItem(this)">Reject</button></div></div></div>
-        <div class="queue-item"><div class="qi-avi" style="background:#7c3aed">NX</div><div class="qi-main"><div class="qi-title">New article: CRISPR base editing</div><div class="qi-sub">neuro_x · 6 hr ago · New article</div><div class="qi-actions"><button class="qi-btn approve" onclick="approveItem(this,'Article published')">Approve</button><button class="qi-btn reject" onclick="rejectItem(this)">Reject</button><button class="qi-btn" onclick="showToast('Preview opened')">Preview</button></div></div></div>
+        <div class="queue-item"><div class="qi-avi" style="background:#2a4b8d">QF</div><div class="qi-main"><div class="qi-title">Edit: Quantum mechanics — §Overview</div><div class="qi-sub">quantumfox · 2 hr ago · Article edit</div></div><div class="row-ctrl always"><button class="row-act approve" title="Approve" onclick="approveItem(this,'Edit approved')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><div class="row-act-sep"></div><button class="row-act primary" title="View diff" onclick="openModal('modal-diff')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="currentColor" stroke-width="1.3"/><line x1="5" y1="6" x2="11" y2="6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="5" y1="9" x2="9" y2="9" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></button></div></div>
+        <div class="queue-item"><div class="qi-avi" style="background:#1a4a2a">SR</div><div class="qi-main"><div class="qi-title">New resource: Cohen-Tannoudji Vol. 2</div><div class="qi-sub">sara_r · 4 hr ago · Resource addition</div></div><div class="row-ctrl always"><button class="row-act approve" title="Approve" onclick="approveItem(this,'Resource approved')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div></div>
+        <div class="queue-item"><div class="qi-avi" style="background:#7c3aed">NX</div><div class="qi-main"><div class="qi-title">New article: CRISPR base editing</div><div class="qi-sub">neuro_x · 6 hr ago · New article</div></div><div class="row-ctrl always"><button class="row-act approve" title="Approve" onclick="approveItem(this,'Article published')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><div class="row-act-sep"></div><button class="row-act" title="Preview" onclick="showToast('Preview opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
       </div>
     </div>
   </div>
@@ -633,11 +769,11 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
     <div class="card">
       <div class="card-head"><div class="card-title">Recent activity</div><span style="font-size:11px;color:var(--ink3)">Live</span></div>
       <div class="card-body" style="padding:0 16px">
-        <div class="act-item"><div class="act-dot" style="background:#22c55e"></div><div class="act-text"><strong>mx_robin</strong> published "Wave function collapse — interpretations"</div><div class="act-time">12m</div></div>
-        <div class="act-item"><div class="act-dot" style="background:#3b82f6"></div><div class="act-text"><strong>sara_r</strong> added 3 resources to Quantum mechanics tree</div><div class="act-time">28m</div></div>
-        <div class="act-item"><div class="act-dot" style="background:#f59e0b"></div><div class="act-text"><strong>lena_w</strong> flagged resource classification dispute</div><div class="act-time">1h</div></div>
-        <div class="act-item"><div class="act-dot" style="background:#22c55e"></div><div class="act-text"><strong>anil_s</strong> joined as editor (Physics)</div><div class="act-time">2h</div></div>
-        <div class="act-item"><div class="act-dot" style="background:#ef4444"></div><div class="act-text">Spam report resolved: <strong>anon_42</strong> blocked</div><div class="act-time">3h</div></div>
+        <div class="act-item"><div class="act-dot" style="background:#22c55e"></div><div class="act-text"><strong>mx_robin</strong> published "Wave function collapse — interpretations"</div><div class="act-time">12m</div><div class="row-ctrl"><button class="row-act primary" title="View" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
+        <div class="act-item"><div class="act-dot" style="background:#3b82f6"></div><div class="act-text"><strong>sara_r</strong> added 3 resources to Quantum mechanics tree</div><div class="act-time">28m</div><div class="row-ctrl"><button class="row-act primary" title="View" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
+        <div class="act-item"><div class="act-dot" style="background:#f59e0b"></div><div class="act-text"><strong>lena_w</strong> flagged resource classification dispute</div><div class="act-time">1h</div><div class="row-ctrl"><button class="row-act primary" title="View" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
+        <div class="act-item"><div class="act-dot" style="background:#22c55e"></div><div class="act-text"><strong>anil_s</strong> joined as editor (Physics)</div><div class="act-time">2h</div><div class="row-ctrl"><button class="row-act primary" title="View" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
+        <div class="act-item"><div class="act-dot" style="background:#ef4444"></div><div class="act-text">Spam report resolved: <strong>anon_42</strong> blocked</div><div class="act-time">3h</div><div class="row-ctrl"><button class="row-act primary" title="View" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
       </div>
     </div>
     <div class="card">
@@ -784,54 +920,54 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
           <div class="mod-title">Article edit: Quantum mechanics — §Overview</div>
           <div class="mod-sub">quantumfox · 2 hr ago · +842 chars · Changed definition of wave-particle duality</div>
           <div class="mod-diff"><span class="diff-del">objects exhibit properties of both particles and waves</span><br><span class="diff-add">objects exhibit characteristics of both particles and waves in a context-dependent manner</span></div>
-          <div class="mod-actions"><button class="mod-btn approve" onclick="approveItem(this,'Edit approved')">Approve</button><button class="mod-btn reject" onclick="rejectItem(this)">Reject</button><button class="mod-btn review" onclick="showToast('Changes requested','','amber')">Request changes</button><button class="mod-btn" onclick="openModal('modal-diff')">Full diff</button></div>
         </div>
-        <span class="badge badge-blue" style="flex-shrink:0">Edit</span>
+        <span class="badge badge-blue" style="flex-shrink:0;align-self:flex-start">Edit</span>
+        <div class="row-ctrl"><button class="row-act approve" title="Approve" onclick="approveItem(this,'Edit approved')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><button class="row-act warn" title="Request changes" onclick="showToast('Changes requested','','amber')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button><div class="row-act-sep"></div><button class="row-act primary" title="View diff" onclick="openModal('modal-diff')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
       </div>
       <div class="mod-item" data-type="resource">
         <div class="mod-thumb">CT</div>
         <div class="mod-body">
           <div class="mod-title">New resource: Cohen-Tannoudji, Quantum Mechanics Vol. 2</div>
           <div class="mod-sub">sara_r · 4 hr ago · Added to Physics / Quantum mechanics tree · "Further reading"</div>
-          <div class="mod-actions"><button class="mod-btn approve" onclick="approveItem(this,'Resource approved')">Approve</button><button class="mod-btn reject" onclick="rejectItem(this)">Reject</button><button class="mod-btn review" onclick="showToast('Reclassification dialog — coming soon','','amber')">Reclassify</button></div>
         </div>
-        <span class="badge badge-amber" style="flex-shrink:0">Resource</span>
+        <span class="badge badge-amber" style="flex-shrink:0;align-self:flex-start">Resource</span>
+        <div class="row-ctrl"><button class="row-act approve" title="Approve" onclick="approveItem(this,'Resource approved')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><div class="row-act-sep"></div><button class="row-act warn" title="Reclassify" onclick="showToast('Reclassification dialog — coming soon','','amber')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button></div>
       </div>
       <div class="mod-item" data-type="edit">
         <div class="mod-thumb">CR</div>
         <div class="mod-body">
           <div class="mod-title">New article: CRISPR base editing</div>
           <div class="mod-sub">neuro_x · 6 hr ago · Biology · 2,840 chars · 8 references</div>
-          <div class="mod-actions"><button class="mod-btn approve" onclick="approveItem(this,'Article published')">Approve &amp; publish</button><button class="mod-btn reject" onclick="rejectItem(this)">Reject</button><button class="mod-btn review" onclick="showToast('Moved to draft','','amber')">Send to draft</button><button class="mod-btn" onclick="showToast('Preview opened')">Preview</button></div>
         </div>
-        <span class="badge badge-green" style="flex-shrink:0">New article</span>
+        <span class="badge badge-green" style="flex-shrink:0;align-self:flex-start">New article</span>
+        <div class="row-ctrl"><button class="row-act approve" title="Approve & publish" onclick="approveItem(this,'Article published')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><button class="row-act warn" title="Send to draft" onclick="showToast('Moved to draft','','amber')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button><div class="row-act-sep"></div><button class="row-act primary" title="Preview" onclick="showToast('Preview opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div>
       </div>
       <div class="mod-item" data-type="resource">
         <div class="mod-thumb">SA</div>
         <div class="mod-body">
           <div class="mod-title">New resource: Sakurai — Modern Quantum Mechanics (3rd ed.)</div>
           <div class="mod-sub">anil_s · 8 hr ago · Physics / Quantum mechanics tree · Classified as "Primary"</div>
-          <div class="mod-actions"><button class="mod-btn approve" onclick="approveItem(this,'Resource approved')">Approve</button><button class="mod-btn reject" onclick="rejectItem(this)">Reject</button></div>
         </div>
-        <span class="badge badge-amber" style="flex-shrink:0">Resource</span>
+        <span class="badge badge-amber" style="flex-shrink:0;align-self:flex-start">Resource</span>
+        <div class="row-ctrl"><button class="row-act approve" title="Approve" onclick="approveItem(this,'Resource approved')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>
       </div>
       <div class="mod-item" data-type="account">
         <div class="mod-thumb" style="background:var(--blue-bg);color:var(--blue2)">+U</div>
         <div class="mod-body">
           <div class="mod-title">New account: Dr. Priya Mehta — editor application (Chemistry)</div>
           <div class="mod-sub">ORCID: 0000-0002-1234-5678 · Affiliation: MIT · 14 publications</div>
-          <div class="mod-actions"><button class="mod-btn approve" onclick="approveItem(this,'Editor role granted','green')">Grant editor role</button><button class="mod-btn reject" onclick="rejectItem(this)">Reject</button><button class="mod-btn" onclick="showToast('ORCID profile opened')">View ORCID</button></div>
         </div>
-        <span class="badge badge-blue" style="flex-shrink:0">Account</span>
+        <span class="badge badge-blue" style="flex-shrink:0;align-self:flex-start">Account</span>
+        <div class="row-ctrl"><button class="row-act approve" title="Grant editor role" onclick="approveItem(this,'Editor role granted','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="2,9 6,13 14,3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Reject" onclick="rejectItem(this)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button><div class="row-act-sep"></div><button class="row-act primary" title="View ORCID" onclick="showToast('ORCID profile opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6.5" stroke="currentColor" stroke-width="1.3"/><path d="M6 5.5v5M8 5.5c2.5 0 4 1 4 2.5s-1.5 2.5-4 2.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button></div>
       </div>
       <div class="mod-item" data-type="report">
         <div class="mod-thumb" style="background:var(--red-bg);color:var(--red);font-weight:700">!</div>
         <div class="mod-body">
           <div class="mod-title">Spam report: Article talk — Thermodynamics</div>
           <div class="mod-sub">Reported by: mx_robin · User: anon_882 · 3 posts flagged as off-topic promotion</div>
-          <div class="mod-actions"><button class="mod-btn reject" onclick="approveItem(this,'User banned','red')">Ban user</button><button class="mod-btn review" onclick="showToast('Warning sent','','amber')">Warn user</button><button class="mod-btn" onclick="rejectItem(this,'Report dismissed')">Dismiss</button></div>
         </div>
-        <span class="badge badge-red" style="flex-shrink:0">Report</span>
+        <span class="badge badge-red" style="flex-shrink:0;align-self:flex-start">Report</span>
+        <div class="row-ctrl"><button class="row-act reject" title="Ban user" onclick="approveItem(this,'User banned','red')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><line x1="3.5" y1="3.5" x2="12.5" y2="12.5" stroke="currentColor" stroke-width="1.3"/></svg></button><button class="row-act warn" title="Warn user" onclick="showToast('Warning sent','','amber')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="Dismiss" onclick="rejectItem(this,'Report dismissed')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></button></div>
       </div>
     </div>
   </div>
@@ -980,7 +1116,7 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
       <div style="display:flex;gap:6px;align-items:center;flex-wrap:wrap">
         <button class="tb-btn" onclick="showToast('Bulk classification tool — coming soon')">Bulk classify</button>
         <button class="tb-btn" onclick="showToast('Dispute review queue opened','','amber')">
-          <span style="color:var(--amber)">⚠</span> 24 disputes
+          <span style="color:var(--amber)"></span> 24 disputes
         </button>
         <a class="card-link" onclick="showToast('CSV exported','','green')">Export CSV</a>
       </div>
@@ -1065,13 +1201,13 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
     <div class="card">
       <div class="card-head"><div class="card-title">Users</div><span style="font-size:11.5px;color:var(--ink3)" id="user-count">6,210 total</span></div>
       <div class="card-body" style="padding:0 16px" id="user-list">
-        <div class="user-row" data-role="superadmin"><div class="user-avi" style="background:#1a3a5c">AD</div><div class="user-info"><div class="user-name">Admin Director</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="1d7c797074735d75746b787074737933726f7a">[email&#160;protected]</a> · Joined Jan 2024 · Last seen today</div></div><span class="badge badge-red">Super admin</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#2a4b8d">QF</div><div class="user-info"><div class="user-name">quantumfox</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="4d3c2b22350d28352c203d2128632e2220">[email&#160;protected]</a> · Physics editor · 84 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#1a4a2a">SR</div><div class="user-info"><div class="user-name">sara_r</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="8bf8eaf9eacbeef3eae6fbe7eea5e8e4e6">[email&#160;protected]</a> · Physics editor · 61 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#7c3aed">NX</div><div class="user-info"><div class="user-name">neuro_x</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="08666d7d7a6770486d70696578646d266b6765">[email&#160;protected]</a> · Biology / Neuroscience · 47 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#b45309">LW</div><div class="user-info"><div class="user-name">lena_w</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="98f4fdf6f9d8fde0f9f5e8f4fdb6fbf7f5">[email&#160;protected]</a> · Neuroscience editor · 39 edits</div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
-        <div class="user-row" data-role="contributor"><div class="user-avi" style="background:#166534">AS</div><div class="user-info"><div class="user-name">anil_s</div><div class="user-sub"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="7c1d1215103c19041d110c1019521f1311">[email&#160;protected]</a> · Math / Physics · 28 edits</div></div><span class="badge badge-green">Contributor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button><button class="tb-btn" style="padding:3px 9px;font-size:11px;color:var(--green)" onclick="showToast('Promoted to editor','','green')">Promote</button></div></div>
-        <div class="user-row" data-role="suspended"><div class="user-avi" style="background:#6b7280">A4</div><div class="user-info"><div class="user-name">anon_42</div><div class="user-sub">IP: 192.168.x.x · 2 contributions · 3 spam reports</div></div><span class="badge badge-red">Suspended</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px;color:var(--green)" onclick="showToast('Account reinstated','','green')">Reinstate</button><button class="tb-btn danger" style="padding:3px 9px;font-size:11px" onclick="showToast('User permanently banned','','red')">Ban</button></div></div>
+        <div class="user-row" data-role="superadmin"><div class="user-avi" style="background:#1a3a5c">AD</div><div class="user-info"><div class="user-name">Admin Director</div><div class="user-sub">admin@hivemind.org · Joined Jan 2024 · Last seen today</div></div><span class="badge badge-red">Super admin</span><div class="row-ctrl"><button class="row-act primary" title="Edit" onclick="openModal('modal-user-edit')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button></div></div><span class="badge badge-red">Super admin</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#2a4b8d">QF</div><div class="user-info"><div class="user-name">quantumfox</div><div class="user-sub">qfox@example.com · Physics editor · 84 edits</div></div><span class="badge badge-blue">Editor</span><div class="row-ctrl"><button class="row-act primary" title="Edit" onclick="openModal('modal-user-edit')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button></div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#1a4a2a">SR</div><div class="user-info"><div class="user-name">sara_r</div><div class="user-sub">sara@example.com · Physics editor · 61 edits</div></div><span class="badge badge-blue">Editor</span><div class="row-ctrl"><button class="row-act primary" title="Edit" onclick="openModal('modal-user-edit')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button></div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#7c3aed">NX</div><div class="user-info"><div class="user-name">neuro_x</div><div class="user-sub">neurox@example.com · Biology / Neuroscience · 47 edits</div></div><span class="badge badge-blue">Editor</span><div class="row-ctrl"><button class="row-act primary" title="Edit" onclick="openModal('modal-user-edit')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button></div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="editor"><div class="user-avi" style="background:#b45309">LW</div><div class="user-info"><div class="user-name">lena_w</div><div class="user-sub">lena@example.com · Neuroscience editor · 39 edits</div></div><span class="badge badge-blue">Editor</span><div class="row-ctrl"><button class="row-act primary" title="Edit" onclick="openModal('modal-user-edit')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button></div></div><span class="badge badge-blue">Editor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button></div></div>
+        <div class="user-row" data-role="contributor"><div class="user-avi" style="background:#166534">AS</div><div class="user-info"><div class="user-name">anil_s</div><div class="user-sub">anil@example.com · Math / Physics · 28 edits</div></div><span class="badge badge-green">Contributor</span><div class="row-ctrl"><button class="row-act primary" title="Edit" onclick="openModal('modal-user-edit')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M11 2l3 3-9 9H2v-3L11 2z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act approve" title="Promote to editor" onclick="showToast('Promoted to editor','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M8 13V4M4 7l4-4 4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="badge badge-green">Contributor</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px" onclick="openModal('modal-user-edit')">Edit</button><button class="tb-btn" style="padding:3px 9px;font-size:11px;color:var(--green)" onclick="showToast('Promoted to editor','','green')">Promote</button></div></div>
+        <div class="user-row" data-role="suspended"><div class="user-avi" style="background:#6b7280">A4</div><div class="user-info"><div class="user-name">anon_42</div><div class="user-sub">IP: 192.168.x.x · 2 contributions · 3 spam reports</div></div><span class="badge badge-red">Suspended</span><div class="row-ctrl"><button class="row-act approve" title="Reinstate" onclick="showToast('Account reinstated','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M3 8a5 5 0 105-5H5M5 3L3 5l2 2" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><button class="row-act reject" title="Ban permanently" onclick="showToast('User permanently banned','','red')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><line x1="3.5" y1="3.5" x2="12.5" y2="12.5" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><span class="badge badge-red">Suspended</span><div class="user-actions"><button class="tb-btn" style="padding:3px 9px;font-size:11px;color:var(--green)" onclick="showToast('Account reinstated','','green')">Reinstate</button><button class="tb-btn danger" style="padding:3px 9px;font-size:11px" onclick="showToast('User permanently banned','','red')">Ban</button></div></div>
       </div>
     </div>
     <div style="display:flex;flex-direction:column;gap:14px">
@@ -1079,12 +1215,12 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
         <div class="card-head"><div class="card-title">Role permissions matrix</div></div>
         <div class="card-body no-pad">
           <table class="dash-table"><thead><tr><th>Permission</th><th style="text-align:center">Reader</th><th style="text-align:center">Contrib.</th><th style="text-align:center">Editor</th><th style="text-align:center">Admin</th></tr></thead><tbody>
-            <tr><td>Read articles</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td></tr>
-            <tr><td>Suggest edits</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td></tr>
-            <tr><td>Publish articles</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td></tr>
-            <tr><td>Moderate queue</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--amber);font-size:10px">Limited</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td></tr>
-            <tr><td>Manage users</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td></tr>
-            <tr><td>Finance access</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700">✓</td></tr>
+            <tr><td>Read articles</td><td style="text-align:center;color:var(--green);font-weight:700"></td><td style="text-align:center;color:var(--green);font-weight:700"></td><td style="text-align:center;color:var(--green);font-weight:700"></td><td style="text-align:center;color:var(--green);font-weight:700"></td></tr>
+            <tr><td>Suggest edits</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700"></td><td style="text-align:center;color:var(--green);font-weight:700"></td><td style="text-align:center;color:var(--green);font-weight:700"></td></tr>
+            <tr><td>Publish articles</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700"></td><td style="text-align:center;color:var(--green);font-weight:700"></td></tr>
+            <tr><td>Moderate queue</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--amber);font-size:10px">Limited</td><td style="text-align:center;color:var(--green);font-weight:700"></td></tr>
+            <tr><td>Manage users</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700"></td></tr>
+            <tr><td>Finance access</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green);font-weight:700"></td></tr>
             <tr><td>Change settings</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td></tr>
           </tbody></table>
         </div>
@@ -1117,12 +1253,12 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
   <div class="card">
     <div class="card-head"><div class="card-title">Active discussions</div><span style="font-size:11.5px;color:var(--ink3)">38 open · 6 need attention</span></div>
     <div class="card-body" style="padding:0 16px" id="disc-list">
-      <div class="disc-row" data-type="resource" onclick="openModal('modal-discussion')"><div class="disc-icon" style="background:var(--amber-bg)">📚</div><div class="disc-body"><div class="disc-title">Should Griffiths be primary or further reading for Quantum mechanics?</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Started by quantumfox</span></div></div><div class="disc-right"><div class="disc-count">8</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">1 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div></div>
-      <div class="disc-row" data-type="resource" onclick="openModal('modal-discussion')"><div class="disc-icon" style="background:var(--amber-bg)">📚</div><div class="disc-body"><div class="disc-title">Penrose "Road to Reality" — supplemental or further reading?</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Started by sara_r</span></div></div><div class="disc-right"><div class="disc-count">4</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">6 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div></div>
-      <div class="disc-row" data-type="talk" onclick="openModal('modal-discussion')"><div class="disc-icon" style="background:var(--blue-bg)">💬</div><div class="disc-body"><div class="disc-title">Historical section needs Two-Spirit and non-Western coverage</div><div class="disc-meta"><span style="color:var(--blue)">Gender studies</span><span class="badge badge-blue">Article talk</span><span>Started by mx_robin</span></div></div><div class="disc-right"><div class="disc-count">12</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">3 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div></div>
-      <div class="disc-row" data-type="resource" onclick="openModal('modal-discussion')"><div class="disc-icon" style="background:var(--amber-bg)">📚</div><div class="disc-body"><div class="disc-title">Bohm classification: primary vs disputed for Quantum mechanics tree?</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Started by lena_w</span></div></div><div class="disc-right"><div class="disc-count">6</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">2 days ago</div><span class="badge badge-gray" style="font-size:9px;margin-top:4px">Stalled</span></div></div>
-      <div class="disc-row" data-type="governance" onclick="openModal('modal-discussion')"><div class="disc-icon" style="background:var(--red-bg)">⚖️</div><div class="disc-body"><div class="disc-title">Governance: proposal to revise resource classification criteria site-wide</div><div class="disc-meta"><span style="color:var(--ink3)">Site-wide</span><span class="badge badge-red">Governance</span><span>Started by Admin Director</span></div></div><div class="disc-right"><div class="disc-count">24</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">4 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div></div>
-      <div class="disc-row" data-type="resolved" onclick="openModal('modal-discussion')"><div class="disc-icon" style="background:var(--green-bg)">✅</div><div class="disc-body"><div class="disc-title">Add Shankar to further reading for Quantum mechanics</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Resolved by sara_r</span></div></div><div class="disc-right"><div class="disc-count">2</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">1 day ago</div><span class="badge badge-green" style="font-size:9px;margin-top:4px">Resolved</span></div></div>
+      <div class="disc-row" data-type="resource"><div class="disc-icon" style="background:var(--amber-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#b45309" stroke-width="1.4"/><line x1="5" y1="6" x2="11" y2="6" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/><line x1="5" y1="9" x2="9" y2="9" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="disc-body"><div class="disc-title">Should Griffiths be primary or further reading for Quantum mechanics?</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Started by quantumfox</span></div></div><div class="disc-right"><div class="disc-count">8</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">1 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div><div class="row-ctrl"><button class="row-act primary" title="Open thread" onclick="openModal('modal-discussion')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act approve" title="Mark resolved" onclick="showToast('Marked resolved','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><polyline points="5,8 7,10 11,6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+      <div class="disc-row" data-type="resource"><div class="disc-icon" style="background:var(--amber-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#b45309" stroke-width="1.4"/><line x1="5" y1="6" x2="11" y2="6" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/><line x1="5" y1="9" x2="9" y2="9" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="disc-body"><div class="disc-title">Penrose "Road to Reality" — supplemental or further reading?</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Started by sara_r</span></div></div><div class="disc-right"><div class="disc-count">4</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">6 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div><div class="row-ctrl"><button class="row-act primary" title="Open thread" onclick="openModal('modal-discussion')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act approve" title="Mark resolved" onclick="showToast('Marked resolved','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><polyline points="5,8 7,10 11,6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+      <div class="disc-row" data-type="talk"><div class="disc-icon" style="background:var(--blue-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M2 3h10a1 1 0 011 1v6a1 1 0 01-1 1H6l-3 2V4a1 1 0 011-1z" stroke="#1d4ed8" stroke-width="1.4" stroke-linejoin="round"/></svg></div><div class="disc-body"><div class="disc-title">Historical section needs Two-Spirit and non-Western coverage</div><div class="disc-meta"><span style="color:var(--blue)">Gender studies</span><span class="badge badge-blue">Article talk</span><span>Started by mx_robin</span></div></div><div class="disc-right"><div class="disc-count">12</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">3 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div><div class="row-ctrl"><button class="row-act primary" title="Open thread" onclick="openModal('modal-discussion')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act approve" title="Mark resolved" onclick="showToast('Marked resolved','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><polyline points="5,8 7,10 11,6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+      <div class="disc-row" data-type="resource"><div class="disc-icon" style="background:var(--amber-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><rect x="2" y="2" width="12" height="12" rx="1.5" stroke="#b45309" stroke-width="1.4"/><line x1="5" y1="6" x2="11" y2="6" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/><line x1="5" y1="9" x2="9" y2="9" stroke="#b45309" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="disc-body"><div class="disc-title">Bohm classification: primary vs disputed for Quantum mechanics tree?</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Started by lena_w</span></div></div><div class="disc-right"><div class="disc-count">6</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">2 days ago</div><span class="badge badge-gray" style="font-size:9px;margin-top:4px">Stalled</span></div><div class="row-ctrl"><button class="row-act primary" title="Open thread" onclick="openModal('modal-discussion')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act approve" title="Mark resolved" onclick="showToast('Marked resolved','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><polyline points="5,8 7,10 11,6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+      <div class="disc-row" data-type="governance"><div class="disc-icon" style="background:var(--red-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M8 2L2 14h12L8 2z" stroke="#b91c1c" stroke-width="1.3" stroke-linejoin="round"/><line x1="8" y1="7" x2="8" y2="10" stroke="#b91c1c" stroke-width="1.3" stroke-linecap="round"/></svg></div><div class="disc-body"><div class="disc-title">Governance: proposal to revise resource classification criteria site-wide</div><div class="disc-meta"><span style="color:var(--ink3)">Site-wide</span><span class="badge badge-red">Governance</span><span>Started by Admin Director</span></div></div><div class="disc-right"><div class="disc-count">24</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">4 hr ago</div><span class="badge badge-amber" style="font-size:9px;margin-top:4px">Active</span></div><div class="row-ctrl"><button class="row-act primary" title="Open thread" onclick="openModal('modal-discussion')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act approve" title="Mark resolved" onclick="showToast('Marked resolved','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><polyline points="5,8 7,10 11,6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+      <div class="disc-row" data-type="resolved"><div class="disc-icon" style="background:var(--green-bg)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="#15803d" stroke-width="1.3"/><polyline points="5,8 7,10 11,6" stroke="#15803d" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="disc-body"><div class="disc-title">Add Shankar to further reading for Quantum mechanics</div><div class="disc-meta"><span style="color:var(--blue)">Quantum mechanics</span><span class="badge badge-amber">Resource dispute</span><span>Resolved by sara_r</span></div></div><div class="disc-right"><div class="disc-count">2</div><div class="disc-count-lbl">replies</div><div style="font-size:10px;color:var(--ink4);margin-top:4px">1 day ago</div><span class="badge badge-green" style="font-size:9px;margin-top:4px">Resolved</span></div><div class="row-ctrl"><button class="row-act primary" title="Open thread" onclick="openModal('modal-discussion')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
     </div>
   </div>
 </div>
@@ -1144,13 +1280,13 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
     <div class="card">
       <div class="card-head"><div class="card-title">Recent donations</div><a class="card-link" onclick="showToast('Ledger exported','','green')">Export</a></div>
       <div class="card-body" style="padding:0 16px">
-        <div class="donation-row"><div class="don-amount">$500</div><div class="don-info"><div class="don-name">James R.</div><div class="don-sub">Monthly · Active since Jan 2024 · Stripe</div></div><span class="badge badge-blue">Monthly</span><div class="don-date">Mar 28</div></div>
-        <div class="donation-row"><div class="don-amount">$2,500</div><div class="don-info"><div class="don-name">Open Knowledge Foundation</div><div class="don-sub">Grant · Q1 2026 disbursement</div></div><span class="badge badge-green">Grant</span><div class="don-date">Mar 27</div></div>
-        <div class="donation-row"><div class="don-amount">$25</div><div class="don-info"><div class="don-name">Anonymous</div><div class="don-sub">One-time · Via website donate page</div></div><span class="badge badge-gray">One-time</span><div class="don-date">Mar 26</div></div>
-        <div class="donation-row"><div class="don-amount">$100</div><div class="don-info"><div class="don-name">Dr. A. Patel</div><div class="don-sub">Monthly · Active since Mar 2025</div></div><span class="badge badge-blue">Monthly</span><div class="don-date">Mar 25</div></div>
-        <div class="donation-row"><div class="don-amount">$50</div><div class="don-info"><div class="don-name">S. Okonkwo</div><div class="don-sub">One-time · Referred by newsletter</div></div><span class="badge badge-gray">One-time</span><div class="don-date">Mar 24</div></div>
-        <div class="donation-row"><div class="don-amount">$10,000</div><div class="don-info"><div class="don-name">Wikimedia Foundation</div><div class="don-sub">Annual grant · Infrastructure support · Grant #WMF-2026-14</div></div><span class="badge badge-green">Grant</span><div class="don-date">Mar 20</div></div>
-        <div class="donation-row"><div class="don-amount">$75</div><div class="don-info"><div class="don-name">mx_robin</div><div class="don-sub">One-time · Contributor donation</div></div><span class="badge badge-gray">One-time</span><div class="don-date">Mar 18</div></div>
+        <div class="donation-row"><div class="don-amount">$500</div><div class="don-info"><div class="don-name">James R.</div><div class="don-sub">Monthly · Active since Jan 2024 · Stripe</div></div><span class="badge badge-blue" style="flex-shrink:0">Monthly</span><span class="don-date">Mar 28</span><div class="row-ctrl"><button class="row-act primary" title="View receipt" onclick="showToast('Receipt opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9 4h3v3M14 2l-5 5M3 7H1a1 1 0 000 2h7a1 1 0 000-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="More" onclick="showToast('Donation details opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+        <div class="donation-row"><div class="don-amount">$2,500</div><div class="don-info"><div class="don-name">Open Knowledge Foundation</div><div class="don-sub">Grant · Q1 2026 disbursement</div></div><span class="badge badge-green" style="flex-shrink:0">Grant</span><span class="don-date">Mar 27</span><div class="row-ctrl"><button class="row-act primary" title="View receipt" onclick="showToast('Receipt opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9 4h3v3M14 2l-5 5M3 7H1a1 1 0 000 2h7a1 1 0 000-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="More" onclick="showToast('Donation details opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+        <div class="donation-row"><div class="don-amount">$25</div><div class="don-info"><div class="don-name">Anonymous</div><div class="don-sub">One-time · Via website donate page</div></div><span class="badge badge-gray" style="flex-shrink:0">One-time</span><span class="don-date">Mar 26</span><div class="row-ctrl"><button class="row-act primary" title="View receipt" onclick="showToast('Receipt opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9 4h3v3M14 2l-5 5M3 7H1a1 1 0 000 2h7a1 1 0 000-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="More" onclick="showToast('Donation details opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+        <div class="donation-row"><div class="don-amount">$100</div><div class="don-info"><div class="don-name">Dr. A. Patel</div><div class="don-sub">Monthly · Active since Mar 2025</div></div><span class="badge badge-blue" style="flex-shrink:0">Monthly</span><span class="don-date">Mar 25</span><div class="row-ctrl"><button class="row-act primary" title="View receipt" onclick="showToast('Receipt opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9 4h3v3M14 2l-5 5M3 7H1a1 1 0 000 2h7a1 1 0 000-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="More" onclick="showToast('Donation details opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+        <div class="donation-row"><div class="don-amount">$50</div><div class="don-info"><div class="don-name">S. Okonkwo</div><div class="don-sub">One-time · Referred by newsletter</div></div><span class="badge badge-gray" style="flex-shrink:0">One-time</span><span class="don-date">Mar 24</span><div class="row-ctrl"><button class="row-act primary" title="View receipt" onclick="showToast('Receipt opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9 4h3v3M14 2l-5 5M3 7H1a1 1 0 000 2h7a1 1 0 000-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="More" onclick="showToast('Donation details opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+        <div class="donation-row"><div class="don-amount">$10,000</div><div class="don-info"><div class="don-name">Wikimedia Foundation</div><div class="don-sub">Annual grant · Infrastructure support · Grant #WMF-2026-14</div></div><span class="badge badge-green" style="flex-shrink:0">Grant</span><span class="don-date">Mar 20</span><div class="row-ctrl"><button class="row-act primary" title="View receipt" onclick="showToast('Receipt opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9 4h3v3M14 2l-5 5M3 7H1a1 1 0 000 2h7a1 1 0 000-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="More" onclick="showToast('Donation details opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+        <div class="donation-row"><div class="don-amount">$75</div><div class="don-info"><div class="don-name">mx_robin</div><div class="don-sub">One-time · Contributor donation</div></div><span class="badge badge-gray" style="flex-shrink:0">One-time</span><span class="don-date">Mar 18</span><div class="row-ctrl"><button class="row-act primary" title="View receipt" onclick="showToast('Receipt opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M9 4h3v3M14 2l-5 5M3 7H1a1 1 0 000 2h7a1 1 0 000-2z" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button><div class="row-act-sep"></div><button class="row-act " title="More" onclick="showToast('Donation details opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
       </div>
     </div>
     <div class="card">
@@ -1356,14 +1492,14 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
           <div class="card-head"><div><div class="card-title">Role definitions</div><div class="card-desc">What each role can do across the platform</div></div></div>
           <div class="card-body no-pad">
             <table class="dtable"><thead><tr><th>Permission</th><th style="text-align:center">Reader</th><th style="text-align:center">Contributor</th><th style="text-align:center">Editor</th><th style="text-align:center">Admin</th><th style="text-align:center">Super admin</th></tr></thead><tbody>
-              <tr><td>Read articles</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td></tr>
-              <tr><td>Suggest edits</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td></tr>
-              <tr><td>Publish articles</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td></tr>
-              <tr><td>Add resources</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--amber);font-size:10px">Review req.</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td></tr>
-              <tr><td>Moderate queue</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--amber);font-size:10px">Limited</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td></tr>
-              <tr><td>Manage users</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td></tr>
-              <tr><td>Finance access</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)">✓</td><td style="text-align:center;color:var(--green)">✓</td></tr>
-              <tr><td>Change settings</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)">✓</td></tr>
+              <tr><td>Read articles</td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td></tr>
+              <tr><td>Suggest edits</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td></tr>
+              <tr><td>Publish articles</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td></tr>
+              <tr><td>Add resources</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--amber);font-size:10px">Review req.</td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td></tr>
+              <tr><td>Moderate queue</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--amber);font-size:10px">Limited</td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td></tr>
+              <tr><td>Manage users</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td></tr>
+              <tr><td>Finance access</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)"></td><td style="text-align:center;color:var(--green)"></td></tr>
+              <tr><td>Change settings</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--ink4)">—</td><td style="text-align:center;color:var(--green)"></td></tr>
             </tbody></table>
           </div>
         </div>
@@ -1387,7 +1523,7 @@ body{font-family:var(--sans);background:var(--paper3);color:var(--ink);-webkit-f
           <div class="card-body">
             <div class="plan-card current">
               <div class="plan-icon" style="background:var(--blue-bg)"><svg width="22" height="22" viewBox="0 0 22 22" fill="none"><path d="M11 2l2.5 5.5H19l-4.5 4 1.5 6L11 14.5 6 17.5l1.5-6L3 7.5h5.5z" stroke="#1d4ed8" stroke-width="1.5" stroke-linejoin="round"/></svg></div>
-              <div style="flex:1"><div class="plan-title">Nonprofit open access <span class="badge badge-blue" style="margin-left:6px;vertical-align:middle;font-size:10px">Current plan</span></div><div class="plan-price">$0 <span>/ month — free for registered nonprofits</span></div><div class="plan-desc">Unlimited articles, unlimited contributors, resource trees, full moderation suite, analytics, and all integrations.</div><div style="display:flex;gap:10px;flex-wrap:wrap"><span class="feature-tag">✓ Unlimited articles</span><span class="feature-tag">✓ Unlimited contributors</span><span class="feature-tag">✓ Resource trees</span><span class="feature-tag">✓ All integrations</span><span class="feature-tag">✓ Priority support</span></div></div>
+              <div style="flex:1"><div class="plan-title">Nonprofit open access <span class="badge badge-blue" style="margin-left:6px;vertical-align:middle;font-size:10px">Current plan</span></div><div class="plan-price">$0 <span>/ month — free for registered nonprofits</span></div><div class="plan-desc">Unlimited articles, unlimited contributors, resource trees, full moderation suite, analytics, and all integrations.</div><div style="display:flex;gap:10px;flex-wrap:wrap"><span class="feature-tag"> Unlimited articles</span><span class="feature-tag"> Unlimited contributors</span><span class="feature-tag"> Resource trees</span><span class="feature-tag"> All integrations</span><span class="feature-tag"> Priority support</span></div></div>
             </div>
             <div class="set-section" style="margin-top:14px">
               <div class="set-section-title">Infrastructure usage</div>
@@ -1450,15 +1586,15 @@ USA</textarea></div>
               <select class="form-select" style="width:auto;padding:5px 10px;font-size:12px"><option>Last 7 days</option><option>Last 30 days</option><option>Last 90 days</option></select>
               <input class="form-input" placeholder="Search events…" style="flex:1;min-width:160px;padding:5px 10px;font-size:12px"/>
             </div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">Settings changed — moderation SLA threshold updated: 24h → 48h</div><div class="audit-meta">Admin Director · Settings › Moderation rules</div></div><div class="audit-time">2 hr ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">User role promoted — quantumfox: contributor → editor (Physics)</div><div class="audit-meta">Admin Director · Users &amp; roles</div></div><div class="audit-time">6 hr ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--blue-mid)"></div><div class="audit-body"><div class="audit-title">Integration connected — Slack workspace hivemind-org.slack.com</div><div class="audit-meta">Admin Director · Integrations</div></div><div class="audit-time">1 day ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--red-mid)"></div><div class="audit-body"><div class="audit-title">User suspended — anon_882 (3 spam violations)</div><div class="audit-meta">Admin Director · Moderation</div></div><div class="audit-time">1 day ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">Donation received — $10,000 from Wikimedia Foundation (grant)</div><div class="audit-meta">System · Finance</div></div><div class="audit-time">2 days ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">API key generated — hm_live_sk_***9b1c (read only)</div><div class="audit-meta">Admin Director · Integrations › API</div></div><div class="audit-time">3 days ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">Notification settings updated — weekly analytics digest enabled</div><div class="audit-meta">Admin Director · Settings › Notifications</div></div><div class="audit-time">4 days ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--blue-mid)"></div><div class="audit-body"><div class="audit-title">Settings changed — ORCID verification required for editors: enabled</div><div class="audit-meta">Admin Director · Settings › Users &amp; permissions</div></div><div class="audit-time">5 days ago</div></div>
-            <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">Moderation rule activated — external link safety scanning</div><div class="audit-meta">Admin Director · Settings › Moderation rules</div></div><div class="audit-time">1 week ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">Settings changed — moderation SLA threshold updated: 24h → 48h</div><div class="audit-meta">Admin Director · Settings › Moderation rules</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">2 hr ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">User role promoted — quantumfox: contributor → editor (Physics)</div><div class="audit-meta">Admin Director · Users &amp; roles</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">6 hr ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--blue-mid)"></div><div class="audit-body"><div class="audit-title">Integration connected — Slack workspace hivemind-org.slack.com</div><div class="audit-meta">Admin Director · Integrations</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">1 day ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--red-mid)"></div><div class="audit-body"><div class="audit-title">User suspended — anon_882 (3 spam violations)</div><div class="audit-meta">Admin Director · Moderation</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">1 day ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">Donation received — $10,000 from Wikimedia Foundation (grant)</div><div class="audit-meta">System · Finance</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">2 days ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">API key generated — hm_live_sk_***9b1c (read only)</div><div class="audit-meta">Admin Director · Integrations › API</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">3 days ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--amber-mid)"></div><div class="audit-body"><div class="audit-title">Notification settings updated — weekly analytics digest enabled</div><div class="audit-meta">Admin Director · Settings › Notifications</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">4 days ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--blue-mid)"></div><div class="audit-body"><div class="audit-title">Settings changed — ORCID verification required for editors: enabled</div><div class="audit-meta">Admin Director · Settings › Users &amp; permissions</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">5 days ago</div></div>
+            <div class="audit-item"><div class="audit-dot" style="background:var(--green-mid)"></div><div class="audit-body"><div class="audit-title">Moderation rule activated — external link safety scanning</div><div class="audit-meta">Admin Director · Settings › Moderation rules</div><div class="row-ctrl"><button class="row-act primary" title="Details" onclick="showToast('Audit entry details')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div><div class="audit-time">1 week ago</div></div>
             <div style="text-align:center;padding-top:12px"><button class="tb-btn" onclick="showToast('Loading more events…')">Load more events</button></div>
           </div>
         </div>
@@ -1497,7 +1633,7 @@ USA</textarea></div>
     <!-- LIVE FEED PANEL -->
     <div id="tp-feed" style="display:none;flex-direction:column;height:100%">
       <div class="tray-panel-head">
-        <span class="tray-panel-title">📡 Live feed</span>
+        <span class="tray-panel-title"> Live feed</span>
         <div style="display:flex;align-items:center;gap:8px">
           <div style="display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--green)"><div style="width:6px;height:6px;border-radius:50%;background:var(--green-mid);animation:pulse 2s infinite"></div>Live</div>
           <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
@@ -1511,24 +1647,24 @@ USA</textarea></div>
         <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFilter(this,'team')">Team</button>
       </div>
       <div class="tray-panel-body" id="feed-list">
-        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>mx_robin</strong> published "Wave function collapse"</div><div class="feed-time">just now</div></div><span class="feed-badge badge-green">Published</span></div>
-        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Moderation queue SLA breach — <strong>3 items</strong> over 24h</div><div class="feed-time">2 min ago</div></div><span class="feed-badge badge-red">⚠ SLA</span></div>
-        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#3b82f6"></div><div class="feed-body"><div class="feed-text"><strong>quantumfox</strong> submitted edit to Quantum mechanics §Overview</div><div class="feed-time">4 min ago</div></div><span class="feed-badge badge-blue">Edit</span></div>
-        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>sara_r</strong> added 3 resources to Physics tree</div><div class="feed-time">11 min ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span></div>
-        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#f59e0b"></div><div class="feed-body"><div class="feed-text"><strong>lena_w</strong> flagged resource classification dispute</div><div class="feed-time">28 min ago</div></div><span class="feed-badge badge-amber">Dispute</span></div>
-        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>neuro_x</strong> published "DNA methylation — epigenetics"</div><div class="feed-time">42 min ago</div></div><span class="feed-badge badge-green">Published</span></div>
-        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>anil_s</strong> joined Physics team as contributor</div><div class="feed-time">1 hr ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span></div>
-        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Spam report submitted: <strong>anon_882</strong> · Thermodynamics talk</div><div class="feed-time">1 hr ago</div></div><span class="feed-badge badge-red">Report</span></div>
-        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#3b82f6"></div><div class="feed-body"><div class="feed-text"><strong>sara_r</strong> submitted new resource: Cohen-Tannoudji Vol. 2</div><div class="feed-time">2 hr ago</div></div><span class="feed-badge badge-blue">Resource</span></div>
-        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>quantumfox</strong> published "Entropy — statistical mechanics"</div><div class="feed-time">3 hr ago</div></div><span class="feed-badge badge-green">Published</span></div>
-        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>Dr. Priya Mehta</strong> applied for Chemistry editor role</div><div class="feed-time">4 hr ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">New user</span></div>
-        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#f59e0b"></div><div class="feed-body"><div class="feed-text">Donation received: <strong>$500</strong> from James R.</div><div class="feed-time">5 hr ago</div></div><span class="feed-badge badge-amber">Finance</span></div>
+        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>mx_robin</strong> published "Wave function collapse"</div><div class="feed-time">just now</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-green">Published</span></div>
+        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Moderation queue SLA breach — <strong>3 items</strong> over 24h</div><div class="feed-time">2 min ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-red"> SLA</span></div>
+        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#3b82f6"></div><div class="feed-body"><div class="feed-text"><strong>quantumfox</strong> submitted edit to Quantum mechanics §Overview</div><div class="feed-time">4 min ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-blue">Edit</span></div>
+        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>sara_r</strong> added 3 resources to Physics tree</div><div class="feed-time">11 min ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span></div>
+        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#f59e0b"></div><div class="feed-body"><div class="feed-text"><strong>lena_w</strong> flagged resource classification dispute</div><div class="feed-time">28 min ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-amber">Dispute</span></div>
+        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>neuro_x</strong> published "DNA methylation — epigenetics"</div><div class="feed-time">42 min ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-green">Published</span></div>
+        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>anil_s</strong> joined Physics team as contributor</div><div class="feed-time">1 hr ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span></div>
+        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Spam report submitted: <strong>anon_882</strong> · Thermodynamics talk</div><div class="feed-time">1 hr ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-red">Report</span></div>
+        <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#3b82f6"></div><div class="feed-body"><div class="feed-text"><strong>sara_r</strong> submitted new resource: Cohen-Tannoudji Vol. 2</div><div class="feed-time">2 hr ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-blue">Resource</span></div>
+        <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>quantumfox</strong> published "Entropy — statistical mechanics"</div><div class="feed-time">3 hr ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-green">Published</span></div>
+        <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>Dr. Priya Mehta</strong> applied for Chemistry editor role</div><div class="feed-time">4 hr ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">New user</span></div>
+        <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#f59e0b"></div><div class="feed-body"><div class="feed-text">Donation received: <strong>$500</strong> from James R.</div><div class="feed-time">5 hr ago</div><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Opening item…')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div><span class="feed-badge badge-amber">Finance</span></div>
       </div>
     </div>
     <!-- BOOKMARKS PANEL -->
     <div id="tp-bookmarks" style="display:none;flex-direction:column;height:100%">
       <div class="tray-panel-head">
-        <span class="tray-panel-title">🔖 Bookmarks</span>
+        <span class="tray-panel-title"> Bookmarks</span>
         <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
       </div>
       <div style="padding:8px 14px;border-bottom:1px solid var(--rule)">
@@ -1536,15 +1672,15 @@ USA</textarea></div>
       </div>
       <div class="tray-panel-body">
         <div class="tp-section-head" style="padding:10px 14px 4px">Pages</div>
-        <div class="bm-item" onclick="navigate('moderation');closeTrayPanel()"><div class="bm-icon" style="background:var(--red-bg)">⚠</div><div class="bm-body"><div class="bm-title">Moderation queue</div><div class="bm-sub">12 pending items</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
-        <div class="bm-item" onclick="navigate('analytics');closeTrayPanel()"><div class="bm-icon" style="background:var(--blue-bg)">📊</div><div class="bm-body"><div class="bm-title">Analytics</div><div class="bm-sub">March 2026 report</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
-        <div class="bm-item" onclick="navigate('finance');closeTrayPanel()"><div class="bm-icon" style="background:var(--green-bg)">💰</div><div class="bm-body"><div class="bm-title">Finance &amp; donations</div><div class="bm-sub">$184,210 raised YTD</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="navigate('moderation');closeTrayPanel()"><div class="bm-icon" style="background:var(--red-bg)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><rect x="2" y="1" width="12" height="14" rx="1.5" stroke="currentColor" stroke-width="1.3"/><line x1="5" y1="5" x2="11" y2="5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="5" y1="8" x2="11" y2="8" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="5" y1="11" x2="8" y2="11" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="bm-body"><div class="bm-title">Moderation queue</div><div class="bm-sub">12 pending items</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="navigate('analytics');closeTrayPanel()"><div class="bm-icon" style="background:var(--blue-bg)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><polyline points="1,13 5,8 8,11 12,5 15,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg></div><div class="bm-body"><div class="bm-title">Analytics</div><div class="bm-sub">March 2026 report</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="navigate('finance');closeTrayPanel()"><div class="bm-icon" style="background:var(--green-bg)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3"/><path d="M8 5v2m0 4v-2m0 0H6.5a1.5 1.5 0 000 3H9a1 1 0 000-2H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg></div><div class="bm-body"><div class="bm-title">Finance &amp; donations</div><div class="bm-sub">$184,210 raised YTD</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
         <div class="tp-section-head" style="padding:10px 14px 4px;border-top:1px solid var(--rule)">Resources</div>
-        <div class="bm-item" onclick="showToast('Opening resource…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📖</div><div class="bm-body"><div class="bm-title">Principles of Quantum Mechanics</div><div class="bm-sub">Dirac · Primary · Physics</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
-        <div class="bm-item" onclick="showToast('Opening resource…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📖</div><div class="bm-body"><div class="bm-title">CLRS — Introduction to Algorithms</div><div class="bm-sub">Cormen et al. · Primary · CS</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="showToast('Opening resource…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2z" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="3" x2="8" y2="3" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="bm-body"><div class="bm-title">Principles of Quantum Mechanics</div><div class="bm-sub">Dirac · Primary · Physics</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="showToast('Opening resource…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2z" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="3" x2="8" y2="3" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="bm-body"><div class="bm-title">CLRS — Introduction to Algorithms</div><div class="bm-sub">Cormen et al. · Primary · CS</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
         <div class="tp-section-head" style="padding:10px 14px 4px;border-top:1px solid var(--rule)">Articles</div>
-        <div class="bm-item" onclick="showToast('Opening article…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📄</div><div class="bm-body"><div class="bm-title">Quantum mechanics</div><div class="bm-sub">48,210 views · Physics</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
-        <div class="bm-item" onclick="showToast('Opening article…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)">📄</div><div class="bm-body"><div class="bm-title">CRISPR-Cas9 gene editing</div><div class="bm-sub">36,840 views · Biology</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="showToast('Opening article…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2z" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="3" x2="8" y2="3" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="bm-body"><div class="bm-title">Quantum mechanics</div><div class="bm-sub">48,210 views · Physics</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
+        <div class="bm-item" onclick="showToast('Opening article…');closeTrayPanel()"><div class="bm-icon" style="background:var(--paper3)"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12v10H2z" stroke="currentColor" stroke-width="1.3"/><line x1="2" y1="3" x2="8" y2="3" stroke="currentColor" stroke-width="1.2"/><line x1="8" y1="3" x2="8" y2="13" stroke="currentColor" stroke-width="1.2"/></svg></div><div class="bm-body"><div class="bm-title">CRISPR-Cas9 gene editing</div><div class="bm-sub">36,840 views · Biology</div></div><div class="bm-remove" onclick="event.stopPropagation();this.closest('.bm-item').remove();showToast('Bookmark removed')">×</div></div>
       </div>
       <div style="padding:10px 14px;border-top:1px solid var(--rule)">
         <button class="tb-btn" style="width:100%;font-size:12px" onclick="showToast('Bookmark current page','','green')">+ Bookmark current page</button>
@@ -1553,35 +1689,35 @@ USA</textarea></div>
     <!-- MACROS PANEL -->
     <div id="tp-macros" style="display:none;flex-direction:column;height:100%">
       <div class="tray-panel-head">
-        <span class="tray-panel-title">⚡ Macros</span>
+        <span class="tray-panel-title"> Macros</span>
         <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
       </div>
       <div class="tray-panel-body">
         <div class="tp-section">
           <div class="tp-section-head">Content actions</div>
-          <div class="macro-list-item" onclick="openModal('modal-new-article');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--blue-bg)">✏️</div><div class="macro-list-body"><div class="macro-list-name">New article</div><div class="macro-list-desc">Open article creation form</div></div><span class="macro-list-kbd">⌘N</span></div>
-          <div class="macro-list-item" onclick="navigate('moderation');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--red-bg)">⚠️</div><div class="macro-list-body"><div class="macro-list-name">Review mod queue</div><div class="macro-list-desc">Jump to pending items</div></div><span class="macro-list-kbd">⌘M</span></div>
-          <div class="macro-list-item" onclick="openModal('modal-diff');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--paper3)">🔍</div><div class="macro-list-body"><div class="macro-list-name">View latest diff</div><div class="macro-list-desc">Last submitted edit change</div></div><span class="macro-list-kbd">⌘D</span></div>
-          <div class="macro-list-item" onclick="openModal('modal-add-resource');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--green-bg)">📚</div><div class="macro-list-body"><div class="macro-list-name">Add resource</div><div class="macro-list-desc">Add to resource library</div></div><span class="macro-list-kbd">⌘R</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-new-article');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--blue-bg)"></div><div class="macro-list-body"><div class="macro-list-name">New article</div><div class="macro-list-desc">Open article creation form</div></div><span class="macro-list-kbd">⌘N</span></div>
+          <div class="macro-list-item" onclick="navigate('moderation');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--red-bg)"></div><div class="macro-list-body"><div class="macro-list-name">Review mod queue</div><div class="macro-list-desc">Jump to pending items</div></div><span class="macro-list-kbd">⌘M</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-diff');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--paper3)"></div><div class="macro-list-body"><div class="macro-list-name">View latest diff</div><div class="macro-list-desc">Last submitted edit change</div></div><span class="macro-list-kbd">⌘D</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-add-resource');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--green-bg)"></div><div class="macro-list-body"><div class="macro-list-name">Add resource</div><div class="macro-list-desc">Add to resource library</div></div><span class="macro-list-kbd">⌘R</span></div>
         </div>
         <div class="tp-section">
           <div class="tp-section-head">People &amp; teams</div>
-          <div class="macro-list-item" onclick="openModal('modal-invite');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--purple-bg)">👤</div><div class="macro-list-body"><div class="macro-list-name">Invite user</div><div class="macro-list-desc">Send role-based invitation</div></div><span class="macro-list-kbd">⌘I</span></div>
-          <div class="macro-list-item" onclick="openTrayPanel('team')"><div class="macro-list-icon" style="background:var(--paper3)">👥</div><div class="macro-list-body"><div class="macro-list-name">Team flow</div><div class="macro-list-desc">View team members &amp; status</div></div><span class="macro-list-kbd">⌘T</span></div>
-          <div class="macro-list-item" onclick="openModal('modal-persona');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--amber-bg)">🎭</div><div class="macro-list-body"><div class="macro-list-name">Switch persona</div><div class="macro-list-desc">Change active role view</div></div><span class="macro-list-kbd">⌘P</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-invite');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--purple-bg)"></div><div class="macro-list-body"><div class="macro-list-name">Invite user</div><div class="macro-list-desc">Send role-based invitation</div></div><span class="macro-list-kbd">⌘I</span></div>
+          <div class="macro-list-item" onclick="openTrayPanel('team')"><div class="macro-list-icon" style="background:var(--paper3)"></div><div class="macro-list-body"><div class="macro-list-name">Team flow</div><div class="macro-list-desc">View team members &amp; status</div></div><span class="macro-list-kbd">⌘T</span></div>
+          <div class="macro-list-item" onclick="openModal('modal-persona');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--amber-bg)"></div><div class="macro-list-body"><div class="macro-list-name">Switch persona</div><div class="macro-list-desc">Change active role view</div></div><span class="macro-list-kbd">⌘P</span></div>
         </div>
         <div class="tp-section">
           <div class="tp-section-head">Finance &amp; reports</div>
-          <div class="macro-list-item" onclick="openModal('modal-donation');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--green-bg)">💳</div><div class="macro-list-body"><div class="macro-list-name">Record donation</div><div class="macro-list-desc">Manual donation entry</div></div><span class="macro-list-kbd">⌘$</span></div>
-          <div class="macro-list-item" onclick="navigate('analytics');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--blue-bg)">📈</div><div class="macro-list-body"><div class="macro-list-name">Analytics report</div><div class="macro-list-desc">Jump to analytics page</div></div><span class="macro-list-kbd">⌘A</span></div>
-          <div class="macro-list-item" onclick="showToast('Export queued','','green');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--paper3)">⬇️</div><div class="macro-list-body"><div class="macro-list-name">Export all data</div><div class="macro-list-desc">Full org data export (ZIP)</div></div></div>
+          <div class="macro-list-item" onclick="openModal('modal-donation');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--green-bg)"></div><div class="macro-list-body"><div class="macro-list-name">Record donation</div><div class="macro-list-desc">Manual donation entry</div></div><span class="macro-list-kbd">⌘$</span></div>
+          <div class="macro-list-item" onclick="navigate('analytics');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--blue-bg)"></div><div class="macro-list-body"><div class="macro-list-name">Analytics report</div><div class="macro-list-desc">Jump to analytics page</div></div><span class="macro-list-kbd">⌘A</span></div>
+          <div class="macro-list-item" onclick="showToast('Export queued','','green');closeTrayPanel()"><div class="macro-list-icon" style="background:var(--paper3)"><svg width="14" height="14" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="#6b7280" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="#6b7280" stroke-width="1.3"/></svg></div><div class="macro-list-body"><div class="macro-list-name">Export all data</div><div class="macro-list-desc">Full org data export (ZIP)</div></div></div>
         </div>
       </div>
     </div>
     <!-- TEAM FLOW PANEL -->
     <div id="tp-team" style="display:none;flex-direction:column;height:100%">
       <div class="tray-panel-head">
-        <span class="tray-panel-title">👥 Team flow</span>
+        <span class="tray-panel-title"> Team flow</span>
         <button class="tray-panel-close" onclick="closeTrayPanel()">×</button>
       </div>
       <div style="padding:8px 14px;border-bottom:1px solid var(--rule)">
@@ -1592,10 +1728,10 @@ USA</textarea></div>
       </div>
       <div class="tray-panel-body">
         <div class="tp-section-head" style="padding:10px 14px 4px">Online now (4)</div>
-        <div class="team-member"><div class="tm-avi" style="background:#1a3a5c">AD</div><div class="tm-body"><div class="tm-name">Admin Director</div><div class="tm-role">Super admin · Reviewing moderation</div></div><div class="tm-status" style="background:#22c55e" title="Online"></div></div>
-        <div class="team-member"><div class="tm-avi" style="background:#2a4b8d">QF</div><div class="tm-body"><div class="tm-name">quantumfox</div><div class="tm-role">Editor · Physics · Editing Quantum mechanics</div></div><div class="tm-status" style="background:#22c55e" title="Online"></div></div>
-        <div class="team-member"><div class="tm-avi" style="background:#1a4a2a">SR</div><div class="tm-body"><div class="tm-name">sara_r</div><div class="tm-role">Editor · Physics · Resource triage</div></div><div class="tm-status" style="background:#22c55e" title="Online"></div></div>
-        <div class="team-member"><div class="tm-avi" style="background:#7c3aed">NX</div><div class="tm-body"><div class="tm-name">neuro_x</div><div class="tm-role">Editor · Biology · Writing article</div></div><div class="tm-status" style="background:#f59e0b" title="Away"></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#1a3a5c">AD</div><div class="tm-body"><div class="tm-name">Admin Director</div><div class="tm-role">Super admin · Reviewing moderation</div></div><div class="status-dot online"></div><div class="row-ctrl"><button class="row-act primary" title="Message" onclick="showToast('Message sent','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12a1 1 0 011 1v7a1 1 0 01-1 1H4l-3 2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button><button class="row-act " title="View profile" onclick="showToast('Profile opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#2a4b8d">QF</div><div class="tm-body"><div class="tm-name">quantumfox</div><div class="tm-role">Editor · Physics · Editing Quantum mechanics</div></div><div class="status-dot online"></div><div class="row-ctrl"><button class="row-act primary" title="Message" onclick="showToast('Message sent','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12a1 1 0 011 1v7a1 1 0 01-1 1H4l-3 2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button><button class="row-act " title="View profile" onclick="showToast('Profile opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#1a4a2a">SR</div><div class="tm-body"><div class="tm-name">sara_r</div><div class="tm-role">Editor · Physics · Resource triage</div></div><div class="status-dot online"></div><div class="row-ctrl"><button class="row-act primary" title="Message" onclick="showToast('Message sent','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12a1 1 0 011 1v7a1 1 0 01-1 1H4l-3 2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button><button class="row-act " title="View profile" onclick="showToast('Profile opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
+        <div class="team-member"><div class="tm-avi" style="background:#7c3aed">NX</div><div class="tm-body"><div class="tm-name">neuro_x</div><div class="tm-role">Editor · Biology · Writing article</div></div><div class="status-dot away"></div><div class="row-ctrl"><button class="row-act primary" title="Message" onclick="showToast('Message sent','','green')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M2 3h12a1 1 0 011 1v7a1 1 0 01-1 1H4l-3 2V4a1 1 0 011-1z" stroke="currentColor" stroke-width="1.3" stroke-linejoin="round"/></svg></button><button class="row-act " title="View profile" onclick="showToast('Profile opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M1 8s3-5 7-5 7 5 7 5-3 5-7 5-7-5-7-5z" stroke="currentColor" stroke-width="1.3"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.3"/></svg></button></div></div>
         <div class="tp-section-head" style="padding:10px 14px 4px;border-top:1px solid var(--rule)">Away (2)</div>
         <div class="team-member"><div class="tm-avi" style="background:#b45309">LW</div><div class="tm-body"><div class="tm-name">lena_w</div><div class="tm-role">Editor · Neuroscience</div></div><div class="tm-status" style="background:#d1d5db" title="Away"></div></div>
         <div class="team-member"><div class="tm-avi" style="background:#166534">AS</div><div class="tm-body"><div class="tm-name">anil_s</div><div class="tm-role">Contributor · Math / Physics</div></div><div class="tm-status" style="background:#d1d5db" title="Away"></div></div>
@@ -1640,6 +1776,48 @@ USA</textarea></div>
 
 </div><!-- /outer -->
 <!-- TOAST SYSTEM -->
+
+<!-- ═══════════════════════════════════════════════════
+     LIVE FEED FLOAT — commented out, reserved for later
+     To re-enable: remove the comment wrappers below
+════════════════════════════════════════════════════ -->
+<!--FEED_FLOAT_START
+  <div class="feed-resize" id="feed-resize"></div>
+  <div class="feed-float-head" id="feed-float-head">
+    <span class="feed-float-title">
+      <div class="feed-live-dot"></div>
+      Live feed
+    </span>
+    <div class="feed-float-controls">
+      <button class="feed-fc-btn" id="feed-fc-filter" title="Filters" onclick="toggleFeedFilters()" style="font-size:10px;font-weight:600;color:var(--ink3)">Filter</button>
+      <button class="feed-fc-btn" id="feed-fc-min" title="Minimize" onclick="toggleFeedMin()">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><line x1="3" y1="8" x2="13" y2="8" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+      <button class="feed-fc-btn" title="Close feed" onclick="hideFeedFloat()">
+        <svg width="11" height="11" viewBox="0 0 16 16" fill="none"><line x1="3" y1="3" x2="13" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/><line x1="13" y1="3" x2="3" y2="13" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+  </div>
+  <div class="feed-float-filter" id="feed-float-filter" style="display:none">
+    <button class="uf on" style="font-size:10.5px;padding:2px 9px" onclick="feedFloatFilter(this,'all')">All</button>
+    <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFloatFilter(this,'edit')">Edits</button>
+    <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFloatFilter(this,'publish')">Published</button>
+    <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFloatFilter(this,'mod')">Mod</button>
+    <button class="uf" style="font-size:10.5px;padding:2px 9px" onclick="feedFloatFilter(this,'team')">Team</button>
+  </div>
+  <div class="feed-float-body" id="feed-float-body">
+    <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>mx_robin</strong> published "Wave function collapse"</div><div class="feed-time">just now</div></div><span class="feed-badge badge-green">Published</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Moderation queue SLA breach — <strong>3 items</strong> over 24h</div><div class="feed-time">2 min ago</div></div><span class="feed-badge badge-red">SLA</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="navigate('moderation')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#3b82f6"></div><div class="feed-body"><div class="feed-text"><strong>quantumfox</strong> submitted edit to Quantum mechanics §Overview</div><div class="feed-time">4 min ago</div></div><span class="feed-badge badge-blue">Edit</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>sara_r</strong> added 3 resources to Physics tree</div><div class="feed-time">11 min ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="feed-item" data-ftype="edit"><div class="feed-dot" style="background:#f59e0b"></div><div class="feed-body"><div class="feed-text"><strong>lena_w</strong> flagged resource classification dispute</div><div class="feed-time">28 min ago</div></div><span class="feed-badge badge-amber">Dispute</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="feed-item" data-ftype="publish"><div class="feed-dot" style="background:#22c55e"></div><div class="feed-body"><div class="feed-text"><strong>neuro_x</strong> published "DNA methylation — epigenetics"</div><div class="feed-time">42 min ago</div></div><span class="feed-badge badge-green">Published</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="feed-item" data-ftype="team"><div class="feed-dot" style="background:#8b5cf6"></div><div class="feed-body"><div class="feed-text"><strong>anil_s</strong> joined Physics team as contributor</div><div class="feed-time">1 hr ago</div></div><span class="feed-badge" style="background:var(--purple-bg);color:var(--purple)">Team</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="showToast('Item opened')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+    <div class="feed-item" data-ftype="mod"><div class="feed-dot" style="background:#ef4444"></div><div class="feed-body"><div class="feed-text">Spam report submitted: <strong>anon_882</strong> · Thermodynamics talk</div><div class="feed-time">1 hr ago</div></div><span class="feed-badge badge-red">Report</span><div class="row-ctrl"><button class="row-act primary" title="Open" onclick="navigate('moderation')"><svg width="13" height="13" viewBox="0 0 16 16" fill="none"><path d="M7 3H3a1 1 0 00-1 1v9a1 1 0 001 1h9a1 1 0 001-1V9M9 2h5v5M14 2l-6 6" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg></button></div></div>
+  </div>
+</div>
+FEED_FLOAT_END-->
+
 <div class="toast-wrap" id="toast-wrap"></div>
 
 <!-- MODALS -->
@@ -1821,7 +1999,7 @@ USA</textarea></div>
   <div class="modal" onclick="event.stopPropagation()">
     <div class="modal-head"><span class="modal-title">Account settings</span><button class="modal-close" onclick="closeModal('modal-profile')">×</button></div>
     <div class="modal-body">
-      <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:48px;height:48px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff" id="profile-avi">AD</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)" id="profile-name">Admin Director</div><div style="font-size:12px;color:var(--ink3)" id="profile-role">admin@hivemind.org · Super administrator</div></div></div>
+      <div style="display:flex;align-items:center;gap:14px;padding:14px;background:var(--paper2);border-radius:6px;margin-bottom:16px"><div style="width:48px;height:48px;border-radius:50%;background:#1a3a5c;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:600;color:#fff" id="profile-avi">AD</div><div><div style="font-size:14px;font-weight:600;color:var(--ink)" id="profile-name">Admin Director</div><div style="font-size:12px;color:var(--ink3)" id="profile-role"><a href="/cdn-cgi/l/email-protection" class="__cf_email__" data-cfemail="3051545d595e70585946555d595e541e5f4257">[email&#160;protected]</a> · Super administrator</div></div></div>
       <div class="form-grid"><div class="form-field"><label>Display name</label><input class="form-input" value="Admin Director"/></div><div class="form-field"><label>Email</label><input class="form-input" value="admin@hivemind.org"/></div></div>
       <div class="form-field"><label>ORCID iD</label><input class="form-input" value="0000-0000-0000-0000" style="font-family:monospace;font-size:12px"/></div>
       <div class="form-field"><label>New password</label><input class="form-input" type="password" placeholder="Leave blank to keep current"/></div>
@@ -1861,7 +2039,7 @@ USA</textarea></div>
       <div class="persona-card active" id="persona-card-superadmin" onclick="setPersona('superadmin','AD','Super admin','admin@hivemind.org · Super administrator','super','#1a3a5c')">
         <div class="pc-avi" style="background:#1a3a5c">AD</div>
         <div class="pc-body"><div class="pc-name">Super admin <span style="font-size:10px;color:var(--green);font-weight:400">(current)</span></div><div class="pc-desc">Unrestricted access to all features, danger zone, and the full dashboard.</div></div>
-        <span class="pc-tier super">⚡ Super</span>
+        <span class="pc-tier super"> Super</span>
       </div>
     </div>
     <div class="modal-foot"><button class="tb-btn" onclick="closeModal('modal-persona')">Cancel</button></div>
@@ -1883,7 +2061,7 @@ USA</textarea></div>
 <!-- Danger zone confirm -->
 <div class="modal-backdrop" id="modal-confirm-danger" onclick="closeModal('modal-confirm-danger')">
   <div class="modal" style="max-width:420px" onclick="event.stopPropagation()">
-    <div class="modal-head" style="background:var(--red-bg);border-bottom-color:#fca5a5"><span class="modal-title" style="color:var(--red)">⚠ Confirm dangerous action</span><button class="modal-close" onclick="closeModal('modal-confirm-danger')">×</button></div>
+    <div class="modal-head" style="background:var(--red-bg);border-bottom-color:#fca5a5"><span class="modal-title" style="color:var(--red)"> Confirm dangerous action</span><button class="modal-close" onclick="closeModal('modal-confirm-danger')">×</button></div>
     <div class="modal-body">
       <p style="font-size:13.5px;color:var(--ink2);line-height:1.6;margin-bottom:14px">This action may have irreversible consequences. Type <strong>CONFIRM</strong> below to proceed.</p>
       <input class="form-input" id="danger-confirm-input" placeholder="Type CONFIRM to proceed" oninput="document.getElementById('danger-confirm-btn').disabled=this.value!=='CONFIRM'"/>
@@ -1893,7 +2071,7 @@ USA</textarea></div>
 </div>
 
 <!-- JAVASCRIPT -->
-<script data-cfasync="false" src="/cdn-cgi/scripts/5c5dd728/cloudflare-static/email-decode.min.js"></script><script>
+<script>
 'use strict';
 var PAGE_TITLES={overview:'Overview',analytics:'Analytics',pipeline:'Content pipeline',moderation:'Moderation queue',resources:'Resource library',users:'Users & roles',discussions:'Discussions',finance:'Finance & donations',settings:'Settings'};
 var PAGE_ACTIONS={overview:'+ New article',analytics:'Export report',pipeline:'+ New article',moderation:'Bulk approve',resources:'+ Add resource',users:'Invite user',discussions:'+ New topic',finance:'Record donation',settings:'Save settings'};
@@ -1954,7 +2132,7 @@ document.addEventListener('keydown',function(e){if(e.key==='Escape')document.que
 function showToast(msg,sub,type){
   var wrap=document.getElementById('toast-wrap');
   var t=document.createElement('div');t.className='toast'+(type?' '+type:'');
-  var icon=type==='green'?'✓':type==='red'?'✕':type==='amber'?'⚠':'ℹ';
+  var icon=type==='green'?'':type==='red'?'':type==='amber'?'':'ℹ';
   t.innerHTML='<span>'+icon+'</span><span>'+msg+'</span>';
   wrap.appendChild(t);
   requestAnimationFrame(function(){requestAnimationFrame(function(){t.classList.add('show')})});
@@ -2132,13 +2310,11 @@ document.getElementById('global-search').addEventListener('keydown', function(e)
   }
 });
 
-navigate('overview');
-navigateSpg('general');
-
 // ── TRAY PANEL SYSTEM ──
 var _activeTray = null;
 function openTrayPanel(id) {
   var panel = document.getElementById('tray-panel');
+  var fi    = document.getElementById('fi');
   var panels = ['tp-feed','tp-bookmarks','tp-macros','tp-team'];
   panels.forEach(function(p){
     var el=document.getElementById(p);
@@ -2147,6 +2323,7 @@ function openTrayPanel(id) {
   if(_activeTray===id){ closeTrayPanel(); return; }
   _activeTray=id;
   if(panel)panel.classList.add('open');
+  if(fi)fi.classList.add('tray-open');
   // Highlight active tray button
   ['tray-feed-btn','tray-bm-btn','tray-macro-btn','tray-team-btn'].forEach(function(b){
     var btn=document.getElementById(b);if(btn)btn.classList.remove('on');
@@ -2160,7 +2337,9 @@ function openTrayPanel(id) {
 }
 function closeTrayPanel() {
   var panel=document.getElementById('tray-panel');
+  var fi=document.getElementById('fi');
   if(panel)panel.classList.remove('open');
+  if(fi)fi.classList.remove('tray-open');
   _activeTray=null;
   ['tray-feed-btn','tray-bm-btn','tray-macro-btn','tray-team-btn'].forEach(function(b){
     var btn=document.getElementById(b);if(btn)btn.classList.remove('on');
@@ -2189,7 +2368,7 @@ function setPersona(role, initials, name, sub, tier, color) {
   if(nameEl)nameEl.textContent=name;
   if(roleEl)roleEl.textContent=sub;
   if(badgeEl){
-    badgeEl.textContent=tier==='super'?'⚡ Elite':tier==='elite'?'⚡ Elite':'Basic';
+    badgeEl.textContent=tier==='super'?' Elite':tier==='elite'?' Elite':'Basic';
     badgeEl.className='sb-tier-badge '+(isBasic?'basic':'elite');
   }
 
@@ -2276,6 +2455,17 @@ var feedItems = [
   {type:'mod',color:'#ef4444',text:'New item added to moderation queue',badge:'Mod',badgeCls:'badge-red'},
   {type:'team',color:'#8b5cf6',text:'<strong>sara_r</strong> updated Physics resource tree',badge:'Team',badgeCls:'',badgeStyle:'background:var(--purple-bg);color:var(--purple)'},
 ];
+
+/* ── LIVE FEED FLOAT JS — commented out, reserved for later ──
+   To re-enable: uncomment this block and the HTML above.
+var _feedMinimized = false; var _feedFiltersOpen = false;
+function hideFeedFloat(){} function showFeedFloat(){}
+function toggleFeedMin(){} function toggleFeedFilters(){}
+function feedFloatFilter(){}
+── end feed float JS ── */
+
+// Feed simulation — tray panel only
+
 setInterval(function(){
   var list=document.getElementById('feed-list');
   if(!list)return;
@@ -2287,15 +2477,17 @@ setInterval(function(){
     :'<span class="feed-badge '+item.badgeCls+'">'+item.badge+'</span>';
   div.innerHTML='<div class="feed-dot" style="background:'+item.color+'"></div><div class="feed-body"><div class="feed-text">'+item.text+'</div><div class="feed-time">just now</div></div>'+badgeHtml;
   list.insertBefore(div,list.firstChild);
-  // Badge the tray feed button
+  // Badge the tray feed button when panel is not open
   var badge=document.getElementById('tray-feed-badge');
-  if(badge&&_activeTray!=='feed')badge.style.display='block';
-  // Update existing "just now" → time
+  if(badge&&_activeTray!=='feed'){badge.style.display='block';}
+  // Age previous "just now" labels
   setTimeout(function(){
-    list.querySelectorAll('.feed-time').forEach(function(t,i){if(i>0&&t.textContent==='just now')t.textContent=(i+1)+' min ago'});
+    if(list)list.querySelectorAll('.feed-time').forEach(function(t,i){
+      if(i>0&&t.textContent==='just now')t.textContent=(i+1)+' min ago';
+    });
   },60000);
 },30000);
 
-// Open live feed by default on load
-openTrayPanel('feed');
+navigate('overview');
+navigateSpg('general');
 </script>
